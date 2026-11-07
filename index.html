@@ -130,6 +130,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
       let isSlideshow = false;
       let activeViewerVideo = null;
       let activeFilter = 'all';
+      let galleryPage = 0;
 
       const defaultLetter = {
         salute: 'Gửi người thương của tớ,',
@@ -242,14 +243,48 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         if (total) total.textContent = mediaItems.length ? `${mediaItems.length} little moments saved` : 'a story still being written';
       }
 
+      function galleryPageSize() {
+        return window.matchMedia('(max-width: 760px)').matches ? 8 : 16;
+      }
+
       function applyGalleryFilter() {
-        document.querySelectorAll('.memory-card[data-kind]').forEach((card) => {
-          const kind = card.dataset.kind;
-          card.hidden = activeFilter !== 'all' && kind !== activeFilter;
+        const cards = Array.from(document.querySelectorAll('.memory-card[data-kind]'));
+        const matching = cards.filter((card) => activeFilter === 'all' || card.dataset.kind === activeFilter);
+        const pageSize = galleryPageSize();
+        const totalPages = Math.max(1, Math.ceil(matching.length / pageSize));
+        galleryPage = Math.min(Math.max(0, galleryPage), totalPages - 1);
+        const first = galleryPage * pageSize;
+        const visibleCards = new Set(matching.slice(first, first + pageSize));
+
+        cards.forEach((card) => {
+          const visible = visibleCards.has(card);
+          card.hidden = !visible;
+          if (!visible) return;
+          // Defer media requests until a memory is on the current page. This is
+          // especially helpful on phones with 50+ items in a shared album.
+          const image = card.querySelector('img.memory-media[data-src]');
+          if (image && !image.getAttribute('src')) image.src = image.dataset.src;
+          const video = card.querySelector('video.memory-media[data-src]');
+          if (video && !video.getAttribute('src')) {
+            video.src = video.dataset.src;
+            video.load();
+          }
         });
+
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.classList.toggle('active', button.dataset.filter === activeFilter);
         });
+
+        const pager = $('galleryPager');
+        if (pager) {
+          const previous = $('galleryPrevious');
+          const next = $('galleryNext');
+          const label = $('galleryPageLabel');
+          pager.hidden = matching.length <= pageSize;
+          previous.disabled = galleryPage === 0;
+          next.disabled = galleryPage >= totalPages - 1;
+          label.textContent = `Chòm sao ${String(galleryPage + 1).padStart(2, '0')} / ${String(totalPages).padStart(2, '0')} · ${matching.length} khoảnh khắc`;
+        }
       }
 
       function renderMedia() {
@@ -280,8 +315,8 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
             wrap.className = 'memory-video-wrap';
             const video = document.createElement('video');
             video.className = 'memory-media';
-            video.src = item.url;
-            video.preload = 'metadata';
+            video.dataset.src = item.url;
+            video.preload = 'none';
             video.muted = true;
             video.playsInline = true;
             const play = document.createElement('span');
@@ -292,7 +327,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           } else {
             const img = document.createElement('img');
             img.className = 'memory-media';
-            img.src = item.url;
+            img.dataset.src = item.url;
             img.alt = item.name;
             img.loading = 'lazy';
             open.append(img);
@@ -323,7 +358,27 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           }
           wall.append(card);
         });
-        host.replaceChildren(wall);
+        const pager = document.createElement('nav');
+        pager.className = 'gallery-pager';
+        pager.id = 'galleryPager';
+        pager.setAttribute('aria-label', 'Điều hướng các trang ký ức');
+        const previous = document.createElement('button');
+        previous.className = 'gallery-page-btn';
+        previous.id = 'galleryPrevious';
+        previous.type = 'button';
+        previous.textContent = '‹ Trước';
+        previous.addEventListener('click', () => { galleryPage = Math.max(0, galleryPage - 1); applyGalleryFilter(); });
+        const pageLabel = document.createElement('span');
+        pageLabel.className = 'gallery-page-label';
+        pageLabel.id = 'galleryPageLabel';
+        const next = document.createElement('button');
+        next.className = 'gallery-page-btn';
+        next.id = 'galleryNext';
+        next.type = 'button';
+        next.textContent = 'Tiếp ›';
+        next.addEventListener('click', () => { galleryPage += 1; applyGalleryFilter(); });
+        pager.append(previous, pageLabel, next);
+        host.replaceChildren(wall, pager);
         // Animate only cards close to the viewport to keep the galaxy smooth on phones.
         if ('IntersectionObserver' in window) {
           const floatObserver = new IntersectionObserver((entries) => {
@@ -992,6 +1047,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.addEventListener('click', () => {
             activeFilter = button.dataset.filter;
+            galleryPage = 0;
             applyGalleryFilter();
           });
         });

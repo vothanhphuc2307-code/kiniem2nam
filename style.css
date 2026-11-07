@@ -590,3 +590,141 @@
   .film-section::before, .film-section::after { animation: none !important; }
   .memory-card { translate: none !important; }
 }
+
+
+/* ============================================================
+   MOBILE GALAXY TUNING — v2.4
+   Compact 8-star viewport, paged memories, low-cost animations.
+   ============================================================ */
+.gallery-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px auto 2px;
+  padding: 8px 10px;
+}
+.gallery-pager[hidden] { display: none !important; }
+.gallery-page-btn {
+  min-width: 78px;
+  min-height: 36px;
+  padding: 8px 13px;
+  border: 1px solid rgba(242,168,187,.28);
+  border-radius: 999px;
+  color: #ffeaf3;
+  background: rgba(255,255,255,.075);
+  font: 700 11px var(--sans);
+  cursor: pointer;
+  transition: background .2s ease, opacity .2s ease;
+}
+.gallery-page-btn:disabled { opacity: .32; cursor: default; }
+.gallery-page-label {
+  min-width: 150px;
+  color: #d9bfd1;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 760px) {
+  /* Reduce expensive blur/backdrop effects on mobile GPUs. */
+  .ambient .glow { filter: blur(42px); opacity: .11; }
+  .sparkle { text-shadow: none; opacity: .26; }
+  .topbar { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(23,19,34,.96); }
+  .upload-panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .film-section { padding: 19px 12px; }
+  .film-section .section-head { gap: 8px; }
+  .film-section .section-sub { max-width: 34em; }
+  .love-hearts span { text-shadow: none; opacity: .17; }
+  .love-hearts span:nth-child(n+5) { display: none; }
+
+  /* The whole memory constellation stays inside one compact viewport. */
+  .memory-wall {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: clamp(70px, 22vw, 88px);
+    align-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 0;
+    height: auto;
+    padding: 18px 10px;
+    overflow: hidden;
+    border-radius: 20px;
+    perspective: none;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(231,154,205,.12), transparent 44%),
+      radial-gradient(circle at 14% 17%, rgba(155,132,214,.13), transparent 34%),
+      linear-gradient(150deg, rgba(8,10,27,.91), rgba(32,22,51,.9));
+    box-shadow: inset 0 0 24px rgba(8,7,22,.42);
+    contain: layout paint style;
+  }
+  .memory-wall::before,
+  .memory-wall::after {
+    width: 86%;
+    height: 58%;
+    border-color: rgba(234,177,218,.13);
+    box-shadow: none;
+    animation: none !important;
+    transform: translate(-50%,-50%) rotate(-17deg);
+  }
+  .memory-wall::after {
+    width: 65%;
+    height: 88%;
+    border-style: dashed;
+    border-color: rgba(173,164,228,.11);
+    transform: translate(-50%,-50%) rotate(22deg);
+  }
+  .memory-card,
+  .memory-card:nth-child(1),
+  .memory-card:nth-child(2),
+  .memory-card:nth-child(3),
+  .memory-card:nth-child(4),
+  .memory-card:nth-child(5),
+  .memory-card:nth-child(6),
+  .memory-card:nth-child(n+7) {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: 1px solid rgba(255,255,255,.56);
+    border-radius: 11px;
+    box-shadow: 0 5px 12px rgba(0,0,0,.22), 0 0 0 1px rgba(242,168,187,.07);
+    transform-style: flat;
+    backface-visibility: visible;
+    will-change: transform;
+  }
+  .memory-card.in-view {
+    animation: mobileSatelliteFloat var(--float-duration, 5.5s) ease-in-out var(--float-delay, 0s) infinite;
+  }
+  .memory-card:nth-child(2n) { animation-direction: alternate-reverse; }
+  .memory-card:nth-child(3n) { animation-duration: 6.8s; }
+  .memory-open { border-radius: 10px; }
+  .memory-media { filter: none; }
+  .memory-shade { inset: 45% 0 0; background: linear-gradient(transparent, rgba(15,10,30,.70)); }
+  .memory-meta { left: 5px; right: 5px; bottom: 5px; }
+  .memory-meta small { margin-bottom: 1px; font-size: 5px; letter-spacing: .10em; }
+  .memory-meta strong { font-size: 9px; line-height: 1.05; }
+  .memory-delete { top: 4px; right: 4px; width: 19px; height: 19px; font-size: 12px; backdrop-filter: none; }
+  .play-badge { width: 23px; height: 23px; font-size: 9px; }
+  .gallery-pager { gap: 8px; margin-top: 11px; }
+  .gallery-page-btn { min-width: 70px; min-height: 34px; padding: 7px 10px; }
+  .gallery-page-label { min-width: 128px; font-size: 9px; }
+}
+
+@keyframes mobileSatelliteFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+  50% { transform: translate3d(0, -4px, 0) rotate(1deg); }
+}
+
+@media (max-width: 360px) {
+  .memory-wall { grid-auto-rows: 70px; gap: 6px; padding: 14px 8px; }
+  .memory-meta strong { font-size: 8px; }
+  .gallery-page-label { min-width: 116px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-card.in-view, .love-hearts span { animation: none !important; }
+  .memory-card { will-change: auto; transform: none !important; }
+}
