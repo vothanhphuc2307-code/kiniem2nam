@@ -542,13 +542,29 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         renderMedia();
       }
 
+      function describeUploadError(error) {
+        const parts = [
+          error?.status ? `HTTP ${error.status}` : '',
+          error?.statusCode ? `mã ${error.statusCode}` : '',
+          error?.code ? `code ${error.code}` : '',
+          error?.message || String(error || 'Lỗi không xác định'),
+          error?.details ? `Chi tiết: ${error.details}` : '',
+          error?.hint ? `Gợi ý: ${error.hint}` : ''
+        ].filter(Boolean);
+        return parts.join(' · ');
+      }
+
       async function addFiles(files) {
         if (!(await requireAdmin())) return;
         const list = Array.from(files || []).filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'));
-        if (!list.length) return;
+        if (!list.length) {
+          notify('Không tìm thấy ảnh/video hợp lệ trong lựa chọn vừa rồi.');
+          return;
+        }
         const tooLarge = list.filter((file) => file.size > MAX_FILE_BYTES);
         if (tooLarge.length) {
-          notify(`Có ${tooLarge.length} tệp vượt 50 MB. Gói Supabase Free giới hạn 50 MB mỗi tệp; hãy nén video rồi thử lại.`);
+          const sample = tooLarge.slice(0, 3).map((file) => `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`).join('\n');
+          alert(`Có ${tooLarge.length}/${list.length} tệp vượt giới hạn 50 MB nên chưa bắt đầu upload.\n\n${sample}${tooLarge.length > 3 ? '\n…' : ''}\n\nHãy nén video/tệp lớn rồi chọn lại.`);
           return;
         }
         const progress = $('uploadProgress');
@@ -556,32 +572,64 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         progress.classList.add('show');
         let saved = 0;
         let failed = 0;
+        const failures = [];
+        notify(`Bắt đầu tải ${list.length} tệp. Giữ trang này mở đến khi hoàn tất nhé.`);
         for (let i = 0; i < list.length; i++) {
           const file = list[i];
           const kind = file.type.startsWith('video/') ? 'video' : 'image';
           const path = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+          let storageUploaded = false;
           try {
             const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, file, {
               cacheControl: '3600', contentType: file.type || 'application/octet-stream', upsert: false
             });
-            if (uploadError) throw uploadError;
+            if (uploadError) throw Object.assign(uploadError, { uploadStage: 'Storage upload' });
+            storageUploaded = true;
             const { error: rowError } = await supabaseClient.from('memories').insert({
               name: file.name, kind, mime: file.type, size: file.size, object_path: path, owner_id: currentUser.id
             });
             if (rowError) {
-              await supabaseClient.storage.from(BUCKET).remove([path]);
-              throw rowError;
+              try {
+                const { error: cleanupError } = await supabaseClient.storage.from(BUCKET).remove([path]);
+                if (cleanupError) console.warn('Cleanup after database insert failure:', cleanupError);
+              } catch (cleanupError) {
+                console.warn('Cleanup after database insert failure:', cleanupError);
+              }
+              throw Object.assign(rowError, { uploadStage: 'Insert row into public.memories' });
             }
             saved++;
           } catch (error) {
-            console.error('Upload error:', file.name, error);
+            console.error('Upload error:', {
+              fileName: file.name,
+              fileSize: file.size,
+              stage: error?.uploadStage || (storageUploaded ? 'Database insert/cleanup' : 'Storage upload'),
+              status: error?.status,
+              statusCode: error?.statusCode,
+              code: error?.code,
+              message: error?.message,
+              details: error?.details,
+              hint: error?.hint
+            });
             failed++;
+            if (failures.length < 5) {
+              failures.push(`${file.name}\n${error?.uploadStage || 'Upload'}: ${describeUploadError(error)}`);
+            }
           }
           bar.style.width = `${Math.round((i + 1) / list.length * 100)}%`;
+          // Yield to the browser between files so progress can repaint on mobile.
+          await new Promise((resolve) => setTimeout(resolve, 30));
         }
-        await refreshMedia();
+        try {
+          await refreshMedia();
+        } catch (refreshError) {
+          console.error('Album refresh after upload:', refreshError);
+          failures.push(`Không tải lại được danh sách album: ${describeUploadError(refreshError)}`);
+        }
         setTimeout(() => { progress.classList.remove('show'); bar.style.width = '0%'; }, 550);
-        notify(failed ? `Đã tải ${saved}/${list.length} tệp. ${failed} tệp chưa tải được.` : `Đã tải ${saved} kỷ niệm lên album chung ♡`);
+        const summary = `Kết quả upload: ${saved}/${list.length} tệp thành công; ${failed} tệp thất bại.\n\n` +
+          (failures.length ? `Một số lỗi đầu tiên:\n${failures.join('\n\n')}` : 'Không có lỗi upload được ghi nhận.') +
+          '\n\nGiữ lại ảnh gốc trong điện thoại; tệp chưa thành công vẫn còn trên máy. Chụp màn hình thông báo này để kiểm tra tiếp.';
+        alert(summary);
       }
 
       async function deleteMedia(item) {
@@ -729,27 +777,81 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         } catch (error) { console.error(error); notify('Chưa tải được thông tin nhạc từ cloud.'); }
       }
 
+      function musicErrorMessage(error, stage) {
+        const raw = [error?.message, error?.error, error?.details, error?.hint]
+          .filter(Boolean).join(' · ') || 'Lỗi không có mô tả từ máy chủ';
+        const lower = raw.toLowerCase();
+        const status = String(error?.statusCode || error?.status || error?.code || '');
+
+        if (lower.includes('row-level security') || lower.includes('permission denied') || status === '403' || status === '42501') {
+          return 'Supabase từ chối quyền ghi (RLS). Cần kiểm tra Storage → Policies, quyền INSERT cho bucket couple-memories và phiên đăng nhập quản trị.';
+        }
+        if (lower.includes('bucket not found') || lower.includes('the resource was not found') || lower.includes('object not found')) {
+          return 'Không tìm thấy bucket couple-memories. Kiểm tra Storage → Buckets và tên bucket phải khớp chính xác.';
+        }
+        if (lower.includes('mime') || lower.includes('content type') || lower.includes('invalid file type')) {
+          return 'Bucket đang chặn định dạng MP3. Vào Storage → couple-memories → Edit bucket và cho phép audio/*.';
+        }
+        if (lower.includes('size') || lower.includes('payload too large') || status === '413') {
+          return 'File vượt giới hạn dung lượng. Gói Free giới hạn tối đa 50 MB mỗi file và bucket cũng phải cho phép ít nhất bằng mức đó.';
+        }
+        if (stage === 'settings-write') {
+          return `File đã tải lên Storage nhưng chưa lưu được thông tin nhạc vào bảng site_settings. Kiểm tra quyền INSERT/UPDATE và RLS của bảng. Chi tiết: ${raw}`;
+        }
+        if (stage === 'settings-read') {
+          return `Không đọc được cấu hình nhạc cũ từ bảng site_settings trước khi upload. Kiểm tra quyền SELECT/RLS của bảng. Chi tiết: ${raw}`;
+        }
+        if (lower.includes('failed to fetch') || lower.includes('network')) {
+          return 'Kết nối tới Supabase bị gián đoạn. Kiểm tra mạng hoặc thử lại; mở Console để xem chi tiết.';
+        }
+        return `${stage.startsWith('settings') ? 'Lỗi với bảng site_settings' : 'Lỗi upload Storage'}: ${raw}`;
+      }
+
       async function saveMusic(file) {
         if (!(await requireAdmin())) return;
+        if (!file) return;
         if (file.size > MAX_FILE_BYTES) { notify('File nhạc vượt giới hạn 50 MB của gói Free.'); return; }
+        const isMp3ByName = /\.mp3$/i.test(file.name || '');
+        const contentType = file.type || (isMp3ByName ? 'audio/mpeg' : 'application/octet-stream');
+        if (!contentType.startsWith('audio/') && !isMp3ByName) {
+          notify('File được chọn không nhận diện là âm thanh. Hãy chọn file MP3.');
+          return;
+        }
         const path = `${currentUser.id}/audio-${crypto.randomUUID()}-${safeFileName(file.name)}`;
+        let uploaded = false;
+        let stage = 'settings-read';
+        $('musicStatus').textContent = 'Đang tải nhạc lên đám mây…';
         try {
           const oldSetting = await getSetting('audio');
+          stage = 'storage';
           const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, file, {
-            cacheControl: '3600', contentType: file.type || 'audio/mpeg', upsert: false
+            cacheControl: '3600', contentType, upsert: false
           });
           if (uploadError) throw uploadError;
-          const saved = await saveSetting('audio', { name: file.name, path, mime: file.type, size: file.size });
-          if (!saved) return;
+          uploaded = true;
+          stage = 'settings-write';
+          const saved = await saveSetting('audio', { name: file.name, path, mime: contentType, size: file.size });
+          if (!saved) {
+            try { await supabaseClient.storage.from(BUCKET).remove([path]); } catch (cleanupError) { console.warn('Audio cleanup failed:', cleanupError); }
+            return;
+          }
           if (oldSetting?.value?.path && oldSetting.updated_by === currentUser.id) {
-            await supabaseClient.storage.from(BUCKET).remove([oldSetting.value.path]);
+            const { error: removeOldError } = await supabaseClient.storage.from(BUCKET).remove([oldSetting.value.path]);
+            if (removeOldError) console.warn('Could not remove previous audio file:', removeOldError);
           }
           await loadMusic();
           notify('Đã cập nhật nhạc chung cho cả hai ♫');
         } catch (error) {
-          console.error(error);
-          await supabaseClient.storage.from(BUCKET).remove([path]);
-          notify('Chưa tải được nhạc. Kiểm tra file và quyền Storage.');
+          console.error('saveMusic failed:', { stage, error, statusCode: error?.statusCode, code: error?.code, message: error?.message });
+          if (uploaded) {
+            try {
+              const { error: cleanupError } = await supabaseClient.storage.from(BUCKET).remove([path]);
+              if (cleanupError) console.warn('Audio cleanup failed:', cleanupError);
+            } catch (cleanupError) { console.warn('Audio cleanup failed:', cleanupError); }
+          }
+          const detail = musicErrorMessage(error, stage);
+          $('musicStatus').textContent = detail;
+          notify(detail);
         }
       }
 
