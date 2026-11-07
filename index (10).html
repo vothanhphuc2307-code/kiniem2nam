@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff6f4">
+  <meta name="description" content="Một góc nhỏ lưu giữ hành trình của hai đứa mình.">
+  <title>Our Little Forever ♡</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+    :root {
+      --ink: #563c49;
+      --muted: #987d89;
+      --rose: #e9829c;
+      --rose-dark: #c95f7e;
+      --pink: #f8dbe2;
+      --cream: #fffaf5;
+      --line: rgba(163, 105, 126, .16);
+      --shadow: 0 20px 60px rgba(145, 86, 108, .12);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(ellipse at 8% 7%, rgba(255, 214, 224, .62), transparent 30rem),
+        radial-gradient(ellipse at 95% 22%, rgba(255, 226, 204, .55), transparent 28rem),
+        linear-gradient(180deg, #fff8f5 0%, #fffafd 52%, #fff6f3 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .ambient { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+    .glow { position: absolute; width: 23rem; aspect-ratio: 1; border-radius: 50%; filter: blur(65px); opacity: .28; }
+    .glow.one { background: #ffb8c9; left: -12rem; top: 38%; }
+    .glow.two { background: #ffd8b9; right: -13rem; top: 4%; }
+    .sparkle { position: absolute; color: #e6a2b4; opacity: .42; animation: float 7s ease-in-out infinite; }
+    .sparkle:nth-child(1) { top: 17%; left: 8%; font-size: 17px; }
+    .sparkle:nth-child(2) { top: 42%; right: 8%; font-size: 22px; animation-delay: -2s; }
+    .sparkle:nth-child(3) { top: 76%; left: 5%; font-size: 13px; animation-delay: -4s; }
+    @keyframes float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-13px) rotate(12deg); } }
+    .shell { width: min(1120px, calc(100% - 44px)); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: #a86d82; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 13px; background: #ffe4e9; color: var(--rose-dark); box-shadow: 0 6px 18px #e7a4b533; font-size: 17px; }
+    .top-actions { display: flex; gap: 9px; }
+    .pill-btn, .primary-btn, .soft-btn {
+      border: 0; cursor: pointer; border-radius: 999px; font-weight: 700;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .pill-btn { padding: 10px 15px; color: #976b7d; background: rgba(255,255,255,.72); border: 1px solid var(--line); font-size: 12px; }
+    .pill-btn:hover, .soft-btn:hover, .primary-btn:hover { transform: translateY(-2px); }
+    .hero { position: relative; padding: 58px 0 55px; display: grid; grid-template-columns: 1.08fr .92fr; gap: 36px; align-items: center; }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; color: var(--rose-dark); background: #fff0f3; border: 1px solid #f8d6df; padding: 8px 13px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    h1 { font-family: var(--serif); font-size: clamp(44px, 6vw, 76px); line-height: 1.05; letter-spacing: -.045em; font-weight: 600; margin: 23px 0 17px; color: #593b49; }
+    h1 em { color: var(--rose); font-weight: 500; }
+    .hero-copy { max-width: 520px; font-size: 15px; line-height: 1.9; color: var(--muted); margin: 0; }
+    .hero-buttons { display: flex; gap: 11px; align-items: center; flex-wrap: wrap; margin-top: 27px; }
+    .primary-btn { color: white; background: linear-gradient(135deg, #ec92a8, #d86f91); padding: 14px 20px; box-shadow: 0 12px 25px #d77b963d; font-size: 13px; }
+    .soft-btn { color: #9a6579; background: rgba(255,255,255,.82); border: 1px solid #f0dce2; padding: 13px 18px; font-size: 13px; }
+    .hero-note { margin-top: 17px; font-size: 11px; color: #ae929e; }
+    .hero-art { min-height: 380px; display: grid; place-items: center; position: relative; }
+    .polaroid { width: min(310px, 75%); padding: 13px 13px 51px; background: #fff; border-radius: 7px; transform: rotate(5deg); box-shadow: 0 25px 60px #8b53632b; position: relative; }
+    .photo-placeholder { aspect-ratio: 4/4.55; border-radius: 3px; overflow: hidden; display: grid; place-items: center; background: linear-gradient(145deg, #f8dce3, #fff1e7 55%, #f4cbd7); position: relative; }
+    .photo-placeholder::before, .photo-placeholder::after { content: ''; position: absolute; border: 1px solid rgba(255,255,255,.65); border-radius: 50%; width: 230px; height: 230px; }
+    .photo-placeholder::after { width: 175px; height: 175px; }
+    .placeholder-heart { font-size: 82px; color: #fff9fa; text-shadow: 0 8px 25px #c66a863d; z-index: 1; animation: heartbeat 2.5s ease-in-out infinite; }
+    @keyframes heartbeat { 0%,100% { transform: scale(1); } 12% { transform: scale(1.09); } 24% { transform: scale(1); } }
+    .polaroid-caption { position: absolute; bottom: 17px; left: 10px; right: 10px; text-align: center; color: #a77c8b; font-family: var(--serif); font-style: italic; font-size: 17px; }
+    .orbit { position: absolute; border: 1px dashed #e9b8c5; border-radius: 50%; width: 360px; height: 360px; transform: rotate(-18deg); }
+    .orbit::before { content: '♡'; position: absolute; top: 8px; right: 50px; background: #fff7f7; color: #e48da4; border-radius: 50%; padding: 7px; font-size: 21px; }
+    .tiny-sticker { position: absolute; border-radius: 18px; background: #fff; box-shadow: var(--shadow); color: #c77d92; padding: 11px 14px; font-size: 12px; font-weight: 700; }
+    .sticker-a { left: 0; bottom: 50px; transform: rotate(-8deg); }
+    .sticker-b { right: -2px; top: 52px; transform: rotate(8deg); }
+    .section { margin: 30px 0 74px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+    .section-kicker { color: var(--rose-dark); font-size: 10px; letter-spacing: .16em; font-weight: 800; text-transform: uppercase; }
+    h2 { margin: 7px 0 0; font: 600 clamp(28px, 3vw, 38px)/1.15 var(--serif); letter-spacing: -.025em; }
+    .section-sub { color: #a58c97; font-size: 12px; line-height: 1.7; margin: 8px 0 0; }
+    .counter-card { border: 1px solid rgba(237,194,205,.8); background: linear-gradient(120deg, rgba(255,255,255,.92), rgba(255,241,243,.94)); box-shadow: var(--shadow); border-radius: 28px; padding: 27px 30px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; overflow: hidden; position: relative; }
+    .counter-card::after { content: '♡'; position: absolute; right: 190px; top: -40px; font-size: 170px; color: rgba(236,153,174,.10); transform: rotate(-15deg); }
+    .counter-label { color: #a57f8d; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; font-weight: 800; }
+    .counter-number { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; }
+    .counter-number strong { font: 600 clamp(42px, 6vw, 65px)/1 var(--serif); color: #d47791; letter-spacing: -.04em; }
+    .counter-number span { color: #9d7d8a; font-size: 13px; }
+    .counter-date { color: #ae8996; font-size: 12px; margin-top: 9px; }
+    .countdown { display: flex; gap: 10px; position: relative; z-index: 1; }
+    .time-box { width: 67px; text-align: center; padding: 13px 5px 11px; border-radius: 17px; background: #fff; border: 1px solid #f3dce3; }
+    .time-box strong { display: block; color: #c66c87; font: 600 24px/1 var(--serif); }
+    .time-box span { display: block; margin-top: 6px; color: #b1949f; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+    .film-section { margin-top: 78px; }
+    .film-toolbar { display: flex; align-items: center; gap: 10px; }
+    .count-chip { white-space: nowrap; color: #b0788b; border-radius: 99px; padding: 8px 12px; background: #fff0f3; font-size: 11px; font-weight: 700; }
+    .upload-panel { background: rgba(255,255,255,.77); border: 1px solid var(--line); border-radius: 22px; padding: 17px 19px; display: flex; gap: 14px; align-items: center; justify-content: space-between; margin-bottom: 19px; }
+    .upload-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .upload-icon { width: 43px; height: 43px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 15px; background: #fff0f3; color: #d47791; font-size: 20px; }
+    .upload-info strong { display: block; font-size: 12px; }
+    .upload-info small { display: block; color: #ad929d; margin-top: 4px; font-size: 10px; line-height: 1.5; }
+    .film-frame { position: relative; padding: 23px 0 18px; overflow: hidden; }
+    .film-frame::before, .film-frame::after { content: ''; position: absolute; z-index: 1; left: 0; right: 0; height: 8px; opacity: .7; background: repeating-linear-gradient(90deg, #d997aa 0 13px, transparent 13px 23px); }
+    .film-frame::before { top: 3px; }
+    .film-frame::after { bottom: 3px; }
+    .film-track { display: flex; gap: 13px; overflow-x: auto; padding: 6px 4px 14px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #e8b6c4 transparent; }
+    .memory-card { position: relative; width: 190px; flex: 0 0 190px; scroll-snap-align: start; padding: 8px 8px 13px; background: white; border: 1px solid #f0e0e4; border-radius: 11px; box-shadow: 0 9px 24px rgba(142,91,108,.10); transform: rotate(var(--tilt, 0deg)); transition: transform .2s, box-shadow .2s; }
+    .memory-card:hover { transform: translateY(-5px) rotate(0); box-shadow: 0 16px 30px rgba(142,91,108,.16); }
+    .memory-open { display: block; width: 100%; padding: 0; background: none; border: 0; cursor: pointer; text-align: left; }
+    .memory-media { aspect-ratio: 4/4.15; width: 100%; display: block; object-fit: cover; border-radius: 5px; background: linear-gradient(135deg, #f5dce4, #fff0e8); }
+    .memory-video-wrap { position: relative; }
+    .play-badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); display: grid; place-items: center; width: 43px; height: 43px; color: white; background: #6a485888; border: 1px solid #ffffff99; backdrop-filter: blur(6px); border-radius: 50%; font-size: 15px; }
+    .memory-name { display: block; padding: 10px 3px 0; color: #8e6e7b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
+    .memory-index { position: absolute; right: 13px; top: 13px; color: white; background: #855468a8; border-radius: 99px; padding: 4px 7px; font-size: 9px; }
+    .delete-memory { position: absolute; left: 13px; top: 13px; width: 25px; height: 25px; border: 0; border-radius: 50%; color: #fff; background: #805466b8; cursor: pointer; font-size: 14px; line-height: 1; }
+    .empty-state { text-align: center; border: 1.5px dashed #e9c4cf; border-radius: 22px; padding: 37px 20px; background: #fff9fa99; }
+    .empty-state .empty-heart { font-size: 34px; color: #e19aae; }
+    .empty-state strong { display: block; margin-top: 8px; font: 600 20px var(--serif); }
+    .empty-state p { color: #ad929d; max-width: 390px; margin: 8px auto 15px; font-size: 11px; line-height: 1.8; }
+    .letter-wrap { display: grid; grid-template-columns: .68fr 1.32fr; gap: 20px; }
+    .letter-stamp { min-height: 245px; border-radius: 24px; background: linear-gradient(145deg, #f3cbd6, #fce8dc); display: grid; place-items: center; overflow: hidden; position: relative; }
+    .letter-stamp::before { content: ''; position: absolute; width: 220px; height: 220px; border: 1px solid #ffffff82; border-radius: 50%; }
+    .letter-stamp span { color: white; font-size: 86px; text-shadow: 0 12px 25px #a65d783d; z-index: 1; }
+    .letter-card { border: 1px solid #f0dce2; border-radius: 24px; background: rgba(255,255,255,.87); box-shadow: var(--shadow); padding: 27px 30px; }
+    .letter-card .salute { color: #c77a91; font: italic 18px var(--serif); }
+    .letter-card h3 { font: 600 27px/1.2 var(--serif); margin: 8px 0 14px; }
+    .letter-text { color: #947b86; font-size: 13px; line-height: 2; white-space: pre-line; }
+    .signature { margin-top: 18px; color: #cb7d95; font: italic 18px var(--serif); }
+    .letter-actions { margin-top: 19px; }
+    .music-card { display: flex; align-items: center; gap: 16px; padding: 19px 21px; border-radius: 22px; background: linear-gradient(110deg, #fff, #fff0f3); border: 1px solid #f0dce2; box-shadow: 0 10px 30px #b87d8b12; }
+    .disc { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; background: radial-gradient(circle, #fff6f7 0 10%, #c87590 11% 18%, #f0a8b9 19% 100%); box-shadow: 0 7px 16px #d18da13c; }
+    .disc.playing { animation: spin 5s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .music-meta { min-width: 0; flex: 1; }
+    .music-meta strong { display: block; font-size: 13px; }
+    .music-meta small { display: block; color: #a98d98; font-size: 10px; margin-top: 5px; line-height: 1.5; }
+    .music-actions { display: flex; gap: 8px; }
+    .icon-btn { width: 41px; height: 41px; border: 1px solid #f0dce2; border-radius: 50%; color: #b96f87; background: #fff; cursor: pointer; font-size: 15px; }
+    .privacy-note { margin: 25px auto 0; max-width: 720px; text-align: center; padding: 13px 17px; border-radius: 15px; color: #a58d97; background: #fff8f8; font-size: 10px; line-height: 1.7; border: 1px solid #f3e3e7; }
+    footer { padding: 25px 15px 42px; text-align: center; color: #b498a3; font: italic 15px var(--serif); }
+    footer span { color: #dc8ca2; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(55,34,45,.55); backdrop-filter: blur(9px); }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(560px, 100%); max-height: min(88vh, 850px); overflow: auto; background: #fffaf9; border: 1px solid #fff; border-radius: 24px; box-shadow: 0 30px 90px #35202d55; padding: 24px; position: relative; }
+    .modal h3 { margin: 0 0 7px; font: 600 26px var(--serif); }
+    .modal-intro { margin: 0 0 18px; color: #a58b96; font-size: 11px; line-height: 1.7; }
+    .close-modal { position: absolute; top: 15px; right: 15px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #fff0f3; color: #b66a82; cursor: pointer; font-size: 18px; }
+    .field { display: block; margin: 14px 0; }
+    .field span { display: block; font-size: 11px; color: #926d7c; font-weight: 700; margin-bottom: 7px; }
+    .field input, .field textarea { width: 100%; padding: 12px 13px; border: 1px solid #efdbe1; border-radius: 13px; outline: none; color: var(--ink); background: #fff; font-size: 13px; }
+    .field textarea { min-height: 155px; resize: vertical; line-height: 1.7; }
+    .field input:focus, .field textarea:focus { border-color: #df95a9; box-shadow: 0 0 0 3px #f9e3e9; }
+    .viewer-content { width: min(900px, 100%); text-align: center; position: relative; }
+    .viewer-media { max-width: 100%; max-height: 76vh; border-radius: 14px; object-fit: contain; box-shadow: 0 20px 65px #24131b66; background: #21151b; }
+    .viewer-caption { color: white; font-size: 12px; margin-top: 13px; }
+    .viewer-close { position: fixed; top: max(18px, env(safe-area-inset-top)); right: 20px; }
+    .toast { position: fixed; z-index: 50; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 20px); opacity: 0; pointer-events: none; transition: .25s; color: #fff; background: #674555; border-radius: 99px; padding: 12px 17px; box-shadow: 0 9px 24px #42273644; font-size: 11px; text-align: center; max-width: calc(100% - 30px); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .progress { height: 3px; background: #f8e5e9; border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
+    .progress.show { display: block; }
+    .progress-bar { width: 0; height: 100%; background: #d77e97; transition: width .15s; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 32px, 560px); }
+      .topbar { padding: 15px 0; }
+      .brand { font-size: 10px; gap: 7px; }
+      .brand-mark { width: 31px; height: 31px; }
+      .top-actions .pill-btn { padding: 9px 11px; font-size: 10px; }
+      .hero { padding: 38px 0 22px; display: flex; flex-direction: column; gap: 5px; text-align: center; }
+      .eyebrow { margin: auto; font-size: 9px; }
+      h1 { font-size: clamp(42px, 12vw, 59px); margin: 18px 0 13px; }
+      .hero-copy { margin: auto; max-width: 420px; font-size: 13px; line-height: 1.8; }
+      .hero-buttons { justify-content: center; margin-top: 21px; }
+      .primary-btn, .soft-btn { padding: 12px 16px; font-size: 11px; }
+      .hero-note { font-size: 9px; margin-top: 13px; }
+      .hero-art { min-height: 305px; width: 100%; margin-top: 6px; }
+      .polaroid { width: 220px; padding: 9px 9px 39px; }
+      .polaroid-caption { bottom: 12px; font-size: 14px; }
+      .orbit { width: 265px; height: 265px; }
+      .sticker-a { left: 2%; bottom: 33px; }
+      .sticker-b { right: 2%; top: 30px; }
+      .tiny-sticker { padding: 9px 11px; font-size: 10px; }
+      .section { margin: 24px 0 57px; }
+      .section-head { align-items: start; flex-direction: column; gap: 11px; margin-bottom: 16px; }
+      h2 { font-size: 31px; }
+      .section-sub { font-size: 11px; }
+      .counter-card { grid-template-columns: 1fr; gap: 17px; padding: 21px 18px; border-radius: 21px; }
+      .counter-card::after { right: -7px; top: 16px; font-size: 108px; }
+      .counter-number strong { font-size: 52px; }
+      .countdown { gap: 7px; }
+      .time-box { width: 25%; flex: 1; padding: 11px 3px 9px; border-radius: 13px; }
+      .time-box strong { font-size: 22px; }
+      .film-section { margin-top: 57px; }
+      .film-toolbar { width: 100%; justify-content: space-between; }
+      .upload-panel { padding: 13px; border-radius: 17px; align-items: flex-start; }
+      .upload-info { gap: 9px; }
+      .upload-icon { width: 37px; height: 37px; border-radius: 12px; }
+      .upload-info strong { font-size: 11px; }
+      .upload-info small { font-size: 9px; }
+      .upload-panel .primary-btn { flex: 0 0 auto; padding: 11px 12px; }
+      .memory-card { width: 158px; flex-basis: 158px; }
+      .memory-name { font-size: 9px; }
+      .letter-wrap { grid-template-columns: 1fr; gap: 12px; }
+      .letter-stamp { min-height: 125px; }
+      .letter-stamp span { font-size: 58px; }
+      .letter-stamp::before { width: 150px; height: 150px; }
+      .letter-card { padding: 22px 20px; border-radius: 20px; }
+      .letter-card h3 { font-size: 25px; }
+      .letter-text { font-size: 12px; }
+      .music-card { padding: 14px; gap: 11px; border-radius: 18px; }
+      .disc { width: 47px; height: 47px; }
+      .music-meta strong { font-size: 11px; }
+      .music-meta small { font-size: 9px; }
+      .music-actions { gap: 5px; }
+      .icon-btn { width: 36px; height: 36px; }
+      .privacy-note { font-size: 9px; }
+      footer { padding-bottom: 32px; }
+      .modal { padding: 21px 17px; border-radius: 21px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <div class="glow one"></div><div class="glow two"></div>
+    <span class="sparkle">✦</span><span class="sparkle">♡</span><span class="sparkle">✧</span>
+  </div>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">♡</span> our little forever</div>
+      <div class="top-actions">
+        <button class="pill-btn" id="editLetterTop">✎ Chỉnh lời nhắn</button>
+        <button class="pill-btn" id="musicTop">♫ Nhạc</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy-wrap">
+          <div class="eyebrow">✧ a little website, a lot of love ✧</div>
+          <h1>Hai năm,<br>một hành trình <em>có nhau.</em></h1>
+          <p class="hero-copy">Có những điều bình thường bỗng trở nên đáng nhớ, chỉ vì mình đã trải qua chúng cùng nhau. Đây là góc nhỏ để cất giữ những ngày vui, những chuyến đi và tất cả khoảnh khắc của tụi mình.</p>
+          <div class="hero-buttons">
+            <button class="primary-btn" id="jumpMemories">Xem thước phim của tụi mình ↓</button>
+            <button class="soft-btn" id="openLetter">Đọc lời nhắn ♡</button>
+          </div>
+          <div class="hero-note">25.11.2024 — ngày câu chuyện của chúng mình bắt đầu</div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit"></div>
+          <div class="polaroid"><div class="photo-placeholder"><span class="placeholder-heart">♡</span></div><div class="polaroid-caption">my favorite person</div></div>
+          <div class="tiny-sticker sticker-a">♡ together is my place</div>
+          <div class="tiny-sticker sticker-b">little moments ✦</div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="counterTitle">
+        <div class="section-head"><div><div class="section-kicker">since the day we met</div><h2 id="counterTitle">Thời gian mình có nhau</h2><p class="section-sub">Từng ngày trôi qua đều là một phần thật đẹp của câu chuyện này.</p></div></div>
+        <div class="counter-card">
+          <div><div class="counter-label">Chúng mình đã bên nhau</div><div class="counter-number"><strong id="daysTogether">—</strong><span>ngày và vẫn đang tiếp tục ♡</span></div><div class="counter-date">Bắt đầu từ ngày 25 tháng 11, 2024</div></div>
+          <div><div class="counter-label" id="anniversaryLabel">Đếm ngược đến kỷ niệm 2 năm</div><div class="countdown" id="countdown"><div class="time-box"><strong>--</strong><span>ngày</span></div><div class="time-box"><strong>--</strong><span>giờ</span></div><div class="time-box"><strong>--</strong><span>phút</span></div><div class="time-box"><strong>--</strong><span>giây</span></div></div></div>
+        </div>
+      </section>
+
+      <section class="section film-section" id="memories" aria-labelledby="filmTitle">
+        <div class="section-head">
+          <div><div class="section-kicker">our memories, frame by frame</div><h2 id="filmTitle">Thước phim của chúng mình 🎞</h2><p class="section-sub">Một tấm ảnh là một lần nhớ. Một video là cả một khoảnh khắc được giữ lại.</p></div>
+          <div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn" id="playFilm">▶ Chạy thước phim</button></div>
+        </div>
+        <div class="upload-panel">
+          <div class="upload-info"><div class="upload-icon">＋</div><div><strong>Thêm ảnh & video từ điện thoại</strong><small>Chọn nhiều tệp cùng lúc · Hỗ trợ ảnh và video phổ biến</small></div></div>
+          <button class="primary-btn" id="addMedia">+ Thêm ảnh/video</button>
+          <input class="sr-only" id="mediaInput" type="file" accept="image/*,video/*" multiple>
+        </div>
+        <div class="progress" id="uploadProgress"><div class="progress-bar" id="progressBar"></div></div>
+        <div id="filmContent">
+          <div class="empty-state"><div class="empty-heart">♡</div><strong>Cuộn phim vẫn đang chờ những kỷ niệm đầu tiên</strong><p>Nhấn “Thêm ảnh/video” rồi chọn những tấm hình và đoạn clip trong thư viện điện thoại. Có thể chọn hơn 50 tệp, không cần thêm từng cái một.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div>
+        </div>
+      </section>
+
+      <section class="section" id="letter" aria-labelledby="letterTitle">
+        <div class="section-head"><div><div class="section-kicker">a note from the heart</div><h2 id="letterTitle">Một chút lời thương 💌</h2><p class="section-sub">Ông có thể sửa lời nhắn này thành câu chuyện và cách xưng hô của hai người.</p></div></div>
+        <div class="letter-wrap">
+          <div class="letter-stamp"><span>♡</span></div>
+          <article class="letter-card">
+            <div class="salute" id="letterSalute">Gửi người thương của tớ,</div>
+            <h3 id="letterHeading">Cảm ơn vì đã cùng tớ viết nên những ngày thật đẹp.</h3>
+            <div class="letter-text" id="letterBody">Vậy là chúng mình sắp đi cùng nhau thêm một cột mốc nữa rồi. Cảm ơn cậu vì đã xuất hiện, vì những lần quan tâm nhỏ xíu, những cuộc trò chuyện chẳng biết chán và cả những khoảnh khắc giản dị mà tớ luôn muốn nhớ thật lâu.
+
+Tớ không biết tương lai sẽ có bao nhiêu điều mới đang chờ, nhưng mong rằng trên hành trình ấy, chúng mình vẫn luôn dành cho nhau sự chân thành, kiên nhẫn và thật nhiều tiếng cười.
+
+Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ còn được viết tiếp bằng thật nhiều ngày bình yên và hạnh phúc. ♡</div>
+            <div class="signature" id="letterSignature">Thương cậu nhiều ♡</div>
+            <div class="letter-actions"><button class="soft-btn" id="editLetter">✎ Viết lời nhắn của riêng tụi mình</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="musicTitle">
+        <div class="section-head"><div><div class="section-kicker">our soundtrack</div><h2 id="musicTitle">Bài hát dành cho kỷ niệm</h2><p class="section-sub">Một bài hát quen thuộc, bật lên là nhớ đến nhau.</p></div></div>
+        <div class="music-card">
+          <div class="disc" id="disc">♫</div>
+          <div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Chọn file nhạc từ điện thoại để phát bài hát này trên trang.</small></div>
+          <div class="music-actions"><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div>
+          <input class="sr-only" type="file" id="audioInput" accept="audio/*">
+        </div>
+        <audio id="audioPlayer" loop></audio>
+        <div class="privacy-note">♡ Album và nhạc trong phiên bản này được lưu trong bộ nhớ của trình duyệt trên thiết bị đã tải lên. Đừng xóa dữ liệu trang web của trình duyệt nếu muốn giữ các tệp đã thêm. Để cả hai người mở cùng một đường link và thấy chung album, cần bật đồng bộ đám mây.</div>
+      </section>
+    </main>
+    <footer>made with a little bit of <span>♡</span> and a lot of memories</footer>
+  </div>
+
+  <div class="modal-backdrop" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal">
+      <button class="close-modal" data-close="letterModal" aria-label="Đóng">×</button>
+      <h3 id="editModalTitle">Viết lời nhắn của tụi mình 💌</h3>
+      <p class="modal-intro">Sửa tên, tiêu đề và lời chúc theo cách hai người hay nói với nhau. Nội dung sẽ được lưu trên thiết bị này.</p>
+      <label class="field"><span>Dòng mở đầu</span><input id="editSalute" maxlength="90" placeholder="Gửi người thương của tớ,"></label>
+      <label class="field"><span>Tiêu đề lời nhắn</span><input id="editHeading" maxlength="130"></label>
+      <label class="field"><span>Lời chúc</span><textarea id="editBody" maxlength="2500"></textarea></label>
+      <label class="field"><span>Ký tên</span><input id="editSignature" maxlength="80" placeholder="Thương cậu nhiều ♡"></label>
+      <button class="primary-btn" id="saveLetter">Lưu lời nhắn ♡</button>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="viewer" role="dialog" aria-modal="true">
+    <button class="close-modal viewer-close" data-close="viewer" aria-label="Đóng">×</button>
+    <div class="viewer-content" id="viewerContent"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+      const DB_NAME = 'our-little-forever-v1';
+      const DB_VERSION = 1;
+      const $ = (id) => document.getElementById(id);
+      let db;
+      let mediaItems = [];
+      let audioUrl = null;
+      let toastTimer;
+      let viewerUrl = null;
+      let slideshowTimer = null;
+      let slideshowIndex = 0;
+      let isSlideshow = false;
+
+      function notify(message) {
+        const el = $('toast');
+        el.textContent = message;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+      }
+
+      function openDatabase() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, DB_VERSION);
+          request.onupgradeneeded = () => {
+            const database = request.result;
+            if (!database.objectStoreNames.contains('media')) database.createObjectStore('media', { keyPath: 'id', autoIncrement: true });
+            if (!database.objectStoreNames.contains('settings')) database.createObjectStore('settings', { keyPath: 'key' });
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error('Không mở được bộ nhớ trình duyệt.'));
+        });
+      }
+
+      function store(storeName, mode = 'readonly') {
+        return db.transaction(storeName, mode).objectStore(storeName);
+      }
+      function dbRequest(request) {
+        return new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+      async function getAllMedia() { return dbRequest(store('media').getAll()); }
+      async function getSetting(key) { return dbRequest(store('settings').get(key)); }
+      async function setSetting(key, value) { return dbRequest(store('settings', 'readwrite').put({ key, value })); }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+      }
+
+      function dateDiff(start, end) {
+        let years = end.getFullYear() - start.getFullYear();
+        let months = end.getMonth() - start.getMonth();
+        let days = end.getDate() - start.getDate();
+        if (days < 0) {
+          months--;
+          const daysInPrevMonth = new Date(end.getFullYear(), end.getMonth(), 0).getDate();
+          days += daysInPrevMonth;
+        }
+        if (months < 0) { years--; months += 12; }
+        return { years, months, days };
+      }
+      function updateCounter() {
+        const start = new Date(2024, 10, 25, 0, 0, 0);
+        const now = new Date();
+        const totalDays = Math.max(0, Math.floor((now - start) / 86400000));
+        $('daysTogether').textContent = totalDays.toLocaleString('vi-VN');
+        const thisYearAnniversary = new Date(now.getFullYear(), 10, 25, 0, 0, 0);
+        const isAnniversaryDay = now.getMonth() === 10 && now.getDate() === 25;
+        let anniversary = now < thisYearAnniversary ? thisYearAnniversary : new Date(now.getFullYear() + 1, 10, 25, 0, 0, 0);
+        if (isAnniversaryDay) {
+          $('anniversaryLabel').textContent = 'Hôm nay là ngày kỷ niệm của tụi mình!';
+        } else {
+          $('anniversaryLabel').textContent = `Đếm ngược đến kỷ niệm ${anniversary.getFullYear() - 2024} năm`;
+        }
+        const seconds = Math.max(0, Math.floor((anniversary - now) / 1000));
+        const units = [Math.floor(seconds / 86400), Math.floor((seconds % 86400) / 3600), Math.floor((seconds % 3600) / 60), seconds % 60];
+        $('countdown').innerHTML = units.map((n, i) => `<div class="time-box"><strong>${String(n).padStart(2, '0')}</strong><span>${['ngày','giờ','phút','giây'][i]}</span></div>`).join('');
+      }
+
+      function cleanupCardUrls() {
+        document.querySelectorAll('.memory-media[data-object-url]').forEach((el) => URL.revokeObjectURL(el.dataset.objectUrl));
+      }
+      function renderMedia() {
+        cleanupCardUrls();
+        const host = $('filmContent');
+        $('mediaCount').textContent = `${mediaItems.length} khoảnh khắc`;
+        if (!mediaItems.length) {
+          host.innerHTML = `<div class="empty-state"><div class="empty-heart">♡</div><strong>Cuộn phim vẫn đang chờ những kỷ niệm đầu tiên</strong><p>Nhấn “Thêm ảnh/video” rồi chọn những tấm hình và đoạn clip trong thư viện điện thoại. Có thể chọn hơn 50 tệp, không cần thêm từng cái một.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div>`;
+          $('emptyAdd').addEventListener('click', () => $('mediaInput').click());
+          return;
+        }
+        const track = document.createElement('div');
+        track.className = 'film-frame';
+        const row = document.createElement('div');
+        row.className = 'film-track';
+        mediaItems.forEach((item, index) => {
+          const url = URL.createObjectURL(item.blob);
+          const card = document.createElement('article');
+          card.className = 'memory-card';
+          card.style.setProperty('--tilt', `${(index % 3 - 1) * 1.1}deg`);
+          const open = document.createElement('button');
+          open.className = 'memory-open';
+          open.type = 'button';
+          open.setAttribute('aria-label', `Mở ${item.name}`);
+          if (item.kind === 'video') {
+            const wrap = document.createElement('div');
+            wrap.className = 'memory-video-wrap';
+            const video = document.createElement('video');
+            video.className = 'memory-media';
+            video.src = url;
+            video.preload = 'metadata';
+            video.muted = true;
+            video.playsInline = true;
+            video.dataset.objectUrl = url;
+            const play = document.createElement('span');
+            play.className = 'play-badge';
+            play.textContent = '▶';
+            wrap.append(video, play);
+            open.append(wrap);
+          } else {
+            const img = document.createElement('img');
+            img.className = 'memory-media';
+            img.src = url;
+            img.alt = item.name;
+            img.loading = 'lazy';
+            img.dataset.objectUrl = url;
+            open.append(img);
+          }
+          const name = document.createElement('span');
+          name.className = 'memory-name';
+          name.textContent = item.name;
+          open.append(name);
+          open.addEventListener('click', () => showViewer(item));
+          const indexTag = document.createElement('span');
+          indexTag.className = 'memory-index';
+          indexTag.textContent = `${String(index + 1).padStart(2, '0')} / ${String(mediaItems.length).padStart(2, '0')}`;
+          const del = document.createElement('button');
+          del.className = 'delete-memory';
+          del.type = 'button';
+          del.textContent = '×';
+          del.title = 'Xóa khoảnh khắc này';
+          del.setAttribute('aria-label', `Xóa ${item.name}`);
+          del.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            if (!confirm(`Xóa “${item.name}” khỏi album trên thiết bị này?`)) return;
+            await dbRequest(store('media', 'readwrite').delete(item.id));
+            await refreshMedia();
+            notify('Đã xóa khoảnh khắc.');
+          });
+          card.append(open, indexTag, del);
+          row.append(card);
+        });
+        track.append(row);
+        host.replaceChildren(track);
+      }
+
+      async function refreshMedia() {
+        mediaItems = (await getAllMedia()).sort((a, b) => a.addedAt - b.addedAt || a.id - b.id);
+        renderMedia();
+      }
+
+      async function addFiles(files) {
+        const list = Array.from(files || []).filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'));
+        if (!list.length) return;
+        const total = list.reduce((sum, file) => sum + file.size, 0);
+        const totalMB = total / (1024 * 1024);
+        if (totalMB > 900) {
+          notify('Tổng dung lượng quá lớn cho một lượt. Hãy chia thành vài lần tải nhé.');
+          return;
+        }
+        const progress = $('uploadProgress');
+        const bar = $('progressBar');
+        progress.classList.add('show');
+        let saved = 0;
+        for (const file of list) {
+          try {
+            const kind = file.type.startsWith('video/') ? 'video' : 'image';
+            await dbRequest(store('media', 'readwrite').add({ name: file.name, kind, mime: file.type, size: file.size, blob: file, addedAt: Date.now() + saved }));
+            saved++;
+            bar.style.width = `${Math.round(saved / list.length * 100)}%`;
+          } catch (error) {
+            console.error(error);
+            notify('Bộ nhớ thiết bị có thể đã đầy. Một số tệp chưa được lưu.');
+            break;
+          }
+        }
+        await refreshMedia();
+        setTimeout(() => { progress.classList.remove('show'); bar.style.width = '0%'; }, 500);
+        notify(`Đã thêm ${saved}/${list.length} tệp vào thước phim ♡`);
+      }
+
+      function showViewer(item, fromSlideshow = false) {
+        if (!fromSlideshow) stopSlideshow(false);
+        if (viewerUrl) URL.revokeObjectURL(viewerUrl);
+        viewerUrl = URL.createObjectURL(item.blob);
+        const content = $('viewerContent');
+        content.replaceChildren();
+        let media;
+        if (item.kind === 'video') {
+          media = document.createElement('video');
+          media.controls = true;
+          media.autoplay = true;
+          media.playsInline = true;
+        } else {
+          media = document.createElement('img');
+          media.alt = item.name;
+        }
+        media.className = 'viewer-media';
+        media.src = viewerUrl;
+        const caption = document.createElement('div');
+        caption.className = 'viewer-caption';
+        caption.textContent = isSlideshow ? `${slideshowIndex + 1} / ${mediaItems.length} · ${item.name}` : item.name;
+        content.append(media, caption);
+        $('viewer').classList.add('open');
+        if (isSlideshow) {
+          if (item.kind === 'video') {
+            media.addEventListener('ended', nextSlideshow, { once: true });
+          } else {
+            slideshowTimer = setTimeout(nextSlideshow, 3200);
+          }
+        }
+      }
+
+      function nextSlideshow() {
+        if (!isSlideshow || !mediaItems.length) return;
+        slideshowIndex = (slideshowIndex + 1) % mediaItems.length;
+        showViewer(mediaItems[slideshowIndex], true);
+      }
+
+      function stopSlideshow(closeViewer = true) {
+        isSlideshow = false;
+        clearTimeout(slideshowTimer);
+        slideshowTimer = null;
+        $('playFilm').textContent = '▶ Chạy thước phim';
+        if (closeViewer && $('viewer').classList.contains('open')) closeModal('viewer');
+      }
+
+      function toggleSlideshow() {
+        if (isSlideshow) {
+          stopSlideshow(true);
+          return;
+        }
+        if (!mediaItems.length) {
+          notify('Thêm vài tấm ảnh hoặc video trước nha ♡');
+          return;
+        }
+        slideshowIndex = 0;
+        isSlideshow = true;
+        $('playFilm').textContent = 'Ⅱ Dừng thước phim';
+        showViewer(mediaItems[slideshowIndex], true);
+      }
+
+      function closeModal(id) {
+        $(id).classList.remove('open');
+        if (id === 'viewer') {
+          isSlideshow = false;
+          clearTimeout(slideshowTimer);
+          slideshowTimer = null;
+          $('playFilm').textContent = '▶ Chạy thước phim';
+          const v = $('viewerContent').querySelector('video');
+          if (v) v.pause();
+          $('viewerContent').replaceChildren();
+          if (viewerUrl) URL.revokeObjectURL(viewerUrl);
+          viewerUrl = null;
+        }
+      }
+
+      const defaultLetter = {
+        salute: 'Gửi người thương của tớ,',
+        heading: 'Cảm ơn vì đã cùng tớ viết nên những ngày thật đẹp.',
+        body: `Vậy là chúng mình sắp đi cùng nhau thêm một cột mốc nữa rồi. Cảm ơn cậu vì đã xuất hiện, vì những lần quan tâm nhỏ xíu, những cuộc trò chuyện chẳng biết chán và cả những khoảnh khắc giản dị mà tớ luôn muốn nhớ thật lâu.\n\nTớ không biết tương lai sẽ có bao nhiêu điều mới đang chờ, nhưng mong rằng trên hành trình ấy, chúng mình vẫn luôn dành cho nhau sự chân thành, kiên nhẫn và thật nhiều tiếng cười.\n\nChúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ còn được viết tiếp bằng thật nhiều ngày bình yên và hạnh phúc. ♡`,
+        signature: 'Thương cậu nhiều ♡'
+      };
+      async function loadLetter() {
+        const saved = await getSetting('letter');
+        const data = saved?.value || defaultLetter;
+        $('letterSalute').textContent = data.salute;
+        $('letterHeading').textContent = data.heading;
+        $('letterBody').textContent = data.body;
+        $('letterSignature').textContent = data.signature;
+      }
+      async function openLetterEditor() {
+        const saved = await getSetting('letter');
+        const data = saved?.value || defaultLetter;
+        $('editSalute').value = data.salute;
+        $('editHeading').value = data.heading;
+        $('editBody').value = data.body;
+        $('editSignature').value = data.signature;
+        $('letterModal').classList.add('open');
+      }
+      async function saveLetter() {
+        const data = {
+          salute: $('editSalute').value.trim() || defaultLetter.salute,
+          heading: $('editHeading').value.trim() || defaultLetter.heading,
+          body: $('editBody').value.trim() || defaultLetter.body,
+          signature: $('editSignature').value.trim() || defaultLetter.signature
+        };
+        await setSetting('letter', data);
+        await loadLetter();
+        closeModal('letterModal');
+        notify('Đã lưu lời nhắn của tụi mình ♡');
+      }
+
+      async function loadMusic() {
+        const setting = await getSetting('audio');
+        if (!setting?.value?.blob) return;
+        const audio = setting.value;
+        if (audioUrl) URL.revokeObjectURL(audioUrl);
+        audioUrl = URL.createObjectURL(audio.blob);
+        $('audioPlayer').src = audioUrl;
+        $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
+        $('musicStatus').textContent = 'Nhạc đã sẵn sàng · Chạm nút phát để nghe';
+      }
+      async function saveMusic(file) {
+        await setSetting('audio', { name: file.name, blob: file });
+        await loadMusic();
+        notify('Đã lưu bài nhạc trên thiết bị này ♫');
+      }
+      async function toggleMusic() {
+        const player = $('audioPlayer');
+        if (!player.src) { $('audioInput').click(); return; }
+        if (player.paused) {
+          try { await player.play(); } catch (e) { notify('Trình duyệt chưa phát được tệp nhạc này.'); return; }
+          $('playMusic').textContent = 'Ⅱ';
+          $('disc').classList.add('playing');
+          $('musicStatus').textContent = 'Đang phát · Love is in the little things ♡';
+        } else {
+          player.pause();
+          $('playMusic').textContent = '▶';
+          $('disc').classList.remove('playing');
+          $('musicStatus').textContent = 'Đã tạm dừng';
+        }
+      }
+
+      function wireEvents() {
+        $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
+        $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
+        $('editLetter').addEventListener('click', openLetterEditor);
+        $('editLetterTop').addEventListener('click', openLetterEditor);
+        $('saveLetter').addEventListener('click', saveLetter);
+        $('addMedia').addEventListener('click', () => $('mediaInput').click());
+        $('playFilm').addEventListener('click', toggleSlideshow);
+        $('emptyAdd')?.addEventListener('click', () => $('mediaInput').click());
+        $('mediaInput').addEventListener('change', async (e) => { await addFiles(e.target.files); e.target.value = ''; });
+        $('chooseMusic').addEventListener('click', () => $('audioInput').click());
+        $('musicTop').addEventListener('click', () => $('musicTitle').scrollIntoView({ behavior: 'smooth' }));
+        $('audioInput').addEventListener('change', async (e) => { const file = e.target.files?.[0]; if (file) await saveMusic(file); e.target.value = ''; });
+        $('playMusic').addEventListener('click', toggleMusic);
+        $('audioPlayer').addEventListener('ended', () => { $('playMusic').textContent = '▶'; $('disc').classList.remove('playing'); });
+        document.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+        document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(backdrop.id); }));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal('letterModal'); closeModal('viewer'); } });
+      }
+
+      async function init() {
+        try {
+          db = await openDatabase();
+          try { if (navigator.storage?.persist) await navigator.storage.persist(); } catch (_) { /* browser may decline persistent storage */ }
+          wireEvents();
+          updateCounter();
+          setInterval(updateCounter, 1000);
+          await Promise.all([refreshMedia(), loadLetter(), loadMusic()]);
+        } catch (error) {
+          console.error(error);
+          notify('Không mở được bộ nhớ. Hãy thử dùng Safari hoặc Chrome bản mới.');
+        }
+      }
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>
