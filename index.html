@@ -70,7 +70,8 @@
           <div class="progress-meta"><span id="uploadProgressText">Đang chuẩn bị tải lên…</span><span id="uploadProgressCount">0/0</span></div>
           <div class="progress-track" role="progressbar" aria-label="Tiến trình tải ảnh và video" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="uploadProgressTrack"><div class="progress-bar" id="progressBar"></div></div>
         </div>
-        <p class="upload-hint">Ảnh tự tối ưu WebP 88% · tối đa 2560 px. Album sẽ tải nhiều tệp song song; video và ảnh động được giữ nguyên.</p>
+        <button class="soft-btn preview-repair-btn" id="createOldPreviews" type="button">✦ Tạo ảnh xem trước cho album cũ</button>
+        <p class="upload-hint">Ảnh lớn tự tối ưu WebP · tạo thumbnail nhẹ cho album · điện thoại chỉ giải mã ít ảnh cùng lúc, sau đó upload song song.</p>
         <div class="gallery-toolbar"><span class="gallery-label">✧ little stars, made of memories ✧</span><div class="gallery-filters"><button class="filter-btn active" data-filter="all" type="button">Tất cả</button><button class="filter-btn" data-filter="image" type="button">Ảnh</button><button class="filter-btn" data-filter="video" type="button">Video</button></div></div>
         <div id="filmContent"><div class="empty-state"><div class="empty-orbit"><span>♡</span><i>✦</i></div><strong>Chương ký ức đầu tiên đang chờ hai bạn</strong><p>Đăng nhập quản trị rồi chọn nhiều ảnh/video cùng lúc. Mỗi khoảnh khắc sẽ trở thành một mảnh ghép trong cuốn lưu bút chung.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div></div>
       </section>
@@ -214,11 +215,23 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         $('anniversaryLabel').textContent = isAnniversaryDay ? 'Hôm nay là ngày kỷ niệm của tụi mình!' : `Đếm ngược đến kỷ niệm ${anniversary.getFullYear() - 2024} năm`;
         const seconds = Math.max(0, Math.floor((anniversary - now) / 1000));
         const units = [Math.floor(seconds / 86400), Math.floor((seconds % 86400) / 3600), Math.floor((seconds % 3600) / 60), seconds % 60];
-        $('countdown').innerHTML = units.map((n, i) => `<div class="time-box"><strong>${String(n).padStart(2, '0')}</strong><span>${['ngày','giờ','phút','giây'][i]}</span></div>`).join('');
+        const countdown = $('countdown');
+        let countdownValues = countdown.querySelectorAll('.time-box strong');
+        if (countdownValues.length !== 4) {
+          countdown.innerHTML = units.map((n, i) => `<div class="time-box"><strong>${String(n).padStart(2, '0')}</strong><span>${['ngày','giờ','phút','giây'][i]}</span></div>`).join('');
+          countdownValues = countdown.querySelectorAll('.time-box strong');
+        }
+        units.forEach((n, i) => { countdownValues[i].textContent = String(n).padStart(2, '0'); });
       }
 
       function mediaPublicUrl(path) {
         return supabaseClient.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+      }
+
+      // New uploads get a compact preview at `${object_path}.thumb.webp`.
+      // Older album items do not have one, so the UI gracefully falls back to the original.
+      function mediaPreviewUrl(path) {
+        return mediaPublicUrl(`${path}.thumb.webp`);
       }
 
       function renderHeroPhotos() {
@@ -229,9 +242,21 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           const item = picks[slot - 1];
           if (!frame || !image) return;
           if (item) {
-            image.src = item.url;
             image.alt = item.name;
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            image.dataset.fallback = '0';
+            image.onerror = () => {
+              if (image.dataset.fallback !== '1' && item.previewUrl) {
+                image.dataset.fallback = '1';
+                image.src = item.url;
+              } else {
+                image.hidden = true;
+                frame.classList.remove('has-image');
+              }
+            };
             image.hidden = false;
+            image.src = item.previewUrl || item.url;
             frame.classList.add('has-image');
           } else {
             image.removeAttribute('src');
@@ -259,16 +284,28 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         cards.forEach((card) => {
           const visible = visibleCards.has(card);
           card.hidden = !visible;
-          if (!visible) return;
-          // Defer media requests until a memory is on the current page. This is
-          // especially helpful on phones with 50+ items in a shared album.
           const image = card.querySelector('img.memory-media[data-src]');
-          if (image && !image.getAttribute('src')) image.src = image.dataset.src;
           const video = card.querySelector('video.memory-media[data-src]');
-          if (video && !video.getAttribute('src')) {
-            video.src = video.dataset.src;
-            video.load();
+          if (!visible) {
+            // Release decoded image/video resources from pages that are not visible.
+            if (image && image.getAttribute('src')) image.removeAttribute('src');
+            if (video && video.getAttribute('src')) { video.pause(); video.removeAttribute('src'); video.load(); }
+            return;
           }
+          if (image && !image.getAttribute('src')) {
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            image.fetchPriority = 'low';
+            image.dataset.fallback = '0';
+            image.onerror = () => {
+              if (image.dataset.fallback !== '1' && image.dataset.fullSrc) {
+                image.dataset.fallback = '1';
+                image.src = image.dataset.fullSrc;
+              }
+            };
+            image.src = image.dataset.src;
+          }
+          // Keep gallery videos unloaded; the viewer fetches the video only after a tap.
         });
 
         document.querySelectorAll('[data-filter]').forEach((button) => {
@@ -319,6 +356,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
             video.preload = 'none';
             video.muted = true;
             video.playsInline = true;
+            video.setAttribute('aria-label', `Video: ${item.name}`);
             const play = document.createElement('span');
             play.className = 'play-badge';
             play.textContent = '▶';
@@ -327,9 +365,12 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           } else {
             const img = document.createElement('img');
             img.className = 'memory-media';
-            img.dataset.src = item.url;
+            img.dataset.src = item.previewUrl || item.url;
+            img.dataset.fullSrc = item.url;
             img.alt = item.name;
             img.loading = 'lazy';
+            img.decoding = 'async';
+            img.fetchPriority = 'low';
             open.append(img);
           }
           const shade = document.createElement('span');
@@ -406,7 +447,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           console.error(error);
           throw new Error('Không đọc được album đám mây. Hãy kiểm tra đã chạy file SQL setup chưa.');
         }
-        mediaItems = (data || []).map((item) => ({ ...item, url: mediaPublicUrl(item.object_path) }));
+        mediaItems = (data || []).map((item) => ({ ...item, url: mediaPublicUrl(item.object_path), previewUrl: item.kind === 'image' ? mediaPreviewUrl(item.object_path) : null }));
         renderMedia();
       }
 
@@ -475,10 +516,11 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
             width: image.naturalWidth,
             height: image.naturalHeight,
             draw(context, width, height) { context.drawImage(image, 0, 0, width, height); },
-            close() { image.src = ''; }
+            close() { image.src = ''; URL.revokeObjectURL(objectUrl); }
           };
-        } finally {
+        } catch (error) {
           URL.revokeObjectURL(objectUrl);
+          throw error;
         }
       }
 
@@ -486,26 +528,44 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         return new Promise((resolve) => canvas.toBlob(resolve, 'image/webp', quality));
       }
 
+      function isPotentiallyCompressibleImage(file) {
+        return file.type.startsWith('image/') && !['image/svg+xml', 'image/gif'].includes(file.type);
+      }
+
+      let largeImageCompressionBusy = false;
+      const largeImageCompressionWaiters = [];
+
       async function compressImageForUpload(file) {
-        const untouched = { file, optimized: false, savedBytes: 0 };
-        if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') return untouched;
-        if (!['image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/x-ms-bmp'].includes(file.type)) return untouched;
-        if (file.type === 'image/webp') return untouched;
-        if (file.size < 450 * 1024) return untouched;
-        if (await isAnimatedImage(file)) return untouched;
+        const untouched = { file, optimized: false, savedBytes: 0, thumbnailBlob: null };
+        if (!isPotentiallyCompressibleImage(file)) return untouched;
+        if (file.type === 'image/gif' || file.type === 'image/svg+xml') return untouched;
 
         let bitmap;
         let canvas;
+        let thumbnailCanvas;
+        const isLargeOriginal = file.size >= 12 * 1024 * 1024;
+        let ownsLargeSlot = false;
         try {
+          if (isLargeOriginal) {
+            while (largeImageCompressionBusy) await new Promise((resolve) => largeImageCompressionWaiters.push(resolve));
+            largeImageCompressionBusy = true;
+            ownsLargeSlot = true;
+          }
+          if (await isAnimatedImage(file)) return untouched;
           bitmap = await loadImageBitmap(file);
           const sourceWidth = bitmap.width;
           const sourceHeight = bitmap.height;
           if (!sourceWidth || !sourceHeight) return untouched;
 
-          const MAX_EDGE = 2560;
+          // Large phone photos (20 MB+) are downscaled a little more to avoid
+          // decoding and keeping huge source bitmaps around in parallel.
+          const largePhoto = isLargeOriginal || Math.max(sourceWidth, sourceHeight) > 5000;
+          const MAX_EDGE = largePhoto ? 1920 : 2200;
+          const quality = largePhoto ? 0.82 : 0.86;
           const scale = Math.min(1, MAX_EDGE / Math.max(sourceWidth, sourceHeight));
           const width = Math.max(1, Math.round(sourceWidth * scale));
           const height = Math.max(1, Math.round(sourceHeight * scale));
+
           canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
@@ -516,29 +576,63 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           if (typeof bitmap.draw === 'function') bitmap.draw(context, width, height);
           else context.drawImage(bitmap, 0, 0, width, height);
 
-          const blob = await canvasToWebp(canvas, 0.88);
-          if (!blob || blob.type !== 'image/webp' || blob.size >= file.size * 0.97) return untouched;
+          const mainBlob = await canvasToWebp(canvas, quality);
+          if (!mainBlob || mainBlob.type !== 'image/webp') return untouched;
 
-          const originalBase = file.name.replace(/\.[^.]+$/, '') || 'memory';
-          const optimizedFile = new File([blob], `${originalBase}.webp`, {
-            type: 'image/webp',
-            lastModified: file.lastModified || Date.now()
-          });
+          // Album tiles use a separate 420px preview so a phone never has to
+          // decode a full-resolution 20–40 MB original just to show a small card.
+          const thumbScale = Math.min(1, 420 / Math.max(sourceWidth, sourceHeight));
+          const thumbWidth = Math.max(1, Math.round(sourceWidth * thumbScale));
+          const thumbHeight = Math.max(1, Math.round(sourceHeight * thumbScale));
+          thumbnailCanvas = document.createElement('canvas');
+          thumbnailCanvas.width = thumbWidth;
+          thumbnailCanvas.height = thumbHeight;
+          const thumbContext = thumbnailCanvas.getContext('2d', { alpha: true });
+          let thumbnailBlob = null;
+          if (thumbContext) {
+            thumbContext.imageSmoothingEnabled = true;
+            thumbContext.imageSmoothingQuality = 'medium';
+            if (typeof bitmap.draw === 'function') bitmap.draw(thumbContext, thumbWidth, thumbHeight);
+            else thumbContext.drawImage(bitmap, 0, 0, thumbWidth, thumbHeight);
+            thumbnailBlob = await canvasToWebp(thumbnailCanvas, 0.68);
+            if (!thumbnailBlob || thumbnailBlob.type !== 'image/webp') thumbnailBlob = null;
+          }
+
+          const shouldUseWebp = mainBlob.size < file.size * 0.98 || scale < 1;
+          let uploadFile = file;
+          let optimized = false;
+          let savedBytes = 0;
+          if (shouldUseWebp && mainBlob.size < file.size) {
+            const originalBase = file.name.replace(/\.[^.]+$/, '') || 'memory';
+            uploadFile = new File([mainBlob], `${originalBase}.webp`, {
+              type: 'image/webp',
+              lastModified: file.lastModified || Date.now()
+            });
+            optimized = true;
+            savedBytes = Math.max(0, file.size - uploadFile.size);
+          }
           return {
-            file: optimizedFile,
-            optimized: true,
-            savedBytes: Math.max(0, file.size - optimizedFile.size),
+            file: uploadFile,
+            optimized,
+            savedBytes,
+            thumbnailBlob,
             originalSize: file.size,
             width,
             height
           };
         } catch (error) {
-          // HEIC/unsupported browser decoders fall back to the original file.
-          console.info(`Ảnh ${file.name} được giữ nguyên do không thể tối ưu trên trình duyệt này:`, error);
+          // Some browsers cannot decode HEIC/other formats. Keep the original;
+          // size validation below will explain if the storage limit is exceeded.
+          console.info(`Ảnh ${file.name} được giữ nguyên do trình duyệt không tối ưu được:`, error);
           return untouched;
         } finally {
           try { bitmap?.close?.(); } catch (_) {}
           if (canvas) { canvas.width = 1; canvas.height = 1; }
+          if (thumbnailCanvas) { thumbnailCanvas.width = 1; thumbnailCanvas.height = 1; }
+          if (ownsLargeSlot) {
+            largeImageCompressionBusy = false;
+            largeImageCompressionWaiters.shift()?.();
+          }
         }
       }
 
@@ -553,124 +647,192 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           notify('Không tìm thấy ảnh/video hợp lệ trong lựa chọn vừa rồi.');
           return;
         }
-        const tooLarge = list.filter((file) => file.size > MAX_FILE_BYTES);
+
+        // Large static photos are allowed through pre-check because compression
+        // may bring a 20–50 MB original below the storage limit. Videos and
+        // non-compressible formats still respect the 50 MB bucket limit.
+        const tooLarge = list.filter((file) => file.size > MAX_FILE_BYTES &&
+          !(isPotentiallyCompressibleImage(file) && file.type !== 'image/gif' && file.type !== 'image/svg+xml'));
         if (tooLarge.length) {
           const sample = tooLarge.slice(0, 3).map((file) => `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`).join('\n');
-          alert(`Có ${tooLarge.length}/${list.length} tệp vượt giới hạn 50 MB nên chưa bắt đầu upload.\n\n${sample}${tooLarge.length > 3 ? '\n…' : ''}\n\nHãy nén video/tệp lớn rồi chọn lại.`);
+          alert(`Có ${tooLarge.length}/${list.length} video/định dạng không thể nén vượt giới hạn 50 MB nên chưa bắt đầu upload.\n\n${sample}${tooLarge.length > 3 ? '\n…' : ''}\n\nẢnh tĩnh lớn vẫn có thể được tối ưu tự động; video cần nén riêng trước khi tải.`);
           return;
         }
 
-        // Adaptive upload lanes: up to six image uploads on desktop, four on phones.
-        // Heavy video batches use fewer lanes to avoid memory/network spikes.
-        const hasHeavyFiles = list.some((file) => file.type.startsWith('video/') || file.size >= 12 * 1024 * 1024);
         const isPhone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(max-width: 760px)').matches;
         const cpuCores = navigator.hardwareConcurrency || 4;
         const lowMemory = (navigator.deviceMemory || 4) <= 2;
-        const slowConnection = ['slow-2g', '2g', '3g'].includes(navigator.connection?.effectiveType || '');
-        const photoLanes = (isPhone || lowMemory || cpuCores <= 4 || slowConnection) ? 4 : 6;
-        const heavyLanes = isPhone || lowMemory ? 2 : 3;
-        const concurrency = Math.min(hasHeavyFiles ? heavyLanes : photoLanes, list.length);
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const constrainedNetwork = !!connection?.saveData || ['slow-2g', '2g', '3g'].includes(connection?.effectiveType || '');
+        const hasVideos = list.some((file) => file.type.startsWith('video/'));
+        // Two-stage pipeline: a few encoders prepare photos; independent upload
+        // workers transmit prepared blobs. Heavy originals share one decode slot.
+        const compressionTarget = lowMemory ? 1 : (isPhone || cpuCores <= 4 ? 2 : 3);
+        const compressionConcurrency = Math.min(compressionTarget, list.length);
+        const desiredUploadConcurrency = constrainedNetwork ? 3 : (hasVideos ? (isPhone ? 3 : 4) : (isPhone ? 6 : 10));
+        const uploadConcurrency = Math.min(desiredUploadConcurrency, list.length);
+        const maxPreparedQueue = isPhone ? 4 : 8;
+
         const progress = $('uploadProgress');
         const addButton = $('addMedia');
-        const savedAtStart = mediaItems.length;
         let saved = 0;
         let failed = 0;
         let completed = 0;
         let active = 0;
-        let nextIndex = 0;
-        const failures = [];
         let optimizing = 0;
+        let nextPrepareIndex = 0;
+        let producersRemaining = compressionConcurrency;
+        const preparedQueue = [];
+        const queueWaiters = [];
+        const queueSpaceWaiters = [];
+        const failures = [];
         let optimizedCount = 0;
         let compressedBytesSaved = 0;
+        let thumbnailCount = 0;
+        let thumbnailsSavedBytes = 0;
+
         isUploadingMedia = true;
         addButton.disabled = true;
-        addButton.textContent = 'Đang tối ưu & tải…';
+        addButton.textContent = 'Đang nén & tải…';
         progress.classList.add('show');
-        updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
-        notify(`Đang tối ưu ảnh và tải ${list.length} tệp bằng ${concurrency} luồng song song. Giữ trang mở đến khi xong nhé.`);
+        updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency: uploadConcurrency, optimizing });
+        notify(`Đang nén bằng ${compressionConcurrency} luồng và upload bằng ${uploadConcurrency} luồng. Ảnh lớn được tạo bản xem trước nhẹ.`);
 
-        async function uploadOne(file) {
-          const kind = file.type.startsWith('video/') ? 'video' : 'image';
-          let uploadFile = file;
-          let optimization = { optimized: false, savedBytes: 0 };
-          let storageUploaded = false;
-          try {
-            if (kind === 'image') {
-              optimizing++;
-              updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
-              try {
-                optimization = await compressImageForUpload(file);
-                uploadFile = optimization.file;
-              } finally {
-                optimizing--;
-                updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+        function addFailure(file, stage, error) {
+          failed++;
+          if (failures.length < 10) failures.push(`${file.name}\n${stage}: ${describeUploadError(error)}`);
+          console.error('Upload pipeline error:', file.name, stage, error);
+        }
+
+        async function enqueuePrepared(task) {
+          while (preparedQueue.length >= maxPreparedQueue) {
+            await new Promise((resolve) => queueSpaceWaiters.push(resolve));
+          }
+          preparedQueue.push(task);
+          queueWaiters.shift()?.();
+        }
+
+        async function dequeuePrepared() {
+          while (!preparedQueue.length && producersRemaining > 0) {
+            await new Promise((resolve) => queueWaiters.push(resolve));
+          }
+          const task = preparedQueue.shift() || null;
+          if (task) queueSpaceWaiters.shift()?.();
+          return task;
+        }
+
+        async function prepareWorker() {
+          while (true) {
+            const index = nextPrepareIndex++;
+            if (index >= list.length) return;
+            const file = list[index];
+            const kind = file.type.startsWith('video/') ? 'video' : 'image';
+            try {
+              let optimization = { file, optimized: false, savedBytes: 0, thumbnailBlob: null };
+              if (kind === 'image') {
+                optimizing++;
+                updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency: uploadConcurrency, optimizing });
+                try {
+                  optimization = await compressImageForUpload(file);
+                } finally {
+                  optimizing--;
+                }
               }
+              if (optimization.file.size > MAX_FILE_BYTES) {
+                throw Object.assign(new Error(`Sau khi tối ưu vẫn còn ${formatBytes(optimization.file.size)}, vượt giới hạn 50 MB.`), { uploadStage: 'File size validation' });
+              }
+              await enqueuePrepared({ originalFile: file, uploadFile: optimization.file, optimization, kind });
+            } catch (error) {
+              addFailure(file, error?.uploadStage || 'Optimize/prepare', error);
+              completed++;
             }
+            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency: uploadConcurrency, optimizing });
+            // Let the browser paint between large image decode/encode tasks.
+            await new Promise((resolve) => setTimeout(resolve, 0));
+          }
+        }
 
-            if (uploadFile.size > MAX_FILE_BYTES) {
-              throw Object.assign(new Error(`Sau khi tối ưu, tệp vẫn vượt giới hạn ${formatBytes(MAX_FILE_BYTES)}.`), { uploadStage: 'File size validation' });
-            }
-
-            const path = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(uploadFile.name)}`;
-            const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, uploadFile, {
+        async function uploadPrepared(task) {
+          const { originalFile, uploadFile, optimization, kind } = task;
+          const objectPath = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(uploadFile.name)}`;
+          const previewPath = kind === 'image' && optimization.thumbnailBlob ? `${objectPath}.thumb.webp` : null;
+          let mainUploaded = false;
+          let previewUploaded = false;
+          try {
+            const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(objectPath, uploadFile, {
               cacheControl: '3600', contentType: uploadFile.type || 'application/octet-stream', upsert: false
             });
             if (uploadError) throw Object.assign(uploadError, { uploadStage: 'Storage upload' });
-            storageUploaded = true;
+            mainUploaded = true;
+
+            if (previewPath) {
+              const { error: previewError } = await supabaseClient.storage.from(BUCKET).upload(previewPath, optimization.thumbnailBlob, {
+                cacheControl: '31536000', contentType: 'image/webp', upsert: false
+              });
+              if (previewError) {
+                console.warn(`Không lưu được thumbnail của ${originalFile.name}; album sẽ dùng fallback ảnh chính.`, previewError);
+              } else {
+                previewUploaded = true;
+                thumbnailCount++;
+                thumbnailsSavedBytes += Math.max(0, uploadFile.size - optimization.thumbnailBlob.size);
+              }
+            }
 
             const { error: rowError } = await supabaseClient.from('memories').insert({
-              name: file.name, kind, mime: uploadFile.type, size: uploadFile.size, object_path: path, owner_id: currentUser.id
+              name: originalFile.name,
+              kind,
+              mime: uploadFile.type,
+              size: uploadFile.size,
+              object_path: objectPath,
+              owner_id: currentUser.id
             });
-            if (rowError) {
-              try {
-                const { error: cleanupError } = await supabaseClient.storage.from(BUCKET).remove([path]);
-                if (cleanupError) console.warn('Cleanup after database insert failure:', cleanupError);
-              } catch (cleanupError) {
-                console.warn('Cleanup after database insert failure:', cleanupError);
-              }
-              throw Object.assign(rowError, { uploadStage: 'Insert row into public.memories' });
-            }
+            if (rowError) throw Object.assign(rowError, { uploadStage: 'Insert row into public.memories' });
+
             saved++;
             if (optimization.optimized) {
               optimizedCount++;
               compressedBytesSaved += optimization.savedBytes || 0;
             }
           } catch (error) {
-            console.error('Upload error:', {
-              fileName: file.name,
-              originalFileSize: file.size,
-              uploadFileSize: uploadFile.size,
-              stage: error?.uploadStage || (storageUploaded ? 'Database insert/cleanup' : 'Storage upload'),
-              status: error?.status,
-              statusCode: error?.statusCode,
-              code: error?.code,
-              message: error?.message,
-              details: error?.details,
-              hint: error?.hint
-            });
-            failed++;
-            if (failures.length < 8) {
-              failures.push(`${file.name}\n${error?.uploadStage || 'Upload'}: ${describeUploadError(error)}`);
+            if (mainUploaded || previewUploaded) {
+              const pathsToRemove = [];
+              if (mainUploaded) pathsToRemove.push(objectPath);
+              if (previewUploaded && previewPath) pathsToRemove.push(previewPath);
+              try {
+                const { error: cleanupError } = await supabaseClient.storage.from(BUCKET).remove(pathsToRemove);
+                if (cleanupError) console.warn('Cleanup after failed memory insert:', cleanupError);
+              } catch (cleanupError) {
+                console.warn('Cleanup after failed memory insert:', cleanupError);
+              }
             }
+            addFailure(originalFile, error?.uploadStage || 'Storage upload', error);
           }
         }
 
-        async function worker() {
+        async function uploadWorker() {
           while (true) {
-            const index = nextIndex++;
-            if (index >= list.length) return;
-            const file = list[index];
+            const task = await dequeuePrepared();
+            if (!task) return;
             active++;
-            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
-            await uploadOne(file);
+            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency: uploadConcurrency, optimizing });
+            await uploadPrepared(task);
             active--;
             completed++;
-            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency: uploadConcurrency, optimizing });
           }
         }
 
+        const preparationJobs = Array.from({ length: compressionConcurrency }, async () => {
+          try { await prepareWorker(); }
+          finally {
+            producersRemaining--;
+            queueWaiters.splice(0).forEach((resolve) => resolve());
+          }
+        });
+        const uploadJobs = Array.from({ length: uploadConcurrency }, () => uploadWorker());
+
         try {
-          await Promise.all(Array.from({ length: concurrency }, () => worker()));
+          await Promise.all([...preparationJobs, ...uploadJobs]);
           try {
             await refreshMedia();
           } catch (refreshError) {
@@ -678,10 +840,11 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
             failures.push(`Không tải lại được danh sách album: ${describeUploadError(refreshError)}`);
           }
           const summary = `Kết quả upload: ${saved}/${list.length} tệp thành công; ${failed} tệp thất bại.\n` +
-            `Chế độ: ${concurrency} luồng song song${hasHeavyFiles ? ' (ưu tiên ổn định vì có video/tệp lớn)' : (concurrency === 6 ? ' (tăng tốc desktop)' : ' (tối ưu cho thiết bị hiện tại)')}.\n` +
-            `Ảnh đã tối ưu: ${optimizedCount} tệp · tiết kiệm ${formatBytes(compressedBytesSaved)} dung lượng.\n\n` +
+            `Xử lý ảnh: ${compressionConcurrency} luồng nén riêng · truyền tải: ${uploadConcurrency} luồng song song.\n` +
+            `Ảnh chính đã tối ưu: ${optimizedCount} tệp · tiết kiệm ${formatBytes(compressedBytesSaved)}.\n` +
+            `Thumbnail: ${thumbnailCount} tệp · dung lượng preview đã giảm khoảng ${formatBytes(thumbnailsSavedBytes)} so với ảnh chính.\n\n` +
             (failures.length ? `Một số lỗi đầu tiên:\n${failures.join('\n\n')}${failed > failures.length ? `\n\n… còn ${failed - failures.length} lỗi khác.` : ''}` : 'Không có lỗi upload được ghi nhận.') +
-            '\n\nẢnh gốc trong điện thoại không bị thay đổi. Ảnh tĩnh được chuyển sang WebP chất lượng cao 88%, cạnh dài tối đa 2560 px; ảnh động và video giữ nguyên. Tệp lỗi vẫn còn trên máy để ông chọn tải lại.';
+            '\n\nẢnh gốc trên điện thoại không bị thay đổi. Ảnh tĩnh lớn được tối ưu WebP (ảnh từ 12 MB trở lên: tối đa 1920 px, chất lượng 82%; ảnh nhỏ hơn: tối đa 2200 px, chất lượng 86%). Album dùng thumbnail 420 px để giảm lag khi xem. Video và ảnh động không bị nén.';
           alert(summary);
         } finally {
           isUploadingMedia = false;
@@ -696,17 +859,89 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
               progress.classList.remove('show');
               $('progressBar').style.width = '0%';
               $('uploadProgressTrack').setAttribute('aria-valuenow', '0');
-            }, 2200);
+            }, 2600);
           } else {
-            // Preserve a visible failure state if an unexpected exception interrupted the queue.
             $('uploadProgressText').textContent = 'Lượt tải bị gián đoạn. Có thể thử lại các tệp chưa lên.';
           }
         }
       }
 
+      async function createOldPreviews() {
+        if (isUploadingMedia) { notify('Đợi lượt upload hiện tại xong rồi hãy tối ưu album cũ nhé.'); return; }
+        if (!(await requireAdmin())) return;
+        const targets = mediaItems.filter((item) => item.kind === 'image');
+        if (!targets.length) { notify('Album chưa có ảnh để tối ưu.'); return; }
+        if (!confirm(`Tạo thumbnail nhẹ cho ${targets.length} ảnh đang có?\n\nMỗi ảnh cũ sẽ được tải xuống và xử lý một lần trên thiết bị này. Việc này không xóa hay thay ảnh gốc.`)) return;
+
+        const progress = $('uploadProgress');
+        const button = $('createOldPreviews');
+        const addButton = $('addMedia');
+        isUploadingMedia = true;
+        button.disabled = true;
+        addButton.disabled = true;
+        progress.classList.add('show');
+        let completed = 0;
+        let created = 0;
+        let skipped = 0;
+        let failed = 0;
+        const errors = [];
+        try {
+          for (const item of targets) {
+            try {
+              const previewPath = `${item.object_path}.thumb.webp`;
+              const head = await fetch(item.previewUrl, { method: 'HEAD', cache: 'no-store' });
+              if (head.ok) {
+                skipped++;
+              } else {
+                const response = await fetch(item.url, { cache: 'force-cache' });
+                if (!response.ok) throw new Error(`Không tải được ảnh gốc (HTTP ${response.status}).`);
+                const blob = await response.blob();
+                const sourceFile = new File([blob], item.name || 'memory-image', { type: item.mime || blob.type || 'image/jpeg' });
+                const prepared = await compressImageForUpload(sourceFile);
+                if (!prepared.thumbnailBlob) throw new Error('Trình duyệt không tạo được thumbnail cho định dạng ảnh này.');
+                const { error } = await supabaseClient.storage.from(BUCKET).upload(previewPath, prepared.thumbnailBlob, {
+                  cacheControl: '31536000', contentType: 'image/webp', upsert: false
+                });
+                if (error) {
+                  const verify = await fetch(item.previewUrl, { method: 'HEAD', cache: 'no-store' });
+                  if (!verify.ok) throw error;
+                  skipped++;
+                } else {
+                  created++;
+                }
+              }
+            } catch (error) {
+              failed++;
+              if (errors.length < 5) errors.push(`${item.name}: ${describeUploadError(error)}`);
+            }
+            completed++;
+            const percent = Math.round((completed / targets.length) * 100);
+            $('progressBar').style.width = `${percent}%`;
+            $('uploadProgressCount').textContent = `${completed}/${targets.length}`;
+            $('uploadProgressTrack').setAttribute('aria-valuenow', String(percent));
+            $('uploadProgressText').textContent = `${created} thumbnail mới · ${skipped} đã có · ${failed} lỗi`;
+            await new Promise((resolve) => setTimeout(resolve, 0));
+          }
+          await refreshMedia();
+          alert(`Tối ưu album cũ hoàn tất.\n\nĐã tạo: ${created}\nĐã có sẵn: ${skipped}\nLỗi: ${failed}${errors.length ? `\n\nChi tiết:\n${errors.join('\n\n')}` : ''}\n\nẢnh gốc không bị thay đổi.`);
+        } finally {
+          isUploadingMedia = false;
+          button.disabled = false;
+          addButton.disabled = false;
+          $('uploadProgressText').textContent = `Thumbnail cũ: ${created} mới · ${skipped} đã có · ${failed} lỗi`;
+          setTimeout(() => {
+            progress.classList.remove('show');
+            $('progressBar').style.width = '0%';
+            $('uploadProgressTrack').setAttribute('aria-valuenow', '0');
+          }, 3000);
+        }
+      }
+
       async function deleteMedia(item) {
         if (!(await requireAdmin())) return;
-        const { error: storageError } = await supabaseClient.storage.from(BUCKET).remove([item.object_path]);
+        const pathsToRemove = [item.object_path];
+        if (item.kind === 'image') pathsToRemove.push(`${item.object_path}.thumb.webp`);
+        const { error: storageError } = await supabaseClient.storage.from(BUCKET).remove(pathsToRemove);
         if (storageError) { console.error(storageError); notify('Chưa xóa được tệp trên cloud.'); return; }
         const { error } = await supabaseClient.from('memories').delete().eq('id', item.id);
         if (error) { console.error(error); notify('Tệp đã xóa nhưng chưa xóa được dòng album.'); return; }
@@ -1073,6 +1308,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         $('addMedia').addEventListener('click', async () => { if (await requireAdmin()) $('mediaInput').click(); });
         $('playFilm').addEventListener('click', toggleSlideshow);
         $('mediaInput').addEventListener('change', async (event) => { await addFiles(event.target.files); event.target.value = ''; });
+        $('createOldPreviews').addEventListener('click', createOldPreviews);
         $('chooseMusic').addEventListener('click', async () => { if (await requireAdmin()) $('audioInput').click(); });
         // The old musicTop hook referenced a non-existent element and stopped all event wiring.
         $('audioInput').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await saveMusic(file); event.target.value = ''; });
