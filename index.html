@@ -772,14 +772,36 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
       }
 
       async function shareSite() {
-        const url = window.location.href;
-        try {
-          if (navigator.share) await navigator.share({ title: 'Our Little Forever ♡', text: 'Góc nhỏ lưu giữ những kỷ niệm của chúng mình.', url });
-          else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); notify('Đã copy link website. Gửi cho em bé nha ♡'); }
-          else { window.prompt('Copy đường link này để gửi:', url); }
-        } catch (error) {
-          if (error?.name !== 'AbortError') notify('Chưa chia sẻ được. Ông copy link trên thanh địa chỉ nhé.');
+        const url = window.location.href.split('#')[0];
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile && navigator.share) {
+          try {
+            await navigator.share({ title: 'Our Little Forever ♡', text: 'Góc nhỏ lưu giữ những kỷ niệm của chúng mình.', url });
+            return;
+          } catch (error) {
+            if (error?.name === 'AbortError') return;
+          }
         }
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(url);
+            notify('Đã copy link website. Gửi cho em bé nha ♡');
+            return;
+          }
+        } catch (error) { console.warn('Clipboard API unavailable:', error); }
+        // Fallback for desktop browsers that do not expose Clipboard API.
+        const helper = document.createElement('textarea');
+        helper.value = url;
+        helper.setAttribute('readonly', '');
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (error) { console.warn('Copy fallback failed:', error); }
+        helper.remove();
+        if (copied) notify('Đã copy link website. Gửi cho em bé nha ♡');
+        else window.prompt('Sao chép đường link này để gửi cho em bé nhé:', url);
       }
 
       async function signIn() {
@@ -811,6 +833,8 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
       }
 
       function wireEvents() {
+        // Wire the two topbar controls first so a missing optional control cannot
+        // prevent the primary Share/Admin actions from working.
         $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
         $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
         $('editLetter').addEventListener('click', openLetterEditor);
@@ -819,7 +843,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         $('playFilm').addEventListener('click', toggleSlideshow);
         $('mediaInput').addEventListener('change', async (event) => { await addFiles(event.target.files); event.target.value = ''; });
         $('chooseMusic').addEventListener('click', async () => { if (await requireAdmin()) $('audioInput').click(); });
-        $('musicTop').addEventListener('click', () => $('musicTitle').scrollIntoView({ behavior: 'smooth' }));
+        // The old musicTop hook referenced a non-existent element and stopped all event wiring.
         $('audioInput').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await saveMusic(file); event.target.value = ''; });
         $('playMusic').addEventListener('click', toggleMusic);
         $('audioPlayer').addEventListener('ended', () => { $('playMusic').textContent = '▶'; $('disc').classList.remove('playing'); });
