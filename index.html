@@ -6,382 +6,7 @@
   <meta name="theme-color" content="#171322">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
   <title>The Little Archive — Our Story ♡</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
-    :root {
-      --night: #171322;
-      --night-2: #24192d;
-      --night-3: #302039;
-      --paper: #fff8f2;
-      --paper-2: #f7ece7;
-      --ink: #2b2030;
-      --muted: #a99aa9;
-      --rose: #f2a8bb;
-      --rose-2: #d87f9c;
-      --gold: #e8c9a2;
-      --line: rgba(255,255,255,.13);
-      --serif: 'Cormorant Garamond', Georgia, serif;
-      --sans: 'DM Sans', system-ui, sans-serif;
-      --shadow: 0 28px 80px rgba(0,0,0,.25);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-    body { margin: 0; min-height: 100vh; color: #f9edf1; background: var(--night); font-family: var(--sans); overflow-x: hidden; }
-    body::before { content:''; position:fixed; inset:0; z-index:-2; pointer-events:none; background: radial-gradient(ellipse at 18% 4%, rgba(114,78,113,.26), transparent 34rem), radial-gradient(ellipse at 92% 28%, rgba(142,82,106,.18), transparent 28rem), linear-gradient(180deg,#171322 0%,#211827 52%,#171322 100%); }
-    body::after { content:''; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.24; background-image:radial-gradient(1px 1px at 12% 19%,#fff 50%,transparent 55%),radial-gradient(1px 1px at 72% 13%,#f6d2de 50%,transparent 55%),radial-gradient(1.5px 1.5px at 90% 48%,#fff 50%,transparent 55%),radial-gradient(1px 1px at 45% 70%,#f6d2de 50%,transparent 55%),radial-gradient(1px 1px at 25% 83%,#fff 50%,transparent 55%); background-size:310px 290px,390px 350px,280px 320px,410px 360px,350px 390px; }
-    button, input, textarea { font: inherit; }
-    button { -webkit-tap-highlight-color: transparent; }
-    button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-    .intro-locked { overflow: hidden; }
-    .ambient { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
-    .glow { position:absolute; width:34rem; aspect-ratio:1; border-radius:50%; filter:blur(90px); opacity:.19; }
-    .glow.one { background:#d87f9c; left:-20rem; top:20%; }
-    .glow.two { background:#b99ad4; right:-22rem; top:48%; }
-    .sparkle { position:absolute; color:#f2c7d2; opacity:.52; animation:drift 8s ease-in-out infinite; text-shadow:0 0 18px #f2a8bb; }
-    .sparkle:nth-child(1){top:14%;left:8%;font-size:18px}.sparkle:nth-child(2){top:43%;right:6%;font-size:25px;animation-delay:-2s}.sparkle:nth-child(3){top:77%;left:5%;font-size:14px;animation-delay:-4s}
-    @keyframes drift {0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-17px) rotate(14deg)}}
-    .shell { width:min(1240px,calc(100% - 56px)); margin:0 auto; position:relative; z-index:1; }
-    .topbar { position:sticky; top:0; z-index:15; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.08); background:rgba(23,19,34,.78); backdrop-filter:blur(18px); }
-    .brand { display:flex; align-items:center; gap:11px; color:#f5e4e8; font-size:11px; font-weight:800; letter-spacing:.19em; text-transform:uppercase; }
-    .brand-mark { display:grid; place-items:center; width:36px; height:36px; border:1px solid rgba(232,201,162,.42); border-radius:50%; color:var(--gold); font:24px var(--serif); box-shadow:0 0 24px rgba(232,201,162,.12); }
-    .top-actions { display:flex; gap:9px; }
-    .pill-btn,.primary-btn,.soft-btn { cursor:pointer; border-radius:999px; font-weight:700; transition:transform .25s,box-shadow .25s,background .25s,border-color .25s; }
-    .pill-btn { padding:10px 15px; color:#f3dce4; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); font-size:11px; }
-    .pill-btn:hover,.soft-btn:hover,.primary-btn:hover { transform:translateY(-3px); }
-    .pill-btn:hover { background:rgba(255,255,255,.12); border-color:rgba(242,168,187,.48); }
-    .setup-banner { margin:14px 0 0; padding:13px 16px; border:1px solid rgba(242,168,187,.4); border-radius:15px; color:#f8dbe4; background:rgba(115,53,77,.42); font-size:12px; line-height:1.6; }
-    [hidden] { display:none !important; }
-    .hero { position:relative; display:grid; grid-template-columns:1.02fr .98fr; align-items:center; gap:30px; min-height:600px; margin:28px 0 54px; padding:clamp(30px,5vw,66px); border:1px solid rgba(255,255,255,.13); border-radius:38px; overflow:hidden; isolation:isolate; background:radial-gradient(circle at 75% 48%,rgba(177,115,145,.23),transparent 24rem),linear-gradient(125deg,#2b2035 0%,#281b31 50%,#1d1a2b 100%); box-shadow:0 34px 90px rgba(0,0,0,.25); }
-    .hero::before { content:''; position:absolute; inset:0; z-index:-1; opacity:.38; background:repeating-linear-gradient(115deg,transparent 0 45px,rgba(255,255,255,.025) 46px 47px,transparent 48px 94px); }
-    .hero::after { content:'25  ·  11  ·  2024'; position:absolute; right:34px; bottom:24px; color:rgba(255,255,255,.18); font-size:9px; letter-spacing:.34em; }
-    .hero-copy-wrap { max-width:590px; position:relative; z-index:3; }
-    .eyebrow { display:inline-flex; align-items:center; gap:9px; padding:9px 13px; border:1px solid rgba(232,201,162,.38); border-radius:999px; color:var(--gold); background:rgba(255,255,255,.045); font-size:9px; font-weight:800; letter-spacing:.19em; text-transform:uppercase; }
-    .eyebrow i { width:6px;height:6px;border-radius:50%;background:var(--rose);box-shadow:0 0 13px var(--rose); }
-    h1 { margin:25px 0 16px; color:#fff6f2; font:500 clamp(58px,7.2vw,96px)/.91 var(--serif); letter-spacing:-.055em; }
-    h1 em { color:var(--rose); font-weight:500; }
-    .hero-copy { max-width:500px; margin:0; color:#c9b9c8; font-size:14px; line-height:1.95; }
-    .hero-buttons { display:flex; gap:11px; align-items:center; flex-wrap:wrap; margin-top:29px; }
-    .primary-btn { padding:14px 21px; color:#281c2a; background:linear-gradient(135deg,#f4cfb2,#f0a6b8); box-shadow:0 13px 32px rgba(225,145,166,.23); border:1px solid rgba(255,255,255,.42); font-size:12px; }
-    .primary-btn:hover { box-shadow:0 17px 38px rgba(225,145,166,.34); }
-    .soft-btn { padding:13px 18px; color:#f3dce4; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); font-size:12px; }
-    .hero-note { margin-top:19px; color:#a99aaa; font-size:10px; letter-spacing:.1em; }
-    .hero-art { min-height:420px; display:grid; place-items:center; position:relative; perspective:1200px; }
-    .hero-art::before { content:''; position:absolute; width:min(34vw,390px); aspect-ratio:1; border-radius:50%; border:1px solid rgba(232,201,162,.23); box-shadow:0 0 0 22px rgba(255,255,255,.018),0 0 0 52px rgba(255,255,255,.013),inset 0 0 50px rgba(242,168,187,.08); transform:rotateX(67deg) rotate(-22deg); }
-    .hero-art::after { content:'✦'; position:absolute; top:12%; right:15%; color:var(--gold); font-size:27px; text-shadow:0 0 26px var(--gold); animation:twinkle 3s ease-in-out infinite; }
-    @keyframes twinkle {0%,100%{opacity:.55;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
-    .orbit-ring { position:absolute; width:82%; height:63%; border:1px dashed rgba(242,168,187,.45); border-radius:50%; transform:rotate(-24deg); animation:orbitSpin 28s linear infinite; }
-    .orbit-ring::before,.orbit-ring::after { content:'✧'; position:absolute; color:var(--rose); font-size:22px; text-shadow:0 0 16px var(--rose); }
-    .orbit-ring::before { top:8%;left:12% }.orbit-ring::after{bottom:8%;right:12%;color:var(--gold)}
-    @keyframes orbitSpin {to{transform:rotate(336deg)}}
-    .hero-shot { position:absolute; width:46%; aspect-ratio:4/5; padding:8px 8px 31px; border-radius:5px; border:1px solid rgba(255,255,255,.6); background:#fff7f1; box-shadow:0 24px 50px rgba(0,0,0,.38); transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .4s; overflow:hidden; }
-    .hero-shot img { width:100%;height:100%;object-fit:cover;display:block;border-radius:2px; }
-    .hero-shot .hero-fallback { position:absolute; inset:8px 8px 31px; display:grid;place-items:center; color:#fff4f5; font-size:64px; background:radial-gradient(circle at 40% 30%,#e9a7b6,#835d80 55%,#30263c); }
-    .hero-shot.has-image .hero-fallback { display:none; }
-    .hero-shot::after { content:'a little memory'; position:absolute; bottom:9px;left:0;right:0; text-align:center; color:#846b78; font:italic 15px var(--serif); }
-    .shot-one { z-index:3; width:48%; transform:rotate(-7deg) translate(-15%,3%); }
-    .shot-two { z-index:2; width:42%; transform:rotate(11deg) translate(45%,-8%); filter:saturate(.82); }
-    .shot-three { z-index:1; width:38%; transform:rotate(-14deg) translate(54%,32%); filter:brightness(.85); }
-    .hero-art:hover .shot-one { transform:rotate(-3deg) translate(-16%,0) translateZ(35px); }
-    .hero-art:hover .shot-two { transform:rotate(8deg) translate(48%,-11%) translateZ(10px); }
-    .hero-art:hover .shot-three { transform:rotate(-11deg) translate(56%,35%); }
-    .hero-sticker { position:absolute; z-index:5; padding:10px 13px; border-radius:9px; color:#3a293b; background:#f4d6c4; box-shadow:0 12px 28px rgba(0,0,0,.22); font:italic 15px var(--serif); }
-    .sticker-a { left:-1%; bottom:12%; transform:rotate(-7deg); }.sticker-b{right:-2%;top:13%;transform:rotate(6deg);background:#f5dce5}
-    .hero-photo-count { position:absolute; bottom:3%; right:8%; color:#c7b1c0; font-size:9px; letter-spacing:.15em; text-transform:uppercase; }
-    .section { margin:0 0 90px; }
-    .section-head { display:flex; justify-content:space-between; align-items:end; gap:22px; margin-bottom:23px; }
-    .section-kicker { color:var(--gold); font-size:9px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; }
-    h2 { margin:8px 0 0; color:#fff3f2; font:500 clamp(36px,4.2vw,53px)/1 var(--serif); letter-spacing:-.035em; }
-    .section-sub { margin:9px 0 0; color:#b8a8b7; font-size:12px; line-height:1.8; }
-    .counter-card { display:grid; grid-template-columns:1.1fr .9fr; gap:30px; align-items:center; position:relative; overflow:hidden; padding:34px 38px; border:1px solid rgba(232,201,162,.22); border-radius:28px; background:linear-gradient(110deg,rgba(255,255,255,.085),rgba(255,255,255,.035)),linear-gradient(120deg,#35253d,#211b31); box-shadow:var(--shadow); }
-    .counter-card::after { content:'∞'; position:absolute; right:30%; top:-78px; color:rgba(242,168,187,.07); font:270px var(--serif); pointer-events:none; }
-    .counter-label { color:#d3b8c6; font-size:9px; letter-spacing:.18em; font-weight:800; text-transform:uppercase; }
-    .counter-number { display:flex; align-items:baseline; gap:12px; margin-top:8px; flex-wrap:wrap; }
-    .counter-number strong { color:var(--rose); font:500 clamp(64px,8vw,90px)/.9 var(--serif); letter-spacing:-.06em; text-shadow:0 0 32px rgba(242,168,187,.16); }
-    .counter-number span { color:#d1c1ce; font-size:12px; }
-    .counter-date { margin-top:12px; color:#9b8d9d; font-size:10px; letter-spacing:.08em; }
-    .countdown { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; position:relative; z-index:1; }
-    .time-box { min-width:0; padding:16px 7px 13px; text-align:center; border:1px solid rgba(255,255,255,.12); border-radius:15px; background:rgba(11,8,20,.24); backdrop-filter:blur(8px); }
-    .time-box strong { display:block; color:#f6d6d5; font:500 clamp(23px,3vw,31px)/1 var(--serif); }
-    .time-box span { display:block; margin-top:7px; color:#aa98aa; font-size:8px; letter-spacing:.15em; text-transform:uppercase; }
-    .chapter-section { margin-top:-10px; }
-    .chapter-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-    .chapter-card { position:relative; min-height:190px; padding:23px; overflow:hidden; border:1px solid rgba(255,255,255,.12); border-radius:22px; background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.025)); transition:transform .3s,border-color .3s; }
-    .chapter-card:hover { transform:translateY(-6px); border-color:rgba(242,168,187,.45); }
-    .chapter-no { display:flex; align-items:center; justify-content:space-between; color:var(--gold); font-size:9px; letter-spacing:.18em; font-weight:800; }
-    .chapter-symbol { color:var(--rose); font-size:23px; }
-    .chapter-card h3 { margin:21px 0 7px; color:#fff0f0; font:500 29px/1 var(--serif); }
-    .chapter-card p { max-width:270px; margin:0; color:#b3a4b4; font-size:11px; line-height:1.7; }
-    .chapter-card::after { content:attr(data-watermark); position:absolute; right:-3px; bottom:-34px; color:rgba(255,255,255,.035); font:140px var(--serif); line-height:1; }
-    .film-section { padding:34px; border-radius:32px; color:var(--ink); background:linear-gradient(140deg,#fff8f2,#f4e7e7); box-shadow:0 30px 80px rgba(0,0,0,.18); }
-    .film-section h2 { color:#312435; }
-    .film-section .section-kicker { color:#bd7a8e; }
-    .film-section .section-sub { color:#917f8c; }
-    .film-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    .count-chip { white-space:nowrap; padding:8px 12px; border-radius:99px; color:#916274; background:#f4e1e5; font-size:10px; font-weight:800; }
-    #playFilm { color:#fff8f4; background:#3b2b3f; border-color:#3b2b3f; }
-    .upload-panel { display:flex; align-items:center; justify-content:space-between; gap:15px; margin:0 0 15px; padding:15px 17px; border:1px dashed #d8b2bc; border-radius:18px; background:rgba(255,255,255,.6); }
-    .upload-info { display:flex; align-items:center; gap:12px; min-width:0; }
-    .upload-icon { display:grid; place-items:center; width:43px; height:43px; flex:0 0 auto; border-radius:15px; color:#fff; background:linear-gradient(135deg,#d9869f,#a77c9a); font-size:21px; box-shadow:0 8px 18px rgba(184,115,142,.25); }
-    .upload-info strong { display:block; color:#493747; font-size:12px; }
-    .upload-info small { display:block; margin-top:4px; color:#9e8d99; font-size:10px; line-height:1.5; }
-    .upload-panel .primary-btn { flex:0 0 auto; }
-    .progress { height:5px; margin:12px 0 18px; overflow:hidden; display:none; background:#e8d5db; border-radius:99px; }
-    .progress.show { display:block; }
-    .progress-bar { width:0;height:100%;background:linear-gradient(90deg,#d77e97,#c59bc1,#d9a77f);transition:width .15s; }
-    .gallery-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:18px 0 15px; }
-    .gallery-label { color:#8d7885; font:italic 17px var(--serif); }
-    .gallery-filters { display:flex; gap:6px; flex-wrap:wrap; }
-    .filter-btn { padding:8px 11px; border:1px solid #e7d2d9; border-radius:99px; color:#987d8b; background:transparent; font-size:9px; font-weight:800; cursor:pointer; transition:.2s; }
-    .filter-btn.active,.filter-btn:hover { color:#fff; border-color:#4a354b; background:#4a354b; }
-    .memory-wall { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); grid-auto-rows:68px; gap:13px; }
-    .memory-card { position:relative; min-width:0; overflow:hidden; border-radius:17px; background:#e7d0d5; box-shadow:0 10px 22px rgba(70,43,61,.12); transition:transform .35s,box-shadow .35s; }
-    .memory-card:nth-child(1) { grid-column:span 6; grid-row:span 5; }
-    .memory-card:nth-child(2),.memory-card:nth-child(3) { grid-column:span 3; grid-row:span 3; }
-    .memory-card:nth-child(4),.memory-card:nth-child(5),.memory-card:nth-child(6) { grid-column:span 4; grid-row:span 3; }
-    .memory-card:nth-child(n+7) { grid-column:span 3; grid-row:span 3; }
-    .memory-card:hover { transform:translateY(-5px) scale(1.012); box-shadow:0 18px 35px rgba(70,43,61,.2); z-index:2; }
-    .memory-open { position:relative; display:block; width:100%; height:100%; min-height:100%; overflow:hidden; padding:0; border:0; background:#d9bcc7; cursor:pointer; text-align:left; }
-    .memory-media { display:block; width:100%; height:100%; min-height:100%; object-fit:cover; background:linear-gradient(135deg,#e9c8d2,#d9c8e4,#f1d9c9); transition:transform .7s cubic-bezier(.2,.6,.2,1); }
-    .memory-card:hover .memory-media { transform:scale(1.07); }
-    .memory-video-wrap { position:absolute; inset:0; }
-    .play-badge { position:absolute; top:50%;left:50%;display:grid;place-items:center;width:50px;height:50px;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.75);border-radius:50%;color:#fff;background:rgba(48,33,53,.45);backdrop-filter:blur(8px);font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.18); }
-    .memory-shade { position:absolute; inset:25% 0 0; pointer-events:none; background:linear-gradient(transparent,rgba(32,20,35,.72)); }
-    .memory-meta { position:absolute; left:15px;right:15px;bottom:13px;display:block;color:#fff;pointer-events:none; }
-    .memory-meta small { display:block;margin-bottom:4px;color:#f3d4dc;font-size:8px;font-weight:800;letter-spacing:.18em; }
-    .memory-meta strong { display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 20px var(--serif); }
-    .memory-delete { position:absolute;z-index:4;top:10px;right:10px;width:30px;height:30px;border:1px solid #ffffff88;border-radius:50%;color:#fff;background:#35233ebd;backdrop-filter:blur(6px);cursor:pointer;font-size:17px; }
-    .memory-card[hidden] { display:none !important; }
-    .empty-state { text-align:center; padding:55px 22px; border:1px dashed #d6b3be; border-radius:22px; background:rgba(255,255,255,.52); }
-    .empty-orbit { position:relative;display:grid;place-items:center;width:96px;height:96px;margin:0 auto 16px;border:1px solid #dcb6c3;border-radius:50%;color:#b77b91;font:54px var(--serif); }
-    .empty-orbit::before,.empty-orbit::after { content:'';position:absolute;inset:12px;border:1px dashed #dab6c1;border-radius:50%; }
-    .empty-orbit::after { inset:-8px;transform:rotate(38deg);border-color:#e7d1c9; }
-    .empty-orbit i { position:absolute;top:-8px;right:2px;color:#c49c75;font-size:17px; }
-    .empty-state strong { display:block;color:#493747;font:600 29px var(--serif); }
-    .empty-state p { max-width:430px;margin:10px auto 18px;color:#917f8c;font-size:11px;line-height:1.8; }
-    .empty-state .soft-btn { color:#77576b;border-color:#ead4db;background:#fff; }
-    .letter-wrap { display:grid;grid-template-columns:.72fr 1.28fr;gap:18px;align-items:stretch; }
-    .letter-stamp { min-height:330px;display:grid;place-items:center;position:relative;overflow:hidden;border:1px solid rgba(232,201,162,.26);border-radius:26px;background:radial-gradient(circle at 50% 35%,#76506e,#34243c 68%,#221c30); }
-    .letter-stamp::before,.letter-stamp::after { content:'';position:absolute;border:1px solid rgba(232,201,162,.34);border-radius:50%;width:230px;height:230px;box-shadow:0 0 40px rgba(242,168,187,.1); }
-    .letter-stamp::after { width:180px;height:180px;border-style:dashed;transform:rotate(28deg); }
-    .letter-stamp span { z-index:1;display:grid;place-items:center;width:100px;height:100px;border-radius:50%;color:#3a263a;background:linear-gradient(145deg,#f5d8b9,#e6a2b6);font:58px var(--serif);box-shadow:0 15px 35px rgba(0,0,0,.24); }
-    .letter-stamp small { position:absolute;bottom:24px;color:#d2b8c8;font-size:9px;letter-spacing:.2em;text-transform:uppercase; }
-    .letter-card { position:relative;overflow:hidden;padding:32px 36px;border:1px solid #f4e3dc;border-radius:26px;color:var(--ink);background:linear-gradient(135deg,#fffaf4,#f7e9e7);box-shadow:0 22px 60px rgba(0,0,0,.16); }
-    .letter-card::before { content:'♡';position:absolute;right:17px;top:-29px;color:rgba(201,129,151,.1);font:160px var(--serif);transform:rotate(15deg); }
-    .letter-card .salute { color:#b77b8f;font:italic 21px var(--serif); }
-    .letter-card h3 { position:relative;margin:11px 0 15px;color:#3f3041;font:600 36px/1.04 var(--serif); }
-    .letter-text { position:relative;color:#806f7c;font-size:12px;line-height:2.05;white-space:pre-line; }
-    .signature { position:relative;margin-top:22px;color:#b8758c;font:italic 22px var(--serif); }
-    .letter-actions { position:relative;margin-top:19px; }
-    .letter-actions .soft-btn { color:#785568;border-color:#e6cfd6;background:#fff; }
-    .letter-actions #editLetter,#chooseMusic { display:none; }
-    body.is-admin .letter-actions #editLetter { display:inline-flex; }
-    body.is-admin #chooseMusic { display:inline-grid; }
-    .little-things { padding:34px;border:1px solid rgba(255,255,255,.12);border-radius:30px;background:linear-gradient(140deg,rgba(255,255,255,.07),rgba(255,255,255,.025)); }
-    .promise-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:22px; }
-    .promise-card { min-height:195px;padding:0;border:0;border-radius:19px;background:transparent;perspective:900px;cursor:pointer;text-align:left; }
-    .promise-inner { position:relative;display:block;width:100%;height:100%;min-height:195px;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.2,.7,.2,1); }
-    .promise-card.flipped .promise-inner { transform:rotateY(180deg); }
-    .promise-face { position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:21px;border:1px solid rgba(255,255,255,.13);border-radius:19px;backface-visibility:hidden;background:linear-gradient(145deg,#3c2a43,#241e33); }
-    .promise-face.back { transform:rotateY(180deg);color:#342537;background:linear-gradient(145deg,#f5d9c7,#e8b9c6);border-color:rgba(255,255,255,.5); }
-    .promise-symbol { color:var(--gold);font:34px var(--serif); }
-    .promise-face.back .promise-symbol { color:#a45f7a; }
-    .promise-face strong { color:#fff0f2;font:500 26px/1 var(--serif); }
-    .promise-face.back strong { color:#473344; }
-    .promise-face small { color:#b7a4b5;font-size:9px;letter-spacing:.14em;text-transform:uppercase; }
-    .promise-face.back small { color:#896b7c; }
-    .surprise-row { display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:19px;padding:18px 20px;border-radius:18px;background:rgba(9,7,15,.22);border:1px solid rgba(255,255,255,.1); }
-    .surprise-row p { margin:0;color:#c3b1c0;font:italic 19px var(--serif); }
-    .surprise-row .soft-btn { flex:0 0 auto; }
-    .surprise-message { min-height:25px;margin:10px 2px 0;color:var(--rose);font:italic 21px var(--serif);opacity:0;transform:translateY(7px);transition:.35s; }
-    .surprise-message.revealed { opacity:1;transform:translateY(0); }
-    .music-section { position:relative;overflow:hidden;padding:34px;border:1px solid rgba(232,201,162,.22);border-radius:30px;background:radial-gradient(circle at 82% 50%,rgba(209,135,163,.16),transparent 18rem),linear-gradient(120deg,#382840,#211b30); }
-    .music-section .section-head { margin-bottom:16px; }
-    .music-card { display:flex;align-items:center;gap:18px;padding:22px 24px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(12,9,19,.3);backdrop-filter:blur(8px); }
-    .disc { position:relative;display:grid;place-items:center;width:80px;height:80px;flex:0 0 auto;border:5px solid #34253c;border-radius:50%;color:#3a2a40;font-size:20px;background:repeating-radial-gradient(circle at center,#211922 0 4px,#443046 5px 6px,#241a2a 7px 11px);box-shadow:0 0 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,0,0,.3); }
-    .disc::before { content:'';position:absolute;width:25px;height:25px;border:4px solid #35233c;border-radius:50%;background:linear-gradient(135deg,#f4d2bd,#e9a8b8); }
-    .disc.playing { animation:spin 5s linear infinite; }
-    @keyframes spin {to{transform:rotate(360deg)}}
-    .music-meta { min-width:0;flex:1; }
-    .music-meta strong { display:block;color:#fff1f2;font:500 26px var(--serif); }
-    .music-meta small { display:block;margin-top:5px;color:#b9a7b9;font-size:10px;line-height:1.6; }
-    .music-actions { display:flex;gap:8px; }
-    .icon-btn { display:grid;place-items:center;width:43px;height:43px;border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#f5d8df;background:rgba(255,255,255,.07);cursor:pointer;font-size:15px;transition:.2s; }
-    .icon-btn:hover { color:#2b2030;background:var(--gold);transform:scale(1.06); }
-    .sound-bars { display:flex;align-items:center;gap:4px;height:20px;margin-top:8px; }
-    .sound-bars span { display:block;width:3px;height:6px;border-radius:5px;background:#e6a6b9;opacity:.8; }
-    .music-card:has(.disc.playing) .sound-bars span { animation:equalize .8s ease-in-out infinite alternate; }
-    .sound-bars span:nth-child(2n){animation-delay:-.3s}.sound-bars span:nth-child(3n){animation-delay:-.55s}
-    @keyframes equalize {from{height:4px}to{height:18px}}
-    .privacy-note { max-width:760px;margin:18px auto 0;padding:12px 15px;border:1px solid rgba(255,255,255,.09);border-radius:14px;color:#a99aaa;background:rgba(0,0,0,.12);font-size:9px;line-height:1.8;text-align:center; }
-    footer { padding:32px 15px 52px;color:#9c8c9e;text-align:center;font:italic 17px var(--serif); }
-    footer span { color:var(--rose); }
-    .footer-date { display:block;margin-top:9px;color:#766b80;font:800 8px var(--sans);letter-spacing:.22em;text-transform:uppercase; }
-    .mobile-dock { display:none; }
-    .modal-backdrop { position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(11,8,17,.82);backdrop-filter:blur(14px); }
-    .modal-backdrop.open { display:flex; }
-    .modal { position:relative;width:min(560px,100%);max-height:min(88vh,850px);overflow:auto;padding:27px;border:1px solid rgba(255,255,255,.24);border-radius:24px;background:#fff8f2;color:#332538;box-shadow:0 30px 90px rgba(0,0,0,.5); }
-    .modal h3 { margin:0 0 8px;font:600 32px/1.05 var(--serif); }
-    .modal-intro { margin:0 0 18px;color:#8f7d8a;font-size:11px;line-height:1.7; }
-    .close-modal { position:absolute;top:13px;right:13px;width:35px;height:35px;border:1px solid #ead7dc;border-radius:50%;color:#7e5c70;background:#fff;cursor:pointer;font-size:20px; }
-    .field { display:block;margin:14px 0; }
-    .field span { display:block;margin-bottom:7px;color:#765568;font-size:11px;font-weight:800; }
-    .field input,.field textarea { width:100%;padding:12px 13px;border:1px solid #e8d5dc;border-radius:13px;outline:none;color:#332538;background:#fff;font-size:13px; }
-    .field textarea { min-height:155px;resize:vertical;line-height:1.7; }
-    .field input:focus,.field textarea:focus { border-color:#d78fa4;box-shadow:0 0 0 3px #f8e6eb; }
-    .modal .primary-btn { color:#fff;background:linear-gradient(135deg,#b97790,#704d78); }
-    .modal .soft-btn { color:#7a5b6d;border-color:#e8d5dc;background:#fff; }
-    .viewer-content { position:relative;width:min(1000px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center; }
-    .viewer-media { max-width:100%;max-height:72vh;object-fit:contain;border-radius:14px;background:#08070c;box-shadow:0 24px 90px rgba(0,0,0,.55); }
-    .viewer-caption { max-width:80%;overflow:hidden;color:#f5dfe7;font:italic 17px var(--serif);text-overflow:ellipsis;white-space:nowrap; }
-    .viewer-controls { display:flex;align-items:center;gap:19px;color:#d8c5d1;font-size:10px;letter-spacing:.16em; }
-    .viewer-nav { display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(255,255,255,.3);border-radius:50%;color:#f8e7ed;background:rgba(255,255,255,.08);cursor:pointer;font-size:21px;transition:.2s; }
-    .viewer-nav:hover { color:#2c2030;background:var(--gold); }
-    .viewer-close { position:fixed;top:max(18px,env(safe-area-inset-top));right:20px; }
-    .toast { position:fixed;z-index:70;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.25s;padding:12px 18px;border:1px solid rgba(255,255,255,.17);border-radius:99px;color:#fff5f6;background:#3f2c45;box-shadow:0 9px 24px rgba(0,0,0,.3);font-size:11px;text-align:center;max-width:calc(100% - 30px); }
-    .toast.show { opacity:1;transform:translate(-50%,0); }
-    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
-    .intro-gate { position:fixed;inset:0;z-index:90;display:grid;place-items:center;overflow:hidden;padding:24px;text-align:center;background:radial-gradient(circle at 50% 42%,#49314d 0%,#241a30 38%,#14111f 82%);transition:opacity .85s,visibility .85s; }
-    .intro-gate::before,.intro-gate::after { content:'';position:absolute;width:55vw;height:55vw;max-width:700px;max-height:700px;border:1px solid rgba(232,201,162,.2);border-radius:50%;box-shadow:0 0 0 34px rgba(255,255,255,.018),0 0 0 70px rgba(255,255,255,.012);animation:gateOrbit 50s linear infinite; }
-    .intro-gate::after { width:75vw;height:75vw;border-style:dashed;animation-direction:reverse; }
-    @keyframes gateOrbit {to{transform:rotate(360deg)}}
-    .intro-gate.leaving { opacity:0;visibility:hidden;pointer-events:none; }
-    .gate-content { position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:17px; }
-    .gate-kicker { color:var(--gold);font-size:9px;font-weight:800;letter-spacing:.28em;text-transform:uppercase; }
-    .book-scene { width:220px;height:284px;perspective:1300px;margin:5px 0 9px; }
-    .story-book { position:relative;width:100%;height:100%;transform-style:preserve-3d;filter:drop-shadow(0 24px 26px rgba(0,0,0,.35)); }
-    .book-pages { position:absolute;inset:7px 0 7px 7px;border-radius:5px 12px 12px 5px;background:repeating-linear-gradient(0deg,#f8e9df 0 3px,#e7d7ce 4px 5px);box-shadow:inset 9px 0 10px rgba(84,51,62,.16); }
-    .book-cover { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px;border:1px solid rgba(255,255,255,.45);border-radius:5px 13px 13px 5px;color:#f8e4e2;background:linear-gradient(145deg,#805875,#4e3555 56%,#30253d);transform-origin:left center;transition:transform 1.05s cubic-bezier(.2,.75,.25,1);backface-visibility:hidden;box-shadow:inset 7px 0 0 rgba(255,255,255,.07),inset -2px 0 0 rgba(0,0,0,.18); }
-    .book-cover::before { content:'';position:absolute;inset:13px;border:1px solid rgba(232,201,162,.55);border-radius:3px; }
-    .book-cover small { position:relative;color:var(--gold);font-size:8px;font-weight:800;letter-spacing:.24em;text-transform:uppercase; }
-    .book-cover strong { position:relative;font:500 37px/.92 var(--serif);letter-spacing:.02em; }
-    .book-cover em { position:relative;color:#efc5cf;font:italic 44px var(--serif); }
-    .book-cover span { position:relative;color:#d9c2d2;font-size:9px;letter-spacing:.22em; }
-    .story-book.opened .book-cover { transform:rotateY(-146deg); }
-    .gate-title { margin:0;color:#fff2f1;font:500 clamp(35px,5vw,48px)/.95 var(--serif); }
-    .gate-caption { max-width:310px;margin:0;color:#c6b4c6;font-size:11px;line-height:1.8; }
-    .gate-open { margin-top:5px;padding:14px 23px;border:1px solid rgba(255,255,255,.3);border-radius:99px;color:#34263a;background:linear-gradient(135deg,#f3d1b6,#efaabd);box-shadow:0 12px 35px rgba(231,148,170,.24);font-size:11px;font-weight:800;letter-spacing:.05em;cursor:pointer;transition:transform .25s; }
-    .gate-open:hover { transform:translateY(-3px) scale(1.025); }
-    .gate-foot { color:#8f8198;font-size:8px;letter-spacing:.2em;text-transform:uppercase; }
-    .admin-status-chip { display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:#a36a7f;font-size:10px; }
-    @media (max-width:900px) {
-      .hero { min-height:540px;grid-template-columns:1fr .9fr;padding:38px; }
-      .hero-art { min-height:350px; }
-      .hero-shot { width:54%; }
-      .counter-card { padding:28px; }
-      .memory-wall { grid-auto-rows:58px;gap:10px; }
-    }
-    @media (max-width:700px) {
-      html { scroll-padding-top:65px; }
-      body { padding-bottom:82px; }
-      .shell { width:calc(100% - 28px); }
-      .topbar { padding:11px 0;gap:7px; }
-      .brand { gap:7px;font-size:8px;letter-spacing:.14em; }
-      .brand-mark { width:31px;height:31px;font-size:21px; }
-      .top-actions { gap:5px; }
-      .pill-btn { padding:9px 10px;font-size:9px; }
-      .setup-banner { margin-top:9px;font-size:10px; }
-      .hero { display:flex;flex-direction:column;gap:0;min-height:0;margin:14px 0 39px;padding:28px 20px 23px;border-radius:26px;text-align:center; }
-      .eyebrow { margin:auto;font-size:8px;letter-spacing:.15em; }
-      h1 { margin:18px 0 12px;font-size:clamp(53px,15vw,72px); }
-      .hero-copy { max-width:420px;margin:auto;font-size:11px;line-height:1.85; }
-      .hero-buttons { justify-content:center;gap:8px;margin-top:18px; }
-      .primary-btn,.soft-btn { padding:12px 14px;font-size:10px; }
-      .hero-note { margin-top:13px;font-size:8px;line-height:1.6; }
-      .hero-art { width:100%;min-height:285px;margin-top:12px; }
-      .hero-art::before { width:250px; }
-      .hero-shot { width:43%;padding:6px 6px 25px; }
-      .hero-shot .hero-fallback { inset:6px 6px 25px;font-size:43px; }
-      .hero-shot::after { bottom:7px;font-size:11px; }
-      .shot-one { transform:rotate(-7deg) translate(-16%,3%); }
-      .shot-two { transform:rotate(11deg) translate(48%,-8%); }
-      .shot-three { transform:rotate(-14deg) translate(57%,34%); }
-      .hero-sticker { padding:8px 9px;font-size:11px; }
-      .sticker-a { left:-2%;bottom:8%; }.sticker-b{right:-2%;top:8%}
-      .hero-photo-count { bottom:0;right:3%;font-size:7px; }
-      .section { margin-bottom:60px; }
-      .section-head { align-items:flex-start;flex-direction:column;gap:12px;margin-bottom:17px; }
-      h2 { font-size:38px; }
-      .section-sub { font-size:10px;line-height:1.7; }
-      .counter-card { grid-template-columns:1fr;gap:20px;padding:22px 18px;border-radius:22px; }
-      .counter-number { gap:8px; }
-      .counter-number strong { font-size:66px; }
-      .counter-number span { font-size:10px; }
-      .counter-date { font-size:9px; }
-      .countdown { gap:6px; }
-      .time-box { padding:12px 3px 10px;border-radius:11px; }
-      .time-box strong { font-size:23px; }
-      .time-box span { font-size:7px;letter-spacing:.08em; }
-      .chapter-grid { grid-template-columns:1fr;gap:9px; }
-      .chapter-card { min-height:140px;padding:18px; }
-      .chapter-card h3 { margin:14px 0 5px;font-size:25px; }
-      .chapter-card p { font-size:10px; }
-      .film-section { padding:20px 13px;border-radius:23px; }
-      .film-section .section-head { gap:12px; }
-      .film-toolbar { width:100%;justify-content:space-between; }
-      .upload-panel { align-items:flex-start;padding:12px;border-radius:16px; }
-      .upload-info { gap:8px; }
-      .upload-icon { width:35px;height:35px;border-radius:11px;font-size:17px; }
-      .upload-info strong { font-size:10px; }
-      .upload-info small { font-size:8px; }
-      .upload-panel .primary-btn { padding:10px 11px;font-size:9px; }
-      .gallery-toolbar { align-items:flex-start;flex-direction:column;gap:9px; }
-      .gallery-label { font-size:15px; }
-      .filter-btn { padding:7px 10px;font-size:8px; }
-      .memory-wall { grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:58px;gap:8px; }
-      .memory-card:nth-child(1) { grid-column:span 6;grid-row:span 4; }
-      .memory-card:nth-child(2),.memory-card:nth-child(3),.memory-card:nth-child(n+4) { grid-column:span 3;grid-row:span 3; }
-      .memory-meta { left:10px;right:10px;bottom:9px; }
-      .memory-meta small { font-size:7px; }
-      .memory-meta strong { font-size:16px; }
-      .memory-delete { width:27px;height:27px; }
-      .empty-state { padding:39px 15px; }
-      .empty-state strong { font-size:24px; }
-      .empty-state p { font-size:10px; }
-      .letter-wrap { grid-template-columns:1fr;gap:10px; }
-      .letter-stamp { min-height:145px;border-radius:20px; }
-      .letter-stamp::before { width:160px;height:160px; }
-      .letter-stamp::after { width:126px;height:126px; }
-      .letter-stamp span { width:75px;height:75px;font-size:44px; }
-      .letter-stamp small { bottom:12px;font-size:7px; }
-      .letter-card { padding:23px 19px;border-radius:20px; }
-      .letter-card .salute { font-size:18px; }
-      .letter-card h3 { font-size:29px; }
-      .letter-text { font-size:11px;line-height:1.9; }
-      .signature { font-size:19px; }
-      .little-things { padding:19px 13px;border-radius:22px; }
-      .promise-grid { grid-template-columns:1fr;gap:9px;margin-top:15px; }
-      .promise-card,.promise-inner { min-height:140px; }
-      .promise-face { padding:16px; }
-      .promise-face strong { font-size:23px; }
-      .surprise-row { align-items:flex-start;flex-direction:column;gap:10px;padding:14px; }
-      .surprise-row p { font-size:17px; }
-      .surprise-message { font-size:18px; }
-      .music-section { padding:20px 13px;border-radius:22px; }
-      .music-card { gap:11px;padding:14px 12px;border-radius:17px; }
-      .disc { width:54px;height:54px;border-width:4px; }
-      .disc::before { width:18px;height:18px;border-width:3px; }
-      .music-meta strong { font-size:18px; }
-      .music-meta small { font-size:8px; }
-      .music-actions { gap:5px; }
-      .icon-btn { width:34px;height:34px;font-size:13px; }
-      .privacy-note { font-size:8px; }
-      footer { padding:25px 10px 35px;font-size:15px; }
-      .mobile-dock { position:fixed;left:50%;bottom:max(9px,env(safe-area-inset-bottom));z-index:18;display:flex;align-items:center;justify-content:space-around;gap:4px;width:min(390px,calc(100% - 28px));padding:8px 9px;border:1px solid rgba(255,255,255,.15);border-radius:99px;background:rgba(37,27,45,.92);backdrop-filter:blur(18px);box-shadow:0 13px 35px rgba(0,0,0,.38);transform:translateX(-50%); }
-      .mobile-dock a { display:flex;flex:1;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;color:#c6b3c2;text-decoration:none;font-size:8px; }
-      .mobile-dock a span:first-child { font-size:16px;line-height:1; }
-      .mobile-dock a:active { color:var(--gold); }
-      .modal { padding:23px 17px;border-radius:20px; }
-      .viewer-media { max-height:67vh; }
-      .viewer-caption { font-size:15px; }
-      .viewer-nav { width:38px;height:38px; }
-      .book-scene { width:190px;height:246px; }
-      .book-cover strong { font-size:32px; }
-      .gate-title { font-size:37px; }
-      .gate-caption { max-width:280px;font-size:10px; }
-    }
-    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; } }
-
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
   <div class="ambient" aria-hidden="true"><div class="glow one"></div><div class="glow two"></div><span class="sparkle">✦</span><span class="sparkle">♡</span><span class="sparkle">✧</span></div>
@@ -438,10 +63,15 @@
       </section>
 
       <section class="section film-section" id="memories" aria-labelledby="filmTitle">
-        <div class="section-head"><div><div class="section-kicker">the memory gallery · 001 → ∞</div><h2 id="filmTitle">Một bảo tàng của hai đứa 🎞</h2><p class="section-sub">Không còn là một hàng ảnh đơn điệu — mỗi tấm hình là một ô cửa, chạm vào để bước lại khoảnh khắc ấy.</p></div><div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn" id="playFilm">▶ Xem lại hành trình</button></div></div>
+        <div class="love-hearts" aria-hidden="true"><span>♡</span><span>♥</span><span>♡</span><span>✦</span><span>♡</span><span>♥</span><span>♡</span><span>✧</span><span>♥</span><span>♡</span></div>
+        <div class="section-head"><div><div class="section-kicker">THE GALAXY OF US · 001 → ∞</div><h2 id="filmTitle">Vũ trụ ký ức của hai đứa ✦</h2><p class="section-sub">Mỗi bức ảnh là một vì sao. Những khoảnh khắc của hai đứa đang trôi giữa thiên hà — chạm vào bất kỳ tấm hình nào để quay về ngày hôm ấy.</p></div><div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn" id="playFilm">▶ Xem lại hành trình</button></div></div>
         <div class="upload-panel"><div class="upload-info"><div class="upload-icon">✦</div><div><strong>Album chung trên đám mây</strong><small>Đăng nhập quản trị để thêm nhiều ảnh/video cùng lúc · Mở link trên máy nào cũng xem được</small></div></div><button class="primary-btn" id="addMedia">+ Thêm ảnh/video</button><input class="sr-only" id="mediaInput" type="file" accept="image/*,video/*" multiple></div>
-        <div class="progress" id="uploadProgress"><div class="progress-bar" id="progressBar"></div></div>
-        <div class="gallery-toolbar"><span class="gallery-label">Collected moments, carefully kept.</span><div class="gallery-filters"><button class="filter-btn active" data-filter="all" type="button">Tất cả</button><button class="filter-btn" data-filter="image" type="button">Ảnh</button><button class="filter-btn" data-filter="video" type="button">Video</button></div></div>
+        <div class="progress" id="uploadProgress" role="status" aria-live="polite">
+          <div class="progress-meta"><span id="uploadProgressText">Đang chuẩn bị tải lên…</span><span id="uploadProgressCount">0/0</span></div>
+          <div class="progress-track" role="progressbar" aria-label="Tiến trình tải ảnh và video" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="uploadProgressTrack"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+        <p class="upload-hint">Ảnh tự tối ưu WebP 88% · tối đa 2560 px. Album sẽ tải nhiều tệp song song; video và ảnh động được giữ nguyên.</p>
+        <div class="gallery-toolbar"><span class="gallery-label">✧ little stars, made of memories ✧</span><div class="gallery-filters"><button class="filter-btn active" data-filter="all" type="button">Tất cả</button><button class="filter-btn" data-filter="image" type="button">Ảnh</button><button class="filter-btn" data-filter="video" type="button">Video</button></div></div>
         <div id="filmContent"><div class="empty-state"><div class="empty-orbit"><span>♡</span><i>✦</i></div><strong>Chương ký ức đầu tiên đang chờ hai bạn</strong><p>Đăng nhập quản trị rồi chọn nhiều ảnh/video cùng lúc. Mỗi khoảnh khắc sẽ trở thành một mảnh ghép trong cuốn lưu bút chung.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div></div>
       </section>
 
@@ -637,6 +267,10 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           const card = document.createElement('article');
           card.className = `memory-card memory-card-${(index % 6) + 1}`;
           card.dataset.kind = item.kind;
+          card.style.setProperty('--float-duration', `${6.2 + (index % 6) * 0.72}s`);
+          card.style.setProperty('--float-delay', `${-((index * 0.83) % 8).toFixed(2)}s`);
+          card.style.setProperty('--drift-x', `${index % 2 ? 8 : -8}px`);
+          card.style.setProperty('--depth', String(1 + (index % 3)));
           const open = document.createElement('button');
           open.className = 'memory-open';
           open.type = 'button';
@@ -690,6 +324,20 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           wall.append(card);
         });
         host.replaceChildren(wall);
+        // Animate only cards close to the viewport to keep the galaxy smooth on phones.
+        if ('IntersectionObserver' in window) {
+          const floatObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                floatObserver.unobserve(entry.target);
+              }
+            });
+          }, { rootMargin: '140px 0px' });
+          wall.querySelectorAll('.memory-card').forEach((card) => floatObserver.observe(card));
+        } else {
+          wall.querySelectorAll('.memory-card').forEach((card) => card.classList.add('in-view'));
+        }
         applyGalleryFilter();
       }
 
@@ -719,7 +367,131 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         return parts.join(' · ');
       }
 
+      let isUploadingMedia = false;
+
+      function formatBytes(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        const unitIndex = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+        return `${(bytes / Math.pow(1024, unitIndex)).toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+      }
+
+      function updateUploadProgress({ completed, total, saved, failed, active, concurrency, optimizing = 0 }) {
+        const percent = total ? Math.round((completed / total) * 100) : 0;
+        $('progressBar').style.width = `${percent}%`;
+        $('uploadProgressCount').textContent = `${completed}/${total}`;
+        $('uploadProgressTrack').setAttribute('aria-valuenow', String(percent));
+        const activity = optimizing ? ` · ${optimizing} đang tối ưu ảnh` : (active ? ` · ${active} đang xử lý` : '');
+        $('uploadProgressText').textContent = `${saved} thành công · ${failed} lỗi${activity} · ${concurrency} luồng`;
+      }
+
+      // Convert large, static photos to high-quality WebP before upload. The
+      // original on the user's phone is never modified. Animated formats and
+      // vector artwork are intentionally kept untouched.
+      async function isAnimatedImage(file) {
+        if (file.type === 'image/gif') return true;
+        if (file.type === 'image/webp' || file.type === 'image/png') {
+          try {
+            const header = new Uint8Array(await file.slice(0, 1024 * 1024).arrayBuffer());
+            const text = new TextDecoder('ascii').decode(header);
+            return file.type === 'image/webp'
+              ? (text.includes('ANIM') || text.includes('ANMF'))
+              : text.includes('acTL');
+          } catch (_) {
+            return false;
+          }
+        }
+        return false;
+      }
+
+      async function loadImageBitmap(file) {
+        if (typeof createImageBitmap === 'function') {
+          try { return await createImageBitmap(file); } catch (_) { /* use HTMLImageElement fallback */ }
+        }
+        const objectUrl = URL.createObjectURL(file);
+        try {
+          const image = await new Promise((resolve, reject) => {
+            const element = new Image();
+            element.onload = () => resolve(element);
+            element.onerror = () => reject(new Error('Trình duyệt không giải mã được ảnh này.'));
+            element.src = objectUrl;
+          });
+          return {
+            width: image.naturalWidth,
+            height: image.naturalHeight,
+            draw(context, width, height) { context.drawImage(image, 0, 0, width, height); },
+            close() { image.src = ''; }
+          };
+        } finally {
+          URL.revokeObjectURL(objectUrl);
+        }
+      }
+
+      function canvasToWebp(canvas, quality) {
+        return new Promise((resolve) => canvas.toBlob(resolve, 'image/webp', quality));
+      }
+
+      async function compressImageForUpload(file) {
+        const untouched = { file, optimized: false, savedBytes: 0 };
+        if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') return untouched;
+        if (!['image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/x-ms-bmp'].includes(file.type)) return untouched;
+        if (file.type === 'image/webp') return untouched;
+        if (file.size < 450 * 1024) return untouched;
+        if (await isAnimatedImage(file)) return untouched;
+
+        let bitmap;
+        let canvas;
+        try {
+          bitmap = await loadImageBitmap(file);
+          const sourceWidth = bitmap.width;
+          const sourceHeight = bitmap.height;
+          if (!sourceWidth || !sourceHeight) return untouched;
+
+          const MAX_EDGE = 2560;
+          const scale = Math.min(1, MAX_EDGE / Math.max(sourceWidth, sourceHeight));
+          const width = Math.max(1, Math.round(sourceWidth * scale));
+          const height = Math.max(1, Math.round(sourceHeight * scale));
+          canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const context = canvas.getContext('2d', { alpha: true });
+          if (!context) return untouched;
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = 'high';
+          if (typeof bitmap.draw === 'function') bitmap.draw(context, width, height);
+          else context.drawImage(bitmap, 0, 0, width, height);
+
+          const blob = await canvasToWebp(canvas, 0.88);
+          if (!blob || blob.type !== 'image/webp' || blob.size >= file.size * 0.97) return untouched;
+
+          const originalBase = file.name.replace(/\.[^.]+$/, '') || 'memory';
+          const optimizedFile = new File([blob], `${originalBase}.webp`, {
+            type: 'image/webp',
+            lastModified: file.lastModified || Date.now()
+          });
+          return {
+            file: optimizedFile,
+            optimized: true,
+            savedBytes: Math.max(0, file.size - optimizedFile.size),
+            originalSize: file.size,
+            width,
+            height
+          };
+        } catch (error) {
+          // HEIC/unsupported browser decoders fall back to the original file.
+          console.info(`Ảnh ${file.name} được giữ nguyên do không thể tối ưu trên trình duyệt này:`, error);
+          return untouched;
+        } finally {
+          try { bitmap?.close?.(); } catch (_) {}
+          if (canvas) { canvas.width = 1; canvas.height = 1; }
+        }
+      }
+
       async function addFiles(files) {
+        if (isUploadingMedia) {
+          notify('Đang có một lượt tải ảnh/video. Đợi lượt này xong nhé.');
+          return;
+        }
         if (!(await requireAdmin())) return;
         const list = Array.from(files || []).filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'));
         if (!list.length) {
@@ -732,26 +504,67 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           alert(`Có ${tooLarge.length}/${list.length} tệp vượt giới hạn 50 MB nên chưa bắt đầu upload.\n\n${sample}${tooLarge.length > 3 ? '\n…' : ''}\n\nHãy nén video/tệp lớn rồi chọn lại.`);
           return;
         }
+
+        // Adaptive upload lanes: up to six image uploads on desktop, four on phones.
+        // Heavy video batches use fewer lanes to avoid memory/network spikes.
+        const hasHeavyFiles = list.some((file) => file.type.startsWith('video/') || file.size >= 12 * 1024 * 1024);
+        const isPhone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia('(max-width: 760px)').matches;
+        const cpuCores = navigator.hardwareConcurrency || 4;
+        const lowMemory = (navigator.deviceMemory || 4) <= 2;
+        const slowConnection = ['slow-2g', '2g', '3g'].includes(navigator.connection?.effectiveType || '');
+        const photoLanes = (isPhone || lowMemory || cpuCores <= 4 || slowConnection) ? 4 : 6;
+        const heavyLanes = isPhone || lowMemory ? 2 : 3;
+        const concurrency = Math.min(hasHeavyFiles ? heavyLanes : photoLanes, list.length);
         const progress = $('uploadProgress');
-        const bar = $('progressBar');
-        progress.classList.add('show');
+        const addButton = $('addMedia');
+        const savedAtStart = mediaItems.length;
         let saved = 0;
         let failed = 0;
+        let completed = 0;
+        let active = 0;
+        let nextIndex = 0;
         const failures = [];
-        notify(`Bắt đầu tải ${list.length} tệp. Giữ trang này mở đến khi hoàn tất nhé.`);
-        for (let i = 0; i < list.length; i++) {
-          const file = list[i];
+        let optimizing = 0;
+        let optimizedCount = 0;
+        let compressedBytesSaved = 0;
+        isUploadingMedia = true;
+        addButton.disabled = true;
+        addButton.textContent = 'Đang tối ưu & tải…';
+        progress.classList.add('show');
+        updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+        notify(`Đang tối ưu ảnh và tải ${list.length} tệp bằng ${concurrency} luồng song song. Giữ trang mở đến khi xong nhé.`);
+
+        async function uploadOne(file) {
           const kind = file.type.startsWith('video/') ? 'video' : 'image';
-          const path = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+          let uploadFile = file;
+          let optimization = { optimized: false, savedBytes: 0 };
           let storageUploaded = false;
           try {
-            const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, file, {
-              cacheControl: '3600', contentType: file.type || 'application/octet-stream', upsert: false
+            if (kind === 'image') {
+              optimizing++;
+              updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+              try {
+                optimization = await compressImageForUpload(file);
+                uploadFile = optimization.file;
+              } finally {
+                optimizing--;
+                updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+              }
+            }
+
+            if (uploadFile.size > MAX_FILE_BYTES) {
+              throw Object.assign(new Error(`Sau khi tối ưu, tệp vẫn vượt giới hạn ${formatBytes(MAX_FILE_BYTES)}.`), { uploadStage: 'File size validation' });
+            }
+
+            const path = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(uploadFile.name)}`;
+            const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, uploadFile, {
+              cacheControl: '3600', contentType: uploadFile.type || 'application/octet-stream', upsert: false
             });
             if (uploadError) throw Object.assign(uploadError, { uploadStage: 'Storage upload' });
             storageUploaded = true;
+
             const { error: rowError } = await supabaseClient.from('memories').insert({
-              name: file.name, kind, mime: file.type, size: file.size, object_path: path, owner_id: currentUser.id
+              name: file.name, kind, mime: uploadFile.type, size: uploadFile.size, object_path: path, owner_id: currentUser.id
             });
             if (rowError) {
               try {
@@ -763,10 +576,15 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
               throw Object.assign(rowError, { uploadStage: 'Insert row into public.memories' });
             }
             saved++;
+            if (optimization.optimized) {
+              optimizedCount++;
+              compressedBytesSaved += optimization.savedBytes || 0;
+            }
           } catch (error) {
             console.error('Upload error:', {
               fileName: file.name,
-              fileSize: file.size,
+              originalFileSize: file.size,
+              uploadFileSize: uploadFile.size,
               stage: error?.uploadStage || (storageUploaded ? 'Database insert/cleanup' : 'Storage upload'),
               status: error?.status,
               statusCode: error?.statusCode,
@@ -776,25 +594,59 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
               hint: error?.hint
             });
             failed++;
-            if (failures.length < 5) {
+            if (failures.length < 8) {
               failures.push(`${file.name}\n${error?.uploadStage || 'Upload'}: ${describeUploadError(error)}`);
             }
           }
-          bar.style.width = `${Math.round((i + 1) / list.length * 100)}%`;
-          // Yield to the browser between files so progress can repaint on mobile.
-          await new Promise((resolve) => setTimeout(resolve, 30));
         }
+
+        async function worker() {
+          while (true) {
+            const index = nextIndex++;
+            if (index >= list.length) return;
+            const file = list[index];
+            active++;
+            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+            await uploadOne(file);
+            active--;
+            completed++;
+            updateUploadProgress({ completed, total: list.length, saved, failed, active, concurrency, optimizing });
+          }
+        }
+
         try {
-          await refreshMedia();
-        } catch (refreshError) {
-          console.error('Album refresh after upload:', refreshError);
-          failures.push(`Không tải lại được danh sách album: ${describeUploadError(refreshError)}`);
+          await Promise.all(Array.from({ length: concurrency }, () => worker()));
+          try {
+            await refreshMedia();
+          } catch (refreshError) {
+            console.error('Album refresh after upload:', refreshError);
+            failures.push(`Không tải lại được danh sách album: ${describeUploadError(refreshError)}`);
+          }
+          const summary = `Kết quả upload: ${saved}/${list.length} tệp thành công; ${failed} tệp thất bại.\n` +
+            `Chế độ: ${concurrency} luồng song song${hasHeavyFiles ? ' (ưu tiên ổn định vì có video/tệp lớn)' : (concurrency === 6 ? ' (tăng tốc desktop)' : ' (tối ưu cho thiết bị hiện tại)')}.\n` +
+            `Ảnh đã tối ưu: ${optimizedCount} tệp · tiết kiệm ${formatBytes(compressedBytesSaved)} dung lượng.\n\n` +
+            (failures.length ? `Một số lỗi đầu tiên:\n${failures.join('\n\n')}${failed > failures.length ? `\n\n… còn ${failed - failures.length} lỗi khác.` : ''}` : 'Không có lỗi upload được ghi nhận.') +
+            '\n\nẢnh gốc trong điện thoại không bị thay đổi. Ảnh tĩnh được chuyển sang WebP chất lượng cao 88%, cạnh dài tối đa 2560 px; ảnh động và video giữ nguyên. Tệp lỗi vẫn còn trên máy để ông chọn tải lại.';
+          alert(summary);
+        } finally {
+          isUploadingMedia = false;
+          addButton.disabled = false;
+          addButton.textContent = currentUser ? '+ Thêm ảnh/video' : 'Đăng nhập để thêm';
+          if (completed === list.length) {
+            $('uploadProgressText').textContent = `${saved} thành công · ${failed} lỗi · Hoàn tất`;
+            $('uploadProgressCount').textContent = `${completed}/${list.length}`;
+            $('progressBar').style.width = '100%';
+            $('uploadProgressTrack').setAttribute('aria-valuenow', '100');
+            setTimeout(() => {
+              progress.classList.remove('show');
+              $('progressBar').style.width = '0%';
+              $('uploadProgressTrack').setAttribute('aria-valuenow', '0');
+            }, 2200);
+          } else {
+            // Preserve a visible failure state if an unexpected exception interrupted the queue.
+            $('uploadProgressText').textContent = 'Lượt tải bị gián đoạn. Có thể thử lại các tệp chưa lên.';
+          }
         }
-        setTimeout(() => { progress.classList.remove('show'); bar.style.width = '0%'; }, 550);
-        const summary = `Kết quả upload: ${saved}/${list.length} tệp thành công; ${failed} tệp thất bại.\n\n` +
-          (failures.length ? `Một số lỗi đầu tiên:\n${failures.join('\n\n')}` : 'Không có lỗi upload được ghi nhận.') +
-          '\n\nGiữ lại ảnh gốc trong điện thoại; tệp chưa thành công vẫn còn trên máy. Chụp màn hình thông báo này để kiểm tra tiếp.';
-        alert(summary);
       }
 
       async function deleteMedia(item) {
