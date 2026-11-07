@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff6f4">
-  <meta name="description" content="Một góc nhỏ lưu giữ hành trình của hai đứa mình.">
+  <meta name="description" content="Một góc nhỏ lưu giữ hành trình của hai đứa mình, đồng bộ trên đám mây.">
   <title>Our Little Forever ♡</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
@@ -162,6 +162,15 @@
     .progress.show { display: block; }
     .progress-bar { width: 0; height: 100%; background: #d77e97; transition: width .15s; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    [hidden] { display: none !important; }
+    .setup-banner { margin: 8px auto 0; width: min(1120px, calc(100% - 44px)); padding: 13px 16px; border: 1px solid #f0cbd5; border-radius: 15px; color: #9d6378; background: #fff0f3; font-size: 12px; line-height: 1.6; }
+    .memory-delete { position: absolute; z-index: 3; top: 8px; right: 8px; border: 0; border-radius: 50%; width: 29px; height: 29px; color: white; background: #8b5363cc; cursor: pointer; font-size: 16px; }
+    .memory-card { position: relative; }
+    .letter-actions #editLetter, #chooseMusic { display: none; }
+    body.is-admin .letter-actions #editLetter { display: inline-flex; }
+    body.is-admin #chooseMusic { display: inline-grid; }
+    .admin-status-chip { display:inline-flex; align-items:center; gap:6px; margin-top:8px; color:#a36a7f; font-size:10px; }
+    @media (max-width: 760px) { .setup-banner { width: calc(100% - 32px); font-size: 10px; } .top-actions { gap: 6px; } }
     @media (max-width: 760px) {
       .shell { width: min(100% - 32px, 560px); }
       .topbar { padding: 15px 0; }
@@ -231,11 +240,12 @@
     <header class="topbar">
       <div class="brand"><span class="brand-mark">♡</span> our little forever</div>
       <div class="top-actions">
-        <button class="pill-btn" id="editLetterTop">✎ Chỉnh lời nhắn</button>
-        <button class="pill-btn" id="musicTop">♫ Nhạc</button>
+        <button class="pill-btn" id="shareSite">↗ Gửi link</button>
+        <button class="pill-btn" id="adminToggle">♡ Quản trị</button>
       </div>
     </header>
 
+    <div class="setup-banner" id="cloudSetupNotice" hidden>☁️ Website chưa được nối với Supabase. Hãy điền thông tin project vào <code>config.js</code> và chạy file SQL hướng dẫn trong thư mục trước khi deploy.</div>
     <main>
       <section class="hero">
         <div class="hero-copy-wrap">
@@ -270,7 +280,7 @@
           <div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn" id="playFilm">▶ Chạy thước phim</button></div>
         </div>
         <div class="upload-panel">
-          <div class="upload-info"><div class="upload-icon">＋</div><div><strong>Thêm ảnh & video từ điện thoại</strong><small>Chọn nhiều tệp cùng lúc · Hỗ trợ ảnh và video phổ biến</small></div></div>
+          <div class="upload-info"><div class="upload-icon">＋</div><div><strong>Album chung trên đám mây</strong><small>Đăng nhập quản trị để thêm ảnh/video · Mọi người mở link đều xem được</small></div></div>
           <button class="primary-btn" id="addMedia">+ Thêm ảnh/video</button>
           <input class="sr-only" id="mediaInput" type="file" accept="image/*,video/*" multiple>
         </div>
@@ -302,12 +312,12 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         <div class="section-head"><div><div class="section-kicker">our soundtrack</div><h2 id="musicTitle">Bài hát dành cho kỷ niệm</h2><p class="section-sub">Một bài hát quen thuộc, bật lên là nhớ đến nhau.</p></div></div>
         <div class="music-card">
           <div class="disc" id="disc">♫</div>
-          <div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Chọn file nhạc từ điện thoại để phát bài hát này trên trang.</small></div>
+          <div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Đăng nhập quản trị để tải nhạc lên một lần cho cả hai cùng nghe.</small></div>
           <div class="music-actions"><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div>
           <input class="sr-only" type="file" id="audioInput" accept="audio/*">
         </div>
         <audio id="audioPlayer" loop></audio>
-        <div class="privacy-note">♡ Album và nhạc trong phiên bản này được lưu trong bộ nhớ của trình duyệt trên thiết bị đã tải lên. Đừng xóa dữ liệu trang web của trình duyệt nếu muốn giữ các tệp đã thêm. Để cả hai người mở cùng một đường link và thấy chung album, cần bật đồng bộ đám mây.</div>
+        <div class="privacy-note">♡ Ảnh, video, nhạc và lời nhắn được lưu trên đám mây nên hai người mở cùng đường link sẽ thấy cùng nội dung. Chỉ tài khoản quản trị mới được tải lên, xóa ảnh hoặc chỉnh lời chúc. Album là công khai với bất kỳ ai có đường link.</div>
       </section>
     </main>
     <footer>made with a little bit of <span>♡</span> and a lot of memories</footer>
@@ -317,7 +327,7 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
     <div class="modal">
       <button class="close-modal" data-close="letterModal" aria-label="Đóng">×</button>
       <h3 id="editModalTitle">Viết lời nhắn của tụi mình 💌</h3>
-      <p class="modal-intro">Sửa tên, tiêu đề và lời chúc theo cách hai người hay nói với nhau. Nội dung sẽ được lưu trên thiết bị này.</p>
+      <p class="modal-intro">Sửa tên, tiêu đề và lời chúc theo cách hai người hay nói với nhau. Nội dung sẽ được lưu lên đám mây để người mở cùng đường link đều thấy.</p>
       <label class="field"><span>Dòng mở đầu</span><input id="editSalute" maxlength="90" placeholder="Gửi người thương của tớ,"></label>
       <label class="field"><span>Tiêu đề lời nhắn</span><input id="editHeading" maxlength="130"></label>
       <label class="field"><span>Lời chúc</span><textarea id="editBody" maxlength="2500"></textarea></label>
@@ -329,73 +339,109 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
     <button class="close-modal viewer-close" data-close="viewer" aria-label="Đóng">×</button>
     <div class="viewer-content" id="viewerContent"></div>
   </div>
+  <div class="modal-backdrop" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+    <div class="modal">
+      <button class="close-modal" data-close="adminModal" aria-label="Đóng">×</button>
+      <h3 id="adminModalTitle">Khu vực quản trị ♡</h3>
+      <p class="modal-intro" id="adminState">Đăng nhập tài khoản quản trị để tải ảnh/video, đổi nhạc và chỉnh lời chúc. Người xem link không cần đăng nhập.</p>
+      <label class="field"><span>Email quản trị</span><input id="adminEmail" type="email" autocomplete="username" placeholder="email của ông"></label>
+      <label class="field"><span>Mật khẩu</span><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu Supabase"></label>
+      <button class="primary-btn" id="loginSubmit">Đăng nhập ♡</button>
+      <button class="soft-btn" id="logoutSubmit" hidden>Đăng xuất</button>
+      <p class="modal-intro" style="margin-top:14px">Tài khoản được tạo trước trong Supabase Dashboard. Không gửi mật khẩu này cho người xem album.</p>
+    </div>
+  </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script>
     (() => {
       'use strict';
-      const DB_NAME = 'our-little-forever-v1';
-      const DB_VERSION = 1;
       const $ = (id) => document.getElementById(id);
-      let db;
+      const BUCKET = 'couple-memories';
+      const MAX_FILE_BYTES = 50 * 1024 * 1024;
+      let supabaseClient = null;
+      let currentUser = null;
       let mediaItems = [];
       let audioUrl = null;
       let toastTimer;
-      let viewerUrl = null;
       let slideshowTimer = null;
       let slideshowIndex = 0;
       let isSlideshow = false;
+      let activeViewerVideo = null;
+
+      const defaultLetter = {
+        salute: 'Gửi người thương của tớ,',
+        heading: 'Cảm ơn vì đã cùng tớ viết nên những ngày thật đẹp.',
+        body: `Vậy là chúng mình sắp đi cùng nhau thêm một cột mốc nữa rồi. Cảm ơn cậu vì đã xuất hiện, vì những lần quan tâm nhỏ xíu, những cuộc trò chuyện chẳng biết chán và cả những khoảnh khắc giản dị mà tớ luôn muốn nhớ thật lâu.\n\nTớ không biết tương lai sẽ có bao nhiêu điều mới đang chờ, nhưng mong rằng trên hành trình ấy, chúng mình vẫn luôn dành cho nhau sự chân thành, kiên nhẫn và thật nhiều tiếng cười.\n\nChúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ còn được viết tiếp bằng thật nhiều ngày bình yên và hạnh phúc. ♡`,
+        signature: 'Thương cậu nhiều ♡'
+      };
 
       function notify(message) {
         const el = $('toast');
         el.textContent = message;
         el.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
       }
 
-      function openDatabase() {
-        return new Promise((resolve, reject) => {
-          const request = indexedDB.open(DB_NAME, DB_VERSION);
-          request.onupgradeneeded = () => {
-            const database = request.result;
-            if (!database.objectStoreNames.contains('media')) database.createObjectStore('media', { keyPath: 'id', autoIncrement: true });
-            if (!database.objectStoreNames.contains('settings')) database.createObjectStore('settings', { keyPath: 'key' });
-          };
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error || new Error('Không mở được bộ nhớ trình duyệt.'));
-        });
+      function getConfig() {
+        return window.OUR_LOVE_CONFIG || {};
       }
 
-      function store(storeName, mode = 'readonly') {
-        return db.transaction(storeName, mode).objectStore(storeName);
+      function isConfigured() {
+        const cfg = getConfig();
+        return typeof cfg.supabaseUrl === 'string' && cfg.supabaseUrl.startsWith('https://') &&
+          typeof cfg.supabaseAnonKey === 'string' && cfg.supabaseAnonKey.length > 20 &&
+          !cfg.supabaseUrl.includes('YOUR_PROJECT') && !cfg.supabaseAnonKey.includes('YOUR_');
       }
-      function dbRequest(request) {
-        return new Promise((resolve, reject) => {
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
-      }
-      async function getAllMedia() { return dbRequest(store('media').getAll()); }
-      async function getSetting(key) { return dbRequest(store('settings').get(key)); }
-      async function setSetting(key, value) { return dbRequest(store('settings', 'readwrite').put({ key, value })); }
 
-      function escapeHtml(value) {
-        return String(value).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+      function updateAdminUI() {
+        document.body.classList.toggle('is-admin', !!currentUser);
+        $('adminToggle').textContent = currentUser ? '♡ Đã đăng nhập' : '♡ Quản trị';
+        $('adminState').textContent = currentUser
+          ? `Đã đăng nhập: ${currentUser.email || 'tài khoản quản trị'}. Ông có thể thêm/xóa kỷ niệm và sửa nội dung chung.`
+          : 'Đăng nhập tài khoản quản trị để tải ảnh/video, đổi nhạc và chỉnh lời chúc. Người xem link không cần đăng nhập.';
+        $('adminEmail').closest('.field').hidden = !!currentUser;
+        $('adminPassword').closest('.field').hidden = !!currentUser;
+        $('loginSubmit').hidden = !!currentUser;
+        $('logoutSubmit').hidden = !currentUser;
+        $('addMedia').textContent = currentUser ? '+ Thêm ảnh/video' : 'Đăng nhập để thêm';
+        $('chooseMusic').title = currentUser ? 'Tải nhạc lên' : 'Đăng nhập để tải nhạc';
+      }
+
+      function openAdminModal() {
+        $('adminModal').classList.add('open');
+        updateAdminUI();
+      }
+
+      async function requireAdmin() {
+        if (!supabaseClient) {
+          notify('Website chưa được nối Supabase. Hãy hoàn tất phần cấu hình trước nha.');
+          return false;
+        }
+        if (!currentUser) {
+          openAdminModal();
+          return false;
+        }
+        return true;
+      }
+
+      function safeFileName(name) {
+        const clean = String(name || 'memory').normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/^\.+/, '').slice(-90);
+        return clean || 'memory';
       }
 
       function dateDiff(start, end) {
         let years = end.getFullYear() - start.getFullYear();
         let months = end.getMonth() - start.getMonth();
         let days = end.getDate() - start.getDate();
-        if (days < 0) {
-          months--;
-          const daysInPrevMonth = new Date(end.getFullYear(), end.getMonth(), 0).getDate();
-          days += daysInPrevMonth;
-        }
+        if (days < 0) { months--; days += new Date(end.getFullYear(), end.getMonth(), 0).getDate(); }
         if (months < 0) { years--; months += 12; }
         return { years, months, days };
       }
+
       function updateCounter() {
         const start = new Date(2024, 10, 25, 0, 0, 0);
         const now = new Date();
@@ -403,27 +449,23 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         $('daysTogether').textContent = totalDays.toLocaleString('vi-VN');
         const thisYearAnniversary = new Date(now.getFullYear(), 10, 25, 0, 0, 0);
         const isAnniversaryDay = now.getMonth() === 10 && now.getDate() === 25;
-        let anniversary = now < thisYearAnniversary ? thisYearAnniversary : new Date(now.getFullYear() + 1, 10, 25, 0, 0, 0);
-        if (isAnniversaryDay) {
-          $('anniversaryLabel').textContent = 'Hôm nay là ngày kỷ niệm của tụi mình!';
-        } else {
-          $('anniversaryLabel').textContent = `Đếm ngược đến kỷ niệm ${anniversary.getFullYear() - 2024} năm`;
-        }
+        const anniversary = now < thisYearAnniversary ? thisYearAnniversary : new Date(now.getFullYear() + 1, 10, 25, 0, 0, 0);
+        $('anniversaryLabel').textContent = isAnniversaryDay ? 'Hôm nay là ngày kỷ niệm của tụi mình!' : `Đếm ngược đến kỷ niệm ${anniversary.getFullYear() - 2024} năm`;
         const seconds = Math.max(0, Math.floor((anniversary - now) / 1000));
         const units = [Math.floor(seconds / 86400), Math.floor((seconds % 86400) / 3600), Math.floor((seconds % 3600) / 60), seconds % 60];
         $('countdown').innerHTML = units.map((n, i) => `<div class="time-box"><strong>${String(n).padStart(2, '0')}</strong><span>${['ngày','giờ','phút','giây'][i]}</span></div>`).join('');
       }
 
-      function cleanupCardUrls() {
-        document.querySelectorAll('.memory-media[data-object-url]').forEach((el) => URL.revokeObjectURL(el.dataset.objectUrl));
+      function mediaPublicUrl(path) {
+        return supabaseClient.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
       }
+
       function renderMedia() {
-        cleanupCardUrls();
         const host = $('filmContent');
         $('mediaCount').textContent = `${mediaItems.length} khoảnh khắc`;
         if (!mediaItems.length) {
-          host.innerHTML = `<div class="empty-state"><div class="empty-heart">♡</div><strong>Cuộn phim vẫn đang chờ những kỷ niệm đầu tiên</strong><p>Nhấn “Thêm ảnh/video” rồi chọn những tấm hình và đoạn clip trong thư viện điện thoại. Có thể chọn hơn 50 tệp, không cần thêm từng cái một.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div>`;
-          $('emptyAdd').addEventListener('click', () => $('mediaInput').click());
+          host.innerHTML = `<div class="empty-state"><div class="empty-heart">♡</div><strong>Cuộn phim vẫn đang chờ những kỷ niệm đầu tiên</strong><p>Đăng nhập quản trị rồi chọn ảnh/video từ điện thoại. Sau khi tải lên, người mở cùng đường link sẽ thấy album này.</p><button class="soft-btn" id="emptyAdd">Bắt đầu thêm kỷ niệm</button></div>`;
+          $('emptyAdd').addEventListener('click', () => $('addMedia').click());
           return;
         }
         const track = document.createElement('div');
@@ -431,7 +473,6 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         const row = document.createElement('div');
         row.className = 'film-track';
         mediaItems.forEach((item, index) => {
-          const url = URL.createObjectURL(item.blob);
           const card = document.createElement('article');
           card.className = 'memory-card';
           card.style.setProperty('--tilt', `${(index % 3 - 1) * 1.1}deg`);
@@ -444,11 +485,10 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
             wrap.className = 'memory-video-wrap';
             const video = document.createElement('video');
             video.className = 'memory-media';
-            video.src = url;
+            video.src = item.url;
             video.preload = 'metadata';
             video.muted = true;
             video.playsInline = true;
-            video.dataset.objectUrl = url;
             const play = document.createElement('span');
             play.className = 'play-badge';
             play.textContent = '▶';
@@ -457,34 +497,31 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           } else {
             const img = document.createElement('img');
             img.className = 'memory-media';
-            img.src = url;
+            img.src = item.url;
             img.alt = item.name;
             img.loading = 'lazy';
-            img.dataset.objectUrl = url;
             open.append(img);
           }
+          open.addEventListener('click', () => showViewer(item));
           const name = document.createElement('span');
           name.className = 'memory-name';
           name.textContent = item.name;
-          open.append(name);
-          open.addEventListener('click', () => showViewer(item));
           const indexTag = document.createElement('span');
           indexTag.className = 'memory-index';
-          indexTag.textContent = `${String(index + 1).padStart(2, '0')} / ${String(mediaItems.length).padStart(2, '0')}`;
-          const del = document.createElement('button');
-          del.className = 'delete-memory';
-          del.type = 'button';
-          del.textContent = '×';
-          del.title = 'Xóa khoảnh khắc này';
-          del.setAttribute('aria-label', `Xóa ${item.name}`);
-          del.addEventListener('click', async (event) => {
-            event.stopPropagation();
-            if (!confirm(`Xóa “${item.name}” khỏi album trên thiết bị này?`)) return;
-            await dbRequest(store('media', 'readwrite').delete(item.id));
-            await refreshMedia();
-            notify('Đã xóa khoảnh khắc.');
-          });
-          card.append(open, indexTag, del);
+          indexTag.textContent = `FRAME ${String(index + 1).padStart(2, '0')}`;
+          card.append(open, name, indexTag);
+          if (currentUser && item.owner_id === currentUser.id) {
+            const del = document.createElement('button');
+            del.className = 'memory-delete';
+            del.type = 'button';
+            del.textContent = '×';
+            del.setAttribute('aria-label', `Xóa ${item.name}`);
+            del.addEventListener('click', async (event) => {
+              event.stopPropagation();
+              if (confirm(`Xóa “${item.name}” khỏi album chung nhé?`)) await deleteMedia(item);
+            });
+            card.append(del);
+          }
           row.append(card);
         });
         track.append(row);
@@ -492,44 +529,73 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
       }
 
       async function refreshMedia() {
-        mediaItems = (await getAllMedia()).sort((a, b) => a.addedAt - b.addedAt || a.id - b.id);
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('memories')
+          .select('id,name,kind,mime,size,object_path,created_at,owner_id')
+          .order('created_at', { ascending: true });
+        if (error) {
+          console.error(error);
+          throw new Error('Không đọc được album đám mây. Hãy kiểm tra đã chạy file SQL setup chưa.');
+        }
+        mediaItems = (data || []).map((item) => ({ ...item, url: mediaPublicUrl(item.object_path) }));
         renderMedia();
       }
 
       async function addFiles(files) {
+        if (!(await requireAdmin())) return;
         const list = Array.from(files || []).filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'));
         if (!list.length) return;
-        const total = list.reduce((sum, file) => sum + file.size, 0);
-        const totalMB = total / (1024 * 1024);
-        if (totalMB > 900) {
-          notify('Tổng dung lượng quá lớn cho một lượt. Hãy chia thành vài lần tải nhé.');
+        const tooLarge = list.filter((file) => file.size > MAX_FILE_BYTES);
+        if (tooLarge.length) {
+          notify(`Có ${tooLarge.length} tệp vượt 50 MB. Gói Supabase Free giới hạn 50 MB mỗi tệp; hãy nén video rồi thử lại.`);
           return;
         }
         const progress = $('uploadProgress');
         const bar = $('progressBar');
         progress.classList.add('show');
         let saved = 0;
-        for (const file of list) {
+        let failed = 0;
+        for (let i = 0; i < list.length; i++) {
+          const file = list[i];
+          const kind = file.type.startsWith('video/') ? 'video' : 'image';
+          const path = `${currentUser.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
           try {
-            const kind = file.type.startsWith('video/') ? 'video' : 'image';
-            await dbRequest(store('media', 'readwrite').add({ name: file.name, kind, mime: file.type, size: file.size, blob: file, addedAt: Date.now() + saved }));
+            const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, file, {
+              cacheControl: '3600', contentType: file.type || 'application/octet-stream', upsert: false
+            });
+            if (uploadError) throw uploadError;
+            const { error: rowError } = await supabaseClient.from('memories').insert({
+              name: file.name, kind, mime: file.type, size: file.size, object_path: path, owner_id: currentUser.id
+            });
+            if (rowError) {
+              await supabaseClient.storage.from(BUCKET).remove([path]);
+              throw rowError;
+            }
             saved++;
-            bar.style.width = `${Math.round(saved / list.length * 100)}%`;
           } catch (error) {
-            console.error(error);
-            notify('Bộ nhớ thiết bị có thể đã đầy. Một số tệp chưa được lưu.');
-            break;
+            console.error('Upload error:', file.name, error);
+            failed++;
           }
+          bar.style.width = `${Math.round((i + 1) / list.length * 100)}%`;
         }
         await refreshMedia();
-        setTimeout(() => { progress.classList.remove('show'); bar.style.width = '0%'; }, 500);
-        notify(`Đã thêm ${saved}/${list.length} tệp vào thước phim ♡`);
+        setTimeout(() => { progress.classList.remove('show'); bar.style.width = '0%'; }, 550);
+        notify(failed ? `Đã tải ${saved}/${list.length} tệp. ${failed} tệp chưa tải được.` : `Đã tải ${saved} kỷ niệm lên album chung ♡`);
+      }
+
+      async function deleteMedia(item) {
+        if (!(await requireAdmin())) return;
+        const { error: storageError } = await supabaseClient.storage.from(BUCKET).remove([item.object_path]);
+        if (storageError) { console.error(storageError); notify('Chưa xóa được tệp trên cloud.'); return; }
+        const { error } = await supabaseClient.from('memories').delete().eq('id', item.id);
+        if (error) { console.error(error); notify('Tệp đã xóa nhưng chưa xóa được dòng album.'); return; }
+        await refreshMedia();
+        notify('Đã xóa kỷ niệm khỏi album chung.');
       }
 
       function showViewer(item, fromSlideshow = false) {
         if (!fromSlideshow) stopSlideshow(false);
-        if (viewerUrl) URL.revokeObjectURL(viewerUrl);
-        viewerUrl = URL.createObjectURL(item.blob);
         const content = $('viewerContent');
         content.replaceChildren();
         let media;
@@ -543,18 +609,16 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           media.alt = item.name;
         }
         media.className = 'viewer-media';
-        media.src = viewerUrl;
+        media.src = item.url;
+        activeViewerVideo = item.kind === 'video' ? media : null;
         const caption = document.createElement('div');
         caption.className = 'viewer-caption';
         caption.textContent = isSlideshow ? `${slideshowIndex + 1} / ${mediaItems.length} · ${item.name}` : item.name;
         content.append(media, caption);
         $('viewer').classList.add('open');
         if (isSlideshow) {
-          if (item.kind === 'video') {
-            media.addEventListener('ended', nextSlideshow, { once: true });
-          } else {
-            slideshowTimer = setTimeout(nextSlideshow, 3200);
-          }
+          if (item.kind === 'video') media.addEventListener('ended', nextSlideshow, { once: true });
+          else slideshowTimer = setTimeout(nextSlideshow, 3200);
         }
       }
 
@@ -573,14 +637,8 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
       }
 
       function toggleSlideshow() {
-        if (isSlideshow) {
-          stopSlideshow(true);
-          return;
-        }
-        if (!mediaItems.length) {
-          notify('Thêm vài tấm ảnh hoặc video trước nha ♡');
-          return;
-        }
+        if (isSlideshow) { stopSlideshow(true); return; }
+        if (!mediaItems.length) { notify('Album chưa có ảnh/video nào nha ♡'); return; }
         slideshowIndex = 0;
         isSlideshow = true;
         $('playFilm').textContent = 'Ⅱ Dừng thước phim';
@@ -594,73 +652,117 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
           clearTimeout(slideshowTimer);
           slideshowTimer = null;
           $('playFilm').textContent = '▶ Chạy thước phim';
-          const v = $('viewerContent').querySelector('video');
-          if (v) v.pause();
+          if (activeViewerVideo) activeViewerVideo.pause();
+          activeViewerVideo = null;
           $('viewerContent').replaceChildren();
-          if (viewerUrl) URL.revokeObjectURL(viewerUrl);
-          viewerUrl = null;
         }
       }
 
-      const defaultLetter = {
-        salute: 'Gửi người thương của tớ,',
-        heading: 'Cảm ơn vì đã cùng tớ viết nên những ngày thật đẹp.',
-        body: `Vậy là chúng mình sắp đi cùng nhau thêm một cột mốc nữa rồi. Cảm ơn cậu vì đã xuất hiện, vì những lần quan tâm nhỏ xíu, những cuộc trò chuyện chẳng biết chán và cả những khoảnh khắc giản dị mà tớ luôn muốn nhớ thật lâu.\n\nTớ không biết tương lai sẽ có bao nhiêu điều mới đang chờ, nhưng mong rằng trên hành trình ấy, chúng mình vẫn luôn dành cho nhau sự chân thành, kiên nhẫn và thật nhiều tiếng cười.\n\nChúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ còn được viết tiếp bằng thật nhiều ngày bình yên và hạnh phúc. ♡`,
-        signature: 'Thương cậu nhiều ♡'
-      };
+      async function getSetting(key) {
+        const { data, error } = await supabaseClient.from('site_settings').select('key,value,updated_by').eq('key', key).maybeSingle();
+        if (error) throw error;
+        return data;
+      }
+
+      async function saveSetting(key, value) {
+        if (!(await requireAdmin())) return false;
+        const { error } = await supabaseClient.from('site_settings').upsert({
+          key, value, updated_by: currentUser.id, updated_at: new Date().toISOString()
+        }, { onConflict: 'key' });
+        if (error) throw error;
+        return true;
+      }
+
       async function loadLetter() {
-        const saved = await getSetting('letter');
-        const data = saved?.value || defaultLetter;
+        let data = defaultLetter;
+        if (supabaseClient) {
+          try { const saved = await getSetting('letter'); if (saved?.value) data = { ...defaultLetter, ...saved.value }; }
+          catch (error) { console.error(error); notify('Chưa tải được lời chúc từ cloud. Kiểm tra SQL setup.'); }
+        }
         $('letterSalute').textContent = data.salute;
         $('letterHeading').textContent = data.heading;
         $('letterBody').textContent = data.body;
         $('letterSignature').textContent = data.signature;
       }
+
       async function openLetterEditor() {
+        if (!(await requireAdmin())) return;
+        let data = defaultLetter;
         const saved = await getSetting('letter');
-        const data = saved?.value || defaultLetter;
+        if (saved?.value) data = { ...defaultLetter, ...saved.value };
         $('editSalute').value = data.salute;
         $('editHeading').value = data.heading;
         $('editBody').value = data.body;
         $('editSignature').value = data.signature;
         $('letterModal').classList.add('open');
       }
+
       async function saveLetter() {
+        if (!(await requireAdmin())) return;
         const data = {
           salute: $('editSalute').value.trim() || defaultLetter.salute,
           heading: $('editHeading').value.trim() || defaultLetter.heading,
           body: $('editBody').value.trim() || defaultLetter.body,
           signature: $('editSignature').value.trim() || defaultLetter.signature
         };
-        await setSetting('letter', data);
-        await loadLetter();
-        closeModal('letterModal');
-        notify('Đã lưu lời nhắn của tụi mình ♡');
+        try {
+          if (!(await saveSetting('letter', data))) return;
+          await loadLetter();
+          closeModal('letterModal');
+          notify('Đã lưu lời chúc lên cloud. Em bé mở link sẽ thấy ♡');
+        } catch (error) { console.error(error); notify('Chưa lưu được lời chúc. Kiểm tra quyền SQL/RLS.'); }
       }
 
       async function loadMusic() {
-        const setting = await getSetting('audio');
-        if (!setting?.value?.blob) return;
-        const audio = setting.value;
-        if (audioUrl) URL.revokeObjectURL(audioUrl);
-        audioUrl = URL.createObjectURL(audio.blob);
-        $('audioPlayer').src = audioUrl;
-        $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
-        $('musicStatus').textContent = 'Nhạc đã sẵn sàng · Chạm nút phát để nghe';
+        if (!supabaseClient) return;
+        try {
+          const setting = await getSetting('audio');
+          if (!setting?.value?.path) {
+            $('musicName').textContent = 'Love Story — Indila';
+            $('musicStatus').textContent = 'Đăng nhập quản trị để tải file nhạc lên một lần cho cả hai cùng nghe.';
+            return;
+          }
+          const audio = setting.value;
+          $('audioPlayer').src = mediaPublicUrl(audio.path);
+          $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
+          $('musicStatus').textContent = 'Nhạc chung đã sẵn sàng · Chạm nút phát để nghe';
+        } catch (error) { console.error(error); notify('Chưa tải được thông tin nhạc từ cloud.'); }
       }
+
       async function saveMusic(file) {
-        await setSetting('audio', { name: file.name, blob: file });
-        await loadMusic();
-        notify('Đã lưu bài nhạc trên thiết bị này ♫');
+        if (!(await requireAdmin())) return;
+        if (file.size > MAX_FILE_BYTES) { notify('File nhạc vượt giới hạn 50 MB của gói Free.'); return; }
+        const path = `${currentUser.id}/audio-${crypto.randomUUID()}-${safeFileName(file.name)}`;
+        try {
+          const oldSetting = await getSetting('audio');
+          const { error: uploadError } = await supabaseClient.storage.from(BUCKET).upload(path, file, {
+            cacheControl: '3600', contentType: file.type || 'audio/mpeg', upsert: false
+          });
+          if (uploadError) throw uploadError;
+          const saved = await saveSetting('audio', { name: file.name, path, mime: file.type, size: file.size });
+          if (!saved) return;
+          if (oldSetting?.value?.path && oldSetting.updated_by === currentUser.id) {
+            await supabaseClient.storage.from(BUCKET).remove([oldSetting.value.path]);
+          }
+          await loadMusic();
+          notify('Đã cập nhật nhạc chung cho cả hai ♫');
+        } catch (error) {
+          console.error(error);
+          await supabaseClient.storage.from(BUCKET).remove([path]);
+          notify('Chưa tải được nhạc. Kiểm tra file và quyền Storage.');
+        }
       }
+
       async function toggleMusic() {
         const player = $('audioPlayer');
-        if (!player.src) { $('audioInput').click(); return; }
+        if (!player.src) { notify('Chủ album chưa tải file nhạc lên nha ♡'); return; }
         if (player.paused) {
-          try { await player.play(); } catch (e) { notify('Trình duyệt chưa phát được tệp nhạc này.'); return; }
-          $('playMusic').textContent = 'Ⅱ';
-          $('disc').classList.add('playing');
-          $('musicStatus').textContent = 'Đang phát · Love is in the little things ♡';
+          try {
+            await player.play();
+            $('playMusic').textContent = 'Ⅱ';
+            $('disc').classList.add('playing');
+            $('musicStatus').textContent = 'Đang phát · Love is in the little things ♡';
+          } catch (error) { notify('Trình duyệt chưa phát được file nhạc này. Chạm phát lại nhé.'); }
         } else {
           player.pause();
           $('playMusic').textContent = '▶';
@@ -669,39 +771,109 @@ Chúc mừng kỷ niệm 2 năm của chúng mình. Mong câu chuyện này sẽ
         }
       }
 
+      async function shareSite() {
+        const url = window.location.href;
+        try {
+          if (navigator.share) await navigator.share({ title: 'Our Little Forever ♡', text: 'Góc nhỏ lưu giữ những kỷ niệm của chúng mình.', url });
+          else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); notify('Đã copy link website. Gửi cho em bé nha ♡'); }
+          else { window.prompt('Copy đường link này để gửi:', url); }
+        } catch (error) {
+          if (error?.name !== 'AbortError') notify('Chưa chia sẻ được. Ông copy link trên thanh địa chỉ nhé.');
+        }
+      }
+
+      async function signIn() {
+        if (!supabaseClient) { notify('Chưa cấu hình Supabase.'); return; }
+        const email = $('adminEmail').value.trim();
+        const password = $('adminPassword').value;
+        if (!email || !password) { notify('Nhập email và mật khẩu quản trị nhé.'); return; }
+        $('loginSubmit').disabled = true;
+        $('loginSubmit').textContent = 'Đang đăng nhập…';
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        $('loginSubmit').disabled = false;
+        $('loginSubmit').textContent = 'Đăng nhập ♡';
+        if (error) { console.error(error); notify('Đăng nhập chưa thành công. Kiểm tra email/mật khẩu.'); return; }
+        currentUser = data.user;
+        updateAdminUI();
+        closeModal('adminModal');
+        await refreshMedia();
+        notify('Đã đăng nhập khu vực quản trị ♡');
+      }
+
+      async function signOut() {
+        if (!supabaseClient) return;
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) { console.error(error); notify('Chưa đăng xuất được.'); return; }
+        currentUser = null;
+        updateAdminUI();
+        await refreshMedia();
+        notify('Đã đăng xuất. Album vẫn mở cho người xem.');
+      }
+
       function wireEvents() {
         $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
         $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
         $('editLetter').addEventListener('click', openLetterEditor);
-        $('editLetterTop').addEventListener('click', openLetterEditor);
         $('saveLetter').addEventListener('click', saveLetter);
-        $('addMedia').addEventListener('click', () => $('mediaInput').click());
+        $('addMedia').addEventListener('click', async () => { if (await requireAdmin()) $('mediaInput').click(); });
         $('playFilm').addEventListener('click', toggleSlideshow);
-        $('emptyAdd')?.addEventListener('click', () => $('mediaInput').click());
-        $('mediaInput').addEventListener('change', async (e) => { await addFiles(e.target.files); e.target.value = ''; });
-        $('chooseMusic').addEventListener('click', () => $('audioInput').click());
+        $('mediaInput').addEventListener('change', async (event) => { await addFiles(event.target.files); event.target.value = ''; });
+        $('chooseMusic').addEventListener('click', async () => { if (await requireAdmin()) $('audioInput').click(); });
         $('musicTop').addEventListener('click', () => $('musicTitle').scrollIntoView({ behavior: 'smooth' }));
-        $('audioInput').addEventListener('change', async (e) => { const file = e.target.files?.[0]; if (file) await saveMusic(file); e.target.value = ''; });
+        $('audioInput').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await saveMusic(file); event.target.value = ''; });
         $('playMusic').addEventListener('click', toggleMusic);
         $('audioPlayer').addEventListener('ended', () => { $('playMusic').textContent = '▶'; $('disc').classList.remove('playing'); });
-        document.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
-        document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(backdrop.id); }));
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal('letterModal'); closeModal('viewer'); } });
+        $('shareSite').addEventListener('click', shareSite);
+        $('adminToggle').addEventListener('click', openAdminModal);
+        $('loginSubmit').addEventListener('click', signIn);
+        $('logoutSubmit').addEventListener('click', signOut);
+        $('adminPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') signIn(); });
+        document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => closeModal(button.dataset.close)));
+        document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(backdrop.id); }));
+        document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeModal('letterModal'); closeModal('viewer'); closeModal('adminModal'); } });
       }
 
       async function init() {
+        wireEvents();
+        updateCounter();
+        setInterval(updateCounter, 1000);
+        updateAdminUI();
+        if (!isConfigured()) {
+          $('cloudSetupNotice').hidden = false;
+          $('cloudSetupNotice').textContent = '☁️ Chưa cấu hình Supabase. Hãy điền URL + publishable/anon key trong config.js, chạy sql/setup.sql rồi deploy lại. Khi chưa cấu hình, album chưa thể đồng bộ.';
+          renderMedia();
+          await loadLetter();
+          return;
+        }
         try {
-          db = await openDatabase();
-          try { if (navigator.storage?.persist) await navigator.storage.persist(); } catch (_) { /* browser may decline persistent storage */ }
-          wireEvents();
-          updateCounter();
-          setInterval(updateCounter, 1000);
+          const cfg = getConfig();
+          if (!window.supabase?.createClient) throw new Error('Không tải được thư viện Supabase. Kiểm tra kết nối mạng.');
+          supabaseClient = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+          });
+          const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+          if (!authError) currentUser = authData.user;
+          updateAdminUI();
+          wireAuthListener();
           await Promise.all([refreshMedia(), loadLetter(), loadMusic()]);
         } catch (error) {
           console.error(error);
-          notify('Không mở được bộ nhớ. Hãy thử dùng Safari hoặc Chrome bản mới.');
+          $('cloudSetupNotice').hidden = false;
+          $('cloudSetupNotice').textContent = `Chưa kết nối được album cloud: ${error.message || 'lỗi cấu hình'}. Kiểm tra URL/key trong config.js và file SQL.`;
+          renderMedia();
+          await loadLetter();
         }
       }
+
+      function wireAuthListener() {
+        // Keep the UI in sync with Supabase sessions. Avoid starting another Supabase
+        // request inside this callback; sign-in/out handlers refresh the album explicitly.
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+          currentUser = session?.user || null;
+          updateAdminUI();
+        });
+      }
+
       document.addEventListener('DOMContentLoaded', init);
     })();
   </script>
