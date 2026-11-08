@@ -16,8 +16,14 @@
       <div class="book-scene"><div class="story-book" id="storyBook"><div class="book-pages"></div><div class="book-cover"><small>the story of two</small><em>♡</em><strong>OUR<br>STORY</strong><span>25 · 11 · 2024</span></div></div></div>
       <h2 class="gate-title">Một câu chuyện, hai trái tim.</h2>
       <p class="gate-caption">Có một cuốn lưu bút nhỏ đang giữ lại những điều đẹp nhất của chúng mình. Chạm để mở trang đầu nhé.</p>
-      <button class="gate-open" id="openStory" type="button">Mở câu chuyện của anh và em ✦</button>
-      <div class="gate-foot">made of little moments · chapter 02</div>
+      <aside class="gate-device-card" id="deviceAdvice" role="note" aria-live="polite">
+        <span class="gate-device-tag" id="deviceAdviceTag">✦ BEST VIEW ON LAPTOP</span>
+        <strong id="deviceAdviceTitle">Em bé ơi, anh dành cả một vũ trụ cho em.</strong>
+        <p id="deviceAdviceText">Mở trang này trên laptop để thấy đầy đủ các hành tinh, quỹ đạo và những tấm ảnh bung nở. Trên điện thoại vẫn có phiên bản gọn nhẹ dành riêng cho em.</p>
+      </aside>
+      <div class="gate-audio-hint" id="gateAudioHint" aria-live="polite">♫ Nhạc sẽ tự bật khi em mở câu chuyện, nếu trình duyệt cho phép.</div>
+      <button class="gate-open" id="openStory" type="button">Mở vũ trụ & bật nhạc ♡</button>
+      <div class="gate-foot">made with love · 25.11.2024 — forever in little moments</div>
     </div>
   </div>
   <div class="shell">
@@ -100,8 +106,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
       <section class="section music-section" aria-labelledby="musicTitle">
         <div class="section-head"><div><div class="section-kicker">the soundtrack of us</div><h2 id="musicTitle">Một bài hát, nhiều lần nhớ.</h2><p class="section-sub">Bật giai điệu quen thuộc lên và để những kỷ niệm tự tìm về.</p></div></div>
-        <div class="music-card"><div class="disc" id="disc">♫</div><div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Đăng nhập quản trị để tải nhạc lên một lần cho cả hai cùng nghe.</small><div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><div class="music-actions"><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div><input class="sr-only" type="file" id="audioInput" accept="audio/*"></div>
-        <audio id="audioPlayer" loop></audio>
+        <div class="music-card"><div class="disc" id="disc">♫</div><div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Đăng nhập quản trị để tải nhạc lên một lần cho cả hai cùng nghe.</small><div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><div class="music-actions"><button class="icon-btn" id="soundToggle" type="button" aria-label="Tắt âm thanh nút bấm" aria-pressed="true" title="Âm thanh nút bấm: bật">♪</button><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div><input class="sr-only" type="file" id="audioInput" accept="audio/*"></div>
+        <audio id="audioPlayer" loop autoplay preload="auto" playsinline></audio>
         <div class="privacy-note">♡ Ảnh, video, nhạc và lời nhắn được lưu trên đám mây nên hai người mở cùng đường link sẽ thấy cùng nội dung. Chỉ tài khoản quản trị mới được tải lên, xóa ảnh hoặc chỉnh lời chúc. Album là công khai với bất kỳ ai có đường link.</div>
       </section>
     </main>
@@ -125,7 +131,10 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       let currentUser = null;
       let mediaItems = [];
       let audioUrl = null;
+      let clickAudioContext = null;
+      let clickSoundEnabled = true;
       let toastTimer;
+      try { clickSoundEnabled = localStorage.getItem('our-love-click-sound') !== 'off'; } catch (_) { clickSoundEnabled = true; }
       let slideshowTimer = null;
       let slideshowIndex = 0;
       let isSlideshow = false;
@@ -163,6 +172,106 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         el.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+      }
+
+      function updateMusicUI(isPlaying) {
+        const playButton = $('playMusic');
+        const disc = $('disc');
+        if (playButton) {
+          playButton.textContent = isPlaying ? 'Ⅱ' : '▶';
+          playButton.setAttribute('aria-label', isPlaying ? 'Tạm dừng nhạc' : 'Phát nhạc');
+        }
+        disc?.classList.toggle('playing', !!isPlaying);
+        if (isPlaying) {
+          if ($('musicStatus')) $('musicStatus').textContent = 'Đang phát · Love is in the little things ♡';
+          if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Nhạc đang phát — chúc em có một chuyến đi thật dịu dàng.';
+        }
+      }
+
+      function updateSoundToggle() {
+        const button = $('soundToggle');
+        if (!button) return;
+        button.textContent = clickSoundEnabled ? '♪' : '×';
+        button.setAttribute('aria-pressed', String(clickSoundEnabled));
+        button.setAttribute('aria-label', clickSoundEnabled ? 'Tắt âm thanh nút bấm' : 'Bật âm thanh nút bấm');
+        button.title = `Âm thanh nút bấm: ${clickSoundEnabled ? 'bật' : 'tắt'}`;
+      }
+
+      function playButtonSound() {
+        if (!clickSoundEnabled) return;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        try {
+          if (!clickAudioContext) clickAudioContext = new AudioContextClass();
+          if (clickAudioContext.state === 'suspended') clickAudioContext.resume().catch(() => {});
+          const context = clickAudioContext;
+          const now = context.currentTime;
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(740, now);
+          oscillator.frequency.exponentialRampToValueAtTime(1040, now + 0.075);
+          oscillator.frequency.exponentialRampToValueAtTime(680, now + 0.16);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.035, now + 0.018);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.19);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start(now);
+          oscillator.stop(now + 0.2);
+        } catch (error) { console.debug('Button sound unavailable:', error); }
+      }
+
+      function setDeviceAdvice() {
+        if (!$('deviceAdviceTag') || !$('deviceAdviceTitle') || !$('deviceAdviceText') || !$('openStory')) return;
+        const mobile = window.matchMedia('(max-width: 760px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (mobile) {
+          $('deviceAdviceTag').textContent = '✦ LAPTOP RECOMMENDED';
+          $('deviceAdviceTitle').textContent = 'Em bé đang xem bằng điện thoại nè ♡';
+          $('deviceAdviceText').textContent = 'Bản điện thoại vẫn xem được đầy đủ kỷ niệm theo cách gọn nhẹ. Nhưng khi rảnh, anh muốn em mở lại đường link trên laptop để khám phá trọn vẹn các hành tinh, quỹ đạo và những tấm ảnh bung nở nhé.';
+          $('openStory').textContent = 'Vẫn mở câu chuyện trên điện thoại ♡';
+        } else {
+          $('deviceAdviceTag').textContent = '✦ DESKTOP EXPERIENCE';
+          $('deviceAdviceTitle').textContent = 'Em đang ở đúng nơi để khám phá vũ trụ rồi.';
+          $('deviceAdviceText').textContent = 'Anh dành phiên bản laptop với những hành tinh ký ức, quỹ đạo ánh sáng và hiệu ứng ảnh bung nở cho em. Hãy mở trang đầu và khám phá từng thế giới nhỏ nhé.';
+          $('openStory').textContent = 'Mở vũ trụ của anh và em ♡';
+        }
+      }
+
+      function attemptBackgroundMusic() {
+        const player = $('audioPlayer');
+        if (!player?.src) return false;
+        player.volume = 0.68;
+        const playPromise = player.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(() => {
+            audioAutoplayBlocked = false;
+            updateMusicUI(true);
+          }).catch((error) => {
+            if ($('musicStatus')) $('musicStatus').textContent = 'Nhạc đã sẵn sàng · Chạm “Mở câu chuyện” để bật nhạc ♡';
+            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Nhạc đã sẵn sàng. Chạm nút bên dưới để bắt đầu cùng câu chuyện nhé.';
+          });
+          return true;
+        }
+        updateMusicUI(true);
+        return true;
+      }
+
+      function startMusicFromWelcomeTap() {
+        const player = $('audioPlayer');
+        if (!player?.src) {
+          if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Anh đang chuẩn bị giai điệu cho em…';
+          return;
+        }
+        player.volume = 0.68;
+        // Call play() synchronously inside the trusted welcome-button gesture.
+        const playPromise = player.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(() => updateMusicUI(true)).catch(() => {
+            audioAutoplayBlocked = true;
+            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Trình duyệt đang chặn tự phát. Chạm nút ♫ trong mục Nhạc nếu chưa nghe thấy nhé.';
+          });
+        }
       }
 
       function getConfig() {
@@ -520,7 +629,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         sun.innerHTML = '<span class="universe-sun-halo"></span><span class="universe-sun-core">♡</span><strong>ANH <i>×</i> EM</strong><small>OUR LITTLE UNIVERSE</small>';
         const footer = document.createElement('div');
         footer.className = 'universe-stage-footer';
-        footer.innerHTML = '<span>25 · 11 · 2024</span><span>EVERY PLANET HOLDS OUR MEMORIES</span><span>FOREVER IN ORBIT ♡</span>';
+        footer.innerHTML = '<span>25 · 11 · 2024</span><span>EVERY MEMORY HAS ITS OWN PLANET</span><span>FOREVER IN ORBIT ♡</span>';
 
         if (!matching.length) {
           const empty = document.createElement('div');
@@ -528,10 +637,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           empty.textContent = 'Chòm sao này đang chờ thêm những khoảnh khắc mới ♡';
           stage.append(nebula, starDust, orbitA, orbitB, orbitC, sun, empty, footer);
         } else {
-          // Spread small albums across several planets, but cap the desktop scene at eight.
-          // Larger albums place up to eight memories inside each planet.
-          const planetCount = Math.min(8, matching.length);
-          const planetSize = Math.ceil(matching.length / planetCount);
+          const planetSize = 8;
           const groups = [];
           for (let i = 0; i < matching.length; i += planetSize) groups.push(matching.slice(i, i + planetSize));
           stage.append(nebula, starDust, orbitA, orbitB, orbitC, sun);
@@ -1334,12 +1440,21 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           if (!setting?.value?.path) {
             $('musicName').textContent = 'Love Story — Indila';
             $('musicStatus').textContent = 'Đăng nhập quản trị để tải file nhạc lên một lần cho cả hai cùng nghe.';
+            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Anh chưa tải nhạc nền lên Cloud; em vẫn có thể mở câu chuyện bình thường.';
             return;
           }
           const audio = setting.value;
-          $('audioPlayer').src = mediaPublicUrl(audio.path);
+          const player = $('audioPlayer');
+          player.src = mediaPublicUrl(audio.path);
+          player.preload = 'auto';
+          player.volume = 0.68;
+          player.load();
           $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
-          $('musicStatus').textContent = 'Nhạc chung đã sẵn sàng · Chạm nút phát để nghe';
+          $('musicStatus').textContent = 'Đang chuẩn bị nhạc nền tự động…';
+          if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Đang chuẩn bị giai điệu cho câu chuyện của anh và em…';
+          // Try autoplay immediately. Browsers that permit autoplay will start here;
+          // others retry on the first welcome-button tap.
+          attemptBackgroundMusic();
         } catch (error) { console.error(error); notify('Chưa tải được thông tin nhạc từ cloud.'); }
       }
 
@@ -1426,16 +1541,18 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         if (!player.src) { notify('Chủ album chưa tải file nhạc lên nha ♡'); return; }
         if (player.paused) {
           try {
+            player.volume = 0.68;
             await player.play();
-            $('playMusic').textContent = 'Ⅱ';
-            $('disc').classList.add('playing');
-            $('musicStatus').textContent = 'Đang phát · Love is in the little things ♡';
-          } catch (error) { notify('Trình duyệt chưa phát được file nhạc này. Chạm phát lại nhé.'); }
+            updateMusicUI(true);
+          } catch (error) {
+            if ($('musicStatus')) $('musicStatus').textContent = 'Trình duyệt chưa cho phép phát nhạc. Hãy chạm phát lại nhé.';
+            notify('Trình duyệt chưa cho phép phát nhạc. Chạm phát lại nhé.');
+          }
         } else {
           player.pause();
-          $('playMusic').textContent = '▶';
-          $('disc').classList.remove('playing');
+          updateMusicUI(false);
           $('musicStatus').textContent = 'Đã tạm dừng';
+          if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Nhạc đã tạm dừng. Em có thể bật lại bất cứ lúc nào.';
         }
       }
 
@@ -1506,6 +1623,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
         $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
         $('openStory').addEventListener('click', () => {
+          // This tap is the browser-approved gesture used to start the shared soundtrack.
+          startMusicFromWelcomeTap();
           const book = $('storyBook');
           const gate = $('introGate');
           book.classList.add('opened');
@@ -1547,7 +1666,26 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         // The old musicTop hook referenced a non-existent element and stopped all event wiring.
         $('audioInput').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await saveMusic(file); event.target.value = ''; });
         $('playMusic').addEventListener('click', toggleMusic);
-        $('audioPlayer').addEventListener('ended', () => { $('playMusic').textContent = '▶'; $('disc').classList.remove('playing'); });
+        $('soundToggle').addEventListener('click', () => {
+          clickSoundEnabled = !clickSoundEnabled;
+          try { localStorage.setItem('our-love-click-sound', clickSoundEnabled ? 'on' : 'off'); } catch (_) {}
+          updateSoundToggle();
+          if (clickSoundEnabled) playButtonSound();
+          notify(clickSoundEnabled ? 'Đã bật âm thanh chạm nút ♡' : 'Đã tắt âm thanh chạm nút.');
+        });
+        $('audioPlayer').addEventListener('playing', () => updateMusicUI(true));
+        $('audioPlayer').addEventListener('pause', () => updateMusicUI(false));
+        $('audioPlayer').addEventListener('ended', () => updateMusicUI(false));
+        $('audioPlayer').addEventListener('error', () => {
+          if ($('musicStatus')) $('musicStatus').textContent = 'Không tải được file nhạc từ cloud. Kiểm tra file nhạc trong Storage nhé.';
+          if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Chưa tải được nhạc nền. Anh vẫn có thể mở câu chuyện cho em xem nhé.';
+        });
+        // A tiny generated chime gives buttons tactile feedback without downloading sound assets.
+        document.addEventListener('click', (event) => {
+          const control = event.target.closest('button, a, [role="button"]');
+          if (!control || control.disabled || control.dataset.noSfx === 'true') return;
+          if (control.id !== 'soundToggle') playButtonSound();
+        }, true);
         $('shareSite').addEventListener('click', shareSite);
         $('adminToggle').addEventListener('click', openAdminModal);
         $('loginSubmit').addEventListener('click', signIn);
@@ -1559,9 +1697,12 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       async function init() {
+        setDeviceAdvice();
+        updateSoundToggle();
         wireEvents();
         const galleryBreakpoint = window.matchMedia('(min-width: 761px)');
         galleryBreakpoint.addEventListener?.('change', () => renderMedia());
+        window.matchMedia('(max-width: 760px)').addEventListener?.('change', () => setDeviceAdvice());
         updateCounter();
         setInterval(updateCounter, 1000);
         updateAdminUI();

@@ -1174,3 +1174,89 @@ body.is-admin .preview-repair-btn { display: inline-flex; }
   .planet-memory-tile { opacity: 1; transform: none; }
   .planet-reveal-overlay, .planet-reveal-panel { transition: none !important; }
 }
+
+/* ================================================================
+   WELCOME GATE 2.7 — laptop invitation + music-first opening.
+   Lightweight, mostly static decoration so the mobile version stays smooth.
+   ================================================================ */
+.gate-content {
+  width: min(100%, 560px);
+  max-height: calc(100dvh - 34px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 12px 0;
+}
+.gate-content::-webkit-scrollbar { display: none; }
+.gate-device-card {
+  width: min(450px, calc(100vw - 38px));
+  padding: 13px 17px 14px;
+  border: 1px solid rgba(242,168,187,.27);
+  border-radius: 17px;
+  background: linear-gradient(135deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 12px 30px rgba(0,0,0,.13);
+  text-align: center;
+}
+.gate-device-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  color: #e9c9a6;
+  font: 800 8px/1.4 var(--sans);
+  letter-spacing: .2em;
+}
+.gate-device-tag::before {
+  content: '✦';
+  color: #f2a8bb;
+  font-size: 11px;
+  text-shadow: 0 0 12px rgba(242,168,187,.6);
+}
+.gate-device-card strong {
+  display: block;
+  color: #fff1f5;
+  font: 600 22px/1.12 var(--serif);
+}
+.gate-device-card p {
+  max-width: 410px;
+  margin: 6px auto 0;
+  color: #cbb9cd;
+  font: 400 10px/1.65 var(--sans);
+}
+.gate-audio-hint {
+  min-height: 15px;
+  color: #e9b8cf;
+  font: 600 9px/1.5 var(--sans);
+  letter-spacing: .025em;
+}
+.gate-open {
+  min-height: 45px;
+  padding-inline: 25px;
+  box-shadow: 0 0 0 5px rgba(240,166,184,.055), 0 12px 35px rgba(231,148,170,.24);
+}
+#soundToggle { color: #f2bfd3; border-color: rgba(242,168,187,.26); }
+#soundToggle[aria-pressed="false"] { color: #9d8fa3; opacity: .75; }
+.music-actions .icon-btn { flex: 0 0 auto; }
+@media (max-width: 760px) {
+  .gate-content { gap: 10px; max-height: calc(100dvh - 24px); padding: 8px 0; }
+  .book-scene { width: 158px; height: 202px; margin: 1px 0 3px; }
+  .book-cover strong { font-size: 30px; }
+  .book-cover { gap: 11px; }
+  .gate-title { font-size: 32px; }
+  .gate-caption { max-width: 290px; font-size: 9px; line-height: 1.55; }
+  .gate-device-card { width: min(390px, calc(100vw - 38px)); padding: 10px 12px 11px; border-radius: 14px; }
+  .gate-device-tag { margin-bottom: 5px; font-size: 7px; }
+  .gate-device-card strong { font-size: 19px; }
+  .gate-device-card p { margin-top: 4px; font-size: 8px; line-height: 1.5; }
+  .gate-audio-hint { font-size: 8px; }
+  .gate-open { min-height: 41px; padding: 12px 19px; font-size: 10px; }
+  .gate-foot { font-size: 7px; }
+}
+@media (max-height: 690px) {
+  .intro-gate { overflow-y: auto; }
+  .gate-content { margin: auto 0; }
+  .book-scene { width: 145px; height: 185px; margin-block: 0; }
+  .gate-content { gap: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-open { transition: none; }
+}
