@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
     :root {
       --night: #171322;
       --night-2: #24192d;
@@ -1161,7 +1161,7 @@ body.is-admin .preview-repair-btn { display: inline-flex; }
   .universe-sun { width: 158px; height: 158px; }
 }
 @media (max-width: 760px) {
-  /* No planetary scene or reveal motion is added to mobile; keep the compact v2.5 gallery. */
+  /* Base compact reveal sizing; v3.1 later adds the lightweight mobile planet scene. */
   .planet-reveal-overlay { padding: 12px; }
   .planet-reveal-panel { max-height: 88vh; padding: 19px 14px; border-radius: 20px; }
   .planet-reveal-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
@@ -1262,7 +1262,7 @@ body.is-admin .preview-repair-btn { display: inline-flex; }
 }
 
 /* ================================================================
-   COSMIC LOVE 2.9 — enhanced desktop + planet-style mobile, optimized.
+   COSMIC LOVE 2.9 — inherited base planet styles, enhanced by v3.1 below.
    Decorative motion uses transform/opacity; mobile avoids heavy blur.
    ================================================================ */
 @media (min-width: 901px) {
@@ -1616,4 +1616,505 @@ body.is-admin .preview-repair-btn { display: inline-flex; }
   .universe-aurora, .universe-twinkles, .universe-comet, .planet-ring,
   .mobile-planet-node, .mobile-core-orbit, .mobile-core-heart { animation: none !important; }
   .planet-memory-tile { animation: none !important; opacity: 1; transform: none; }
+}
+
+
+/* ================================================================
+   COSMIC LOVE 3.1 — brighter romance + shared galaxy on every screen.
+   Animation is mostly transform/opacity; mobile uses static glow layers.
+   ================================================================ */
+:root {
+  --serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', 'DM Sans', system-ui, sans-serif;
+  --rose: #ffb9d7;
+  --rose-2: #f08fb9;
+  --gold: #ffe1b8;
+  --muted: #d8c9e1;
+}
+
+body { color: #fff5fb; }
+.brand { color: #fff2f8; }
+.brand-mark { color: #ffd6e8; border-color: rgba(255,218,237,.58); }
+.eyebrow { color: #ffe6c9; border-color: rgba(255,220,190,.42); }
+.hero-copy { color: #eadfec; font-size: 15px; line-height: 1.9; }
+.hero-note { color: #d6c6e0; }
+h1 { color: #fffaff; text-shadow: 0 5px 32px rgba(232,166,220,.16); }
+h1 em { color: #ffb9d7; text-shadow: 0 0 28px rgba(255,159,207,.28); }
+h2 { color: #fff8fd; text-shadow: 0 3px 24px rgba(230,174,221,.13); }
+.section-kicker { color: #ffe3bd; }
+.section-kicker::before { content: '✦'; display: inline-block; margin-right: 8px; color: #ffb8d8; text-shadow: 0 0 12px rgba(255,166,211,.85); animation: tinySparkle 3.2s ease-in-out infinite; }
+.section-sub { color: #e5d8ec; font-size: 14px; line-height: 1.85; }
+.counter-label { color: #f5dce9; }
+.counter-number span { color: #f0e2ee; }
+.counter-date { color: #d6c6df; font-size: 11px; }
+.time-box span { color: #e8d9eb; font-size: 9px; }
+.chapter-no { color: #ffe0bc; }
+.chapter-card { border-color: rgba(255,218,238,.2); background: linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035)); }
+.chapter-card h3 { color: #fff6fc; }
+.chapter-card p { color: #e3d5eb; font-size: 13px; line-height: 1.8; }
+.chapter-card:hover { border-color: rgba(255,182,216,.72); box-shadow: 0 18px 40px rgba(0,0,0,.24), 0 0 28px rgba(243,144,194,.1); }
+.music-meta small { color: #e1d2e8; }
+.letter-text { color: #695868; }
+.gate-device-card p { color: #eadfed; font-size: 12px; }
+.gate-device-tag { color: #ffe2bd; }
+.gate-audio-hint { color: #ffd3e6; }
+.pill-btn, .soft-btn { color: #fff0f7; }
+.primary-btn { color: #321d32; font-weight: 800; }
+
+@keyframes tinySparkle {
+  0%,100% { opacity: .72; transform: scale(.9) rotate(-8deg); }
+  50% { opacity: 1; transform: scale(1.14) rotate(12deg); }
+}
+
+/* Floating decorative stars and hearts are single lightweight layers. */
+.universe-sparkle-field,
+.universe-heart-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.universe-heart-field { z-index: 2; }
+.universe-sparkle {
+  position: absolute;
+  display: block;
+  color: rgba(255,245,253,.92);
+  font: 700 clamp(9px,1vw,16px)/1 var(--sans);
+  text-shadow: 0 0 8px rgba(255,255,255,.75), 0 0 18px rgba(250,160,216,.6);
+  opacity: .38;
+  animation: starDriftGlow var(--sparkle-duration,4s) ease-in-out var(--sparkle-delay,0s) infinite;
+}
+.universe-heart-floater {
+  position: absolute;
+  display: block;
+  color: rgba(255,180,216,.72);
+  font: 500 clamp(15px,2vw,28px)/1 var(--serif);
+  text-shadow: 0 0 12px rgba(255,153,205,.66), 0 0 28px rgba(220,127,203,.32);
+  opacity: .3;
+  animation: heartOrbitDrift var(--heart-duration,8s) ease-in-out var(--heart-delay,0s) infinite;
+}
+@keyframes starDriftGlow {
+  0%,100% { opacity: .2; transform: translate3d(0,0,0) scale(.78) rotate(0deg); }
+  48% { opacity: .96; transform: translate3d(4px,-10px,0) scale(1.18) rotate(35deg); }
+}
+@keyframes heartOrbitDrift {
+  0%,100% { opacity: .18; transform: translate3d(0,0,0) rotate(-12deg) scale(.88); }
+  50% { opacity: .76; transform: translate3d(8px,-17px,0) rotate(12deg) scale(1.08); }
+}
+
+/* Desktop: layered nebula, bigger luminous worlds, orbital details. */
+@media (min-width: 901px) {
+  .universe-stage {
+    min-height: 860px;
+    border: 1px solid rgba(255,210,235,.34);
+    border-radius: 34px;
+    background:
+      radial-gradient(ellipse at 50% 48%, rgba(255,174,220,.22), transparent 19%),
+      radial-gradient(ellipse at 10% 17%, rgba(174,125,236,.24), transparent 31%),
+      radial-gradient(ellipse at 91% 23%, rgba(119,172,245,.21), transparent 29%),
+      radial-gradient(ellipse at 80% 87%, rgba(246,141,198,.2), transparent 31%),
+      radial-gradient(ellipse at 17% 83%, rgba(112,111,207,.2), transparent 32%),
+      linear-gradient(145deg,#080b25 0%,#181534 42%,#281633 100%);
+    box-shadow: inset 0 0 115px rgba(3,4,20,.72), 0 30px 92px rgba(0,0,0,.35), 0 0 62px rgba(244,149,207,.13);
+  }
+  .universe-stage::before, .universe-stage::after {
+    color: rgba(255,192,224,.72);
+    font-size: 46px;
+    text-shadow: 0 0 14px #ffcae2, 0 0 36px rgba(255,126,198,.72);
+  }
+  .universe-nebula {
+    opacity: .92;
+    filter: blur(30px);
+    background:
+      radial-gradient(ellipse at 18% 31%, rgba(255,115,194,.2), transparent 25%),
+      radial-gradient(ellipse at 78% 27%, rgba(124,154,255,.2), transparent 26%),
+      radial-gradient(ellipse at 58% 75%, rgba(243,130,193,.19), transparent 27%),
+      radial-gradient(ellipse at 28% 78%, rgba(149,116,235,.16), transparent 26%);
+  }
+  .universe-aurora { opacity: .72; filter: blur(27px); }
+  .universe-twinkles { opacity: .66; animation-duration: 5.5s; }
+  .universe-orbit { border-color: rgba(255,208,236,.23); box-shadow: 0 0 45px rgba(204,144,220,.08), inset 0 0 40px rgba(204,144,220,.045); }
+  .universe-orbit-a::before, .universe-orbit-b::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 6%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #fff1fb;
+    box-shadow: 0 0 8px 3px #ffb5db, 0 0 22px 7px rgba(236,143,208,.55);
+  }
+  .universe-orbit-b::before { left: auto; right: 13%; width: 6px; height: 6px; background: #dceaff; box-shadow: 0 0 9px 3px #a9c6ff, 0 0 20px 6px rgba(132,163,255,.44); }
+  .universe-sun { width: 214px; height: 214px; box-shadow: 0 0 0 13px rgba(238,172,216,.055), 0 0 0 36px rgba(238,172,216,.035), 0 0 92px rgba(255,151,210,.58), inset -18px -20px 34px rgba(27,20,54,.45), inset 12px 12px 24px rgba(255,255,255,.34); }
+  .universe-sun::before {
+    content: '';
+    position: absolute;
+    inset: -43px -24px;
+    border: 1px solid rgba(255,208,235,.34);
+    border-radius: 50%;
+    transform: rotateX(62deg) rotate(-23deg);
+    box-shadow: 0 0 20px rgba(251,158,216,.13);
+    animation: haloTurn 54s linear infinite reverse;
+  }
+  .universe-sun::after {
+    content: '✦';
+    position: absolute;
+    top: -53px;
+    right: 5px;
+    color: #fff2bc;
+    font: 23px var(--sans);
+    text-shadow: 0 0 18px #fff2bc, 0 0 34px #f4a8ce;
+    animation: tinySparkle 3.8s ease-in-out infinite;
+  }
+  .universe-sun-core { font-size: 56px; }
+  .planet-node { width: 178px; min-height: 224px; }
+  .planet-globe { width: 120px; height: 120px; box-shadow: inset -17px -17px 29px rgba(10,10,35,.48), inset 11px 10px 22px rgba(255,255,255,.28), 0 0 34px var(--planet-glow-color,rgba(230,147,207,.42)), 0 0 66px rgba(229,151,211,.12); }
+  .planet-ring { width: 164px; height: 86px; border-color: rgba(255,226,243,.58); box-shadow: 0 0 17px rgba(241,166,215,.24); }
+  .planet-ring::after { content: ''; position: absolute; right: 7%; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: #fff5cf; box-shadow: 0 0 13px 4px rgba(255,222,174,.7); }
+  .planet-heart { font-size: 50px; color: #fffaff; text-shadow: 0 0 15px #fff, 0 0 32px var(--planet-glow-color), 0 0 48px rgba(255,175,222,.65); }
+  .planet-count { color: #fff5fc; border-color: rgba(255,231,245,.5); background: rgba(22,17,49,.88); font-size: 8px; }
+  .planet-label { color: #fffaff; font-size: 22px; text-shadow: 0 2px 15px rgba(0,0,0,.82), 0 0 18px rgba(245,164,215,.28); }
+  .planet-subtitle { color: #eadcf7; font-size: 9px; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
+  .planet-peek { color: #fff; border-color: rgba(255,240,249,.8); background: rgba(40,24,65,.84); box-shadow: 0 0 18px rgba(255,255,255,.4); }
+  .planet-node:hover .planet-globe { transform: scale(1.16) rotate(10deg); box-shadow: 0 0 46px var(--planet-glow-color), 0 0 82px rgba(255,164,216,.22); }
+  .planet-node:hover .planet-count { background: rgba(113,56,108,.92); }
+  .universe-hint { color: #fff0f8; border-color: rgba(255,211,235,.34); background: rgba(16,13,43,.78); box-shadow: 0 10px 32px rgba(0,0,0,.28), 0 0 25px rgba(246,160,214,.1); }
+  .universe-stage-footer { color: rgba(237,218,248,.75); }
+  .universe-sparkle { font-size: clamp(10px,1.15vw,18px); }
+  .universe-heart-floater { font-size: clamp(18px,2vw,31px); }
+  .planet-reveal-panel { border-color: rgba(255,202,230,.42); box-shadow: 0 35px 120px rgba(0,0,0,.68), 0 0 55px rgba(241,144,205,.12), inset 0 1px 0 rgba(255,255,255,.12); }
+  .planet-reveal-title { color: #fff8fd; text-shadow: 0 0 32px rgba(255,162,211,.4); }
+  .planet-reveal-subtitle { color: #eee1f4; }
+}
+
+/* Mobile: same galaxy identity, but with lightweight gradients and small motion. */
+@media (max-width: 900px) {
+  .hero-copy { color: #f1e7f2; font-size: 12px; }
+  .section-sub { color: #e9deef; font-size: 12px; }
+  .chapter-card p { color: #e7d9ef; font-size: 11px; }
+  .counter-date { color: #dfd1e8; }
+  .universe-stage--mobile {
+    min-height: 420px;
+    padding: 23px 13px 20px;
+    border-color: rgba(255,190,224,.34);
+    border-radius: 25px;
+    background:
+      radial-gradient(ellipse at 50% 8%, rgba(255,158,214,.22), transparent 38%),
+      radial-gradient(ellipse at 8% 58%, rgba(139,124,240,.2), transparent 37%),
+      radial-gradient(ellipse at 92% 76%, rgba(98,164,229,.19), transparent 34%),
+      linear-gradient(155deg,#0a0d2a 0%,#211737 58%,#2b193c 100%);
+    box-shadow: inset 0 0 48px rgba(5,5,22,.38), 0 15px 42px rgba(0,0,0,.2), 0 0 24px rgba(231,134,190,.09);
+  }
+  .universe-stage--mobile .universe-nebula {
+    display: block !important;
+    z-index: 0;
+    inset: -12%;
+    opacity: .5;
+    filter: none;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(244,126,193,.24), transparent 38%),
+      radial-gradient(ellipse at 80% 32%, rgba(128,142,238,.22), transparent 40%),
+      radial-gradient(ellipse at 58% 82%, rgba(239,141,197,.2), transparent 42%);
+    animation: mobileNebulaDrift 22s ease-in-out infinite alternate;
+  }
+  .universe-stage--mobile .universe-star-dust {
+    display: block !important;
+    z-index: 1;
+    opacity: .62;
+    animation: none;
+    background-size: 135px 120px, 180px 150px, 205px 180px, 155px 145px, 220px 190px, 245px 215px;
+  }
+  .universe-stage--mobile .universe-aurora {
+    display: block !important;
+    position: absolute;
+    inset: 4% -22%;
+    z-index: 0;
+    opacity: .38;
+    filter: none;
+    background: linear-gradient(115deg, transparent 10%, rgba(255,151,210,.10) 32%, rgba(140,156,255,.12) 58%, transparent 86%);
+    transform: translate3d(0,0,0) rotate(-11deg);
+    animation: mobileAuroraGlide 19s ease-in-out infinite alternate;
+  }
+  .universe-stage--mobile .universe-twinkles {
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: .48;
+    background-image:
+      radial-gradient(2px 2px at 12% 19%, #fff 45%, transparent 70%),
+      radial-gradient(1.5px 1.5px at 76% 24%, #ffe1f2 45%, transparent 70%),
+      radial-gradient(2px 2px at 86% 77%, #fff 45%, transparent 70%),
+      radial-gradient(1px 1px at 32% 67%, #f3d5ff 45%, transparent 70%);
+    background-size: 210px 190px, 250px 220px, 230px 210px, 180px 170px;
+    animation: twinkleBreath 9s ease-in-out infinite alternate;
+  }
+  .universe-stage--mobile .universe-comet {
+    display: block !important;
+    z-index: 1;
+    width: 64px;
+    height: 1px;
+    opacity: 0;
+    box-shadow: 0 0 7px rgba(255,191,224,.4);
+    animation: cometAcross 31s linear infinite;
+  }
+  .universe-stage--mobile .comet-one { top: 21%; left: -18%; animation-delay: 6s; }
+  .universe-stage--mobile .universe-orbit {
+    display: block !important;
+    left: 50%;
+    top: 56%;
+    z-index: 0;
+    width: 112%;
+    height: 44%;
+    border-color: rgba(255,207,235,.18);
+    box-shadow: none;
+    transform: translate(-50%,-50%) rotate(-19deg);
+  }
+  .universe-stage--mobile .universe-orbit-a { animation: mobileOrbitSlow 72s linear infinite; }
+  .universe-stage--mobile .universe-orbit-b { width: 78%; height: 76%; border-color: rgba(186,190,255,.17); animation: mobileOrbitSlow 94s linear infinite reverse; }
+  .universe-stage--mobile .universe-orbit-c { width: 124%; height: 27%; top: 67%; border-color: rgba(255,175,220,.12); }
+  .mobile-universe-core {
+    width: 138px;
+    height: 138px;
+    min-height: 138px;
+    aspect-ratio: 1;
+    position: relative;
+    z-index: 3;
+    gap: 4px;
+    margin: 0 auto 20px;
+    border: 1px solid rgba(255,222,241,.4);
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 28%, #ffe8f5 0%, #e7a7d1 11%, #9c69b2 35%, #353466 69%, #151934 100%);
+    box-shadow: inset -13px -15px 24px rgba(9,10,37,.5), inset 9px 9px 18px rgba(255,255,255,.24), 0 0 0 9px rgba(246,172,220,.055), 0 0 0 22px rgba(246,172,220,.03), 0 0 42px rgba(239,142,202,.34);
+  }
+  .mobile-universe-core::before {
+    content: '';
+    position: absolute;
+    inset: -17px -27px;
+    border: 1px solid rgba(255,218,241,.34);
+    border-radius: 50%;
+    transform: rotateX(62deg) rotate(-20deg);
+    pointer-events: none;
+  }
+  .mobile-core-orbit {
+    position: absolute;
+    width: 175px;
+    height: 61px;
+    border-color: rgba(255,234,247,.66);
+    transform: rotate(-25deg);
+    animation: mobileCoreOrbit 30s linear infinite;
+  }
+  .mobile-core-orbit--second {
+    width: 157px;
+    height: 104px;
+    border-style: dashed;
+    border-color: rgba(191,196,255,.42);
+    transform: rotate(63deg);
+    animation-direction: reverse;
+    animation-duration: 48s;
+  }
+  .mobile-core-heart { color: #fffaff; font-size: 43px; text-shadow: 0 0 13px #fff, 0 0 28px #ffacd3, 0 0 45px #bb9dff; }
+  .mobile-universe-core strong { color: #fffaff; font-size: 11px; letter-spacing: .18em; }
+  .mobile-universe-core strong i { color: #ffd2e7; }
+  .mobile-universe-core small { color: #f4e6fa; font-size: 7px; letter-spacing: .18em; }
+  .mobile-core-satellite {
+    position: absolute;
+    top: 18px;
+    right: 21px;
+    color: #fff1be;
+    font-size: 12px;
+    text-shadow: 0 0 12px #fff0bd;
+    animation: tinySparkle 3.4s ease-in-out infinite;
+  }
+  .mobile-planet-grid {
+    z-index: 4;
+    max-width: 590px;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 12px 8px;
+    padding: 2px 3px;
+  }
+  .mobile-planet-node {
+    z-index: 3;
+    min-height: 145px;
+    padding: 5px 3px 8px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    animation: mobilePlanetFloat 7.2s ease-in-out var(--planet-delay,0s) infinite;
+  }
+  .mobile-planet-node {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #fff8fd;
+    cursor: pointer;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-planet-node .planet-ring {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    display: block;
+    width: 100px;
+    height: 51px;
+    border: 1px solid rgba(255,229,245,.65);
+    border-radius: 50%;
+    transform: translateX(-50%) rotate(-23deg);
+    box-shadow: 0 0 10px rgba(242,164,214,.15);
+    pointer-events: none;
+    animation: mobileRingSway 23s ease-in-out infinite alternate;
+  }
+  .mobile-planet-node .planet-ring::before,
+  .mobile-planet-node .planet-ring::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+  .mobile-planet-node .planet-ring::before { left: -3px; background: #fff4fb; box-shadow: 0 0 9px 3px rgba(255,169,217,.7); }
+  .mobile-planet-node .planet-ring::after { right: -3px; background: #fff0c8; box-shadow: 0 0 9px 3px rgba(255,223,171,.56); }
+  .mobile-planet-node .planet-globe {
+    position: relative;
+    display: grid;
+    width: 72px;
+    height: 72px;
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(255,247,253,.64);
+    border-radius: 50%;
+    background: var(--planet-surface, radial-gradient(circle at 30% 25%,#ffe3f1,#c77eb8 48%,#292347 100%));
+    box-shadow: inset -9px -9px 13px rgba(10,10,35,.42), inset 5px 5px 11px rgba(255,255,255,.24), 0 0 19px var(--planet-glow-color,rgba(230,147,207,.32));
+    transition: transform .28s ease, box-shadow .28s ease;
+  }
+  .mobile-planet-node .planet-globe::before {
+    content: '';
+    position: absolute;
+    inset: 12% 0 14%;
+    border-top: 1px solid rgba(255,255,255,.28);
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    border-radius: 50%;
+    transform: rotate(-28deg) scale(1.08);
+    opacity: .7;
+  }
+  .mobile-planet-node .planet-globe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 25% 23%,rgba(255,255,255,.45),transparent 22%),radial-gradient(circle at 74% 77%,rgba(8,9,30,.5),transparent 47%);
+  }
+  .mobile-planet-node .planet-glow { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 30% 25%,rgba(255,255,255,.18),transparent 48%); }
+  .mobile-planet-node[data-tone="rose"] { --planet-surface: radial-gradient(circle at 29% 25%,#ffe4ef 0%,#ea9fca 23%,#a65b9a 55%,#33224f 100%); --planet-glow-color: rgba(243,138,196,.48); }
+  .mobile-planet-node[data-tone="violet"] { --planet-surface: radial-gradient(circle at 32% 24%,#f0e5ff 0%,#ab91e4 29%,#6157a0 61%,#25274f 100%); --planet-glow-color: rgba(171,145,228,.46); }
+  .mobile-planet-node[data-tone="ocean"] { --planet-surface: radial-gradient(circle at 30% 25%,#defaff 0%,#72c6d1 27%,#397d9c 59%,#202d56 100%); --planet-glow-color: rgba(103,193,221,.42); }
+  .mobile-planet-node[data-tone="gold"] { --planet-surface: radial-gradient(circle at 30% 25%,#fff2cf 0%,#e8bd88 27%,#ad796f 62%,#3a2853 100%); --planet-glow-color: rgba(234,187,130,.44); }
+  .mobile-planet-node[data-tone="lilac"] { --planet-surface: radial-gradient(circle at 30% 25%,#f9e4ff 0%,#ce9fdc 29%,#8863aa 63%,#33234f 100%); --planet-glow-color: rgba(211,154,220,.45); }
+  .mobile-planet-node[data-tone="coral"] { --planet-surface: radial-gradient(circle at 30% 25%,#ffe5df 0%,#e99a9c 29%,#a95778 62%,#382647 100%); --planet-glow-color: rgba(232,141,155,.44); }
+  .mobile-planet-node[data-tone="blue"] { --planet-surface: radial-gradient(circle at 30% 25%,#e6efff 0%,#9eb4e9 29%,#596da8 63%,#252549 100%); --planet-glow-color: rgba(151,177,231,.44); }
+  .mobile-planet-node[data-tone="pink"] { --planet-surface: radial-gradient(circle at 30% 25%,#fff0f5 0%,#f0a7c5 29%,#b45c91 63%,#3a224e 100%); --planet-glow-color: rgba(244,155,197,.48); }
+  .mobile-planet-node .planet-heart { position: relative; z-index: 1; color: #fffaff; font-size: 33px; text-shadow: 0 0 12px #fff, 0 0 24px var(--planet-glow-color); }
+  .mobile-planet-node .planet-count { margin-top: -9px; padding: 4px 8px; color: #fff8fc; border-color: rgba(255,230,245,.48); background: rgba(24,19,54,.9); font-size: 7px; box-shadow: 0 3px 10px rgba(0,0,0,.2); }
+  .mobile-planet-node .planet-label { margin-top: 8px; color: #fffaff; font-size: 15px; text-shadow: 0 2px 11px rgba(0,0,0,.8), 0 0 12px rgba(243,159,212,.2); }
+  .mobile-planet-node .planet-subtitle { margin-top: 4px; color: #ecdef6; font-size: 8px; letter-spacing: .07em; text-shadow: 0 2px 8px rgba(0,0,0,.8); }
+  .mobile-planet-node .planet-peek {
+    position: absolute;
+    z-index: 4;
+    top: 7px;
+    right: calc(50% - 54px);
+    display: grid;
+    width: 21px;
+    height: 21px;
+    place-items: center;
+    border: 1px solid rgba(255,241,250,.76);
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(34,24,65,.88);
+    font-size: 9px;
+    box-shadow: 0 0 11px rgba(255,255,255,.24);
+  }
+  .mobile-planet-node .planet-count {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,230,245,.5);
+    border-radius: 99px;
+    font: 800 7px/1 var(--sans);
+    letter-spacing: .12em;
+  }
+  .universe-stage--mobile .universe-hint { z-index: 5; color: #fff2fa; border-color: rgba(255,207,231,.28); background: rgba(17,14,42,.76); font-size: 11px; }
+  .universe-stage--mobile .universe-stage-footer { z-index: 5; color: rgba(241,222,249,.74); font-size: 7px; }
+  .universe-mobile-empty { z-index: 4; border-color: rgba(255,213,238,.24); background: rgba(255,255,255,.065); }
+  .universe-mobile-empty strong { color: #fff7fd; font-size: 23px; }
+  .universe-mobile-empty p { color: #e4d7ef; font-size: 12px; }
+  .universe-sparkle-field { z-index: 1; }
+  .universe-heart-field { z-index: 2; }
+  .universe-sparkle { font-size: 12px; opacity: .44; }
+  .universe-heart-floater { font-size: 19px; opacity: .24; }
+  .planet-reveal-title { color: #fffaff; }
+  .planet-reveal-subtitle { color: #f0e3f5; }
+  .planet-memory-caption { color: #fff5fb; font-size: 11px; }
+}
+
+@media (max-width: 390px) {
+  .mobile-universe-core { width: 124px; height: 124px; min-height: 124px; }
+  .mobile-core-heart { font-size: 38px; }
+  .mobile-planet-node { min-height: 137px; }
+  .mobile-planet-node .planet-globe { width: 65px; height: 65px; }
+  .mobile-planet-node .planet-ring { width: 91px; height: 46px; }
+}
+
+@keyframes mobileNebulaDrift {
+  from { transform: translate3d(-1.2%,0,0) scale(.99); opacity: .38; }
+  to { transform: translate3d(1.2%,-.5%,0) scale(1.02); opacity: .55; }
+}
+@keyframes mobileAuroraGlide {
+  from { transform: translate3d(-1%,0,0) rotate(-11deg); opacity: .24; }
+  to { transform: translate3d(1%,1%,0) rotate(-7deg); opacity: .4; }
+}
+@keyframes mobileOrbitSlow { to { rotate: 360deg; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .universe-sparkle, .universe-heart-floater, .universe-aurora, .universe-comet,
+  .universe-nebula, .universe-twinkles, .mobile-core-orbit, .mobile-core-heart,
+  .mobile-planet-node, .planet-ring { animation: none !important; }
+}
+
+@media (min-width: 761px) {
+  .chapter-card::before {
+    content: '♡';
+    position: absolute;
+    top: 17px;
+    right: 20px;
+    color: rgba(255,177,215,.42);
+    font: 25px/1 var(--serif);
+    text-shadow: 0 0 16px rgba(255,153,207,.42);
+    animation: heartOrbitDrift 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .chapter-card:nth-child(2)::before { animation-delay: -2.5s; }
+  .chapter-card:nth-child(3)::before { animation-delay: -5s; }
+  .counter-card::before {
+    content: '♡';
+    position: absolute;
+    right: 8%;
+    bottom: 14%;
+    color: rgba(255,183,216,.34);
+    font: 46px/1 var(--serif);
+    text-shadow: 0 0 22px rgba(255,153,207,.3);
+    animation: heartOrbitDrift 9s ease-in-out infinite;
+    pointer-events: none;
+  }
 }

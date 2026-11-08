@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171322">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Cosmic Love 2.9 ♡</title>
+  <title>The Little Archive — Cosmic Love 3.1 ♡</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
@@ -19,7 +19,7 @@
       <aside class="gate-device-card" id="deviceAdvice" role="note" aria-live="polite">
         <span class="gate-device-tag" id="deviceAdviceTag">✦ BEST VIEW ON LAPTOP</span>
         <strong id="deviceAdviceTitle">Em bé ơi, anh dành cả một vũ trụ cho em.</strong>
-        <p id="deviceAdviceText">Mở trang này trên laptop để thấy đầy đủ các hành tinh, quỹ đạo và những tấm ảnh bung nở. Trên điện thoại vẫn có phiên bản gọn nhẹ dành riêng cho em.</p>
+        <p id="deviceAdviceText">Mở trang này trên laptop để thấy đầy đủ các hành tinh, quỹ đạo và những tấm ảnh bung nở. Trên điện thoại em vẫn có một tiểu thiên hà riêng, cùng những hành tinh và trái tim lấp lánh, được tối ưu để chạy mượt hơn.</p>
       </aside>
       <div class="gate-audio-hint" id="gateAudioHint" aria-live="polite">♫ Nhạc sẽ tự bật khi em mở câu chuyện, nếu trình duyệt cho phép.</div>
       <button class="gate-open" id="openStory" type="button">Mở vũ trụ & bật nhạc ♡</button>
@@ -595,6 +595,47 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         document.querySelectorAll('.planet-selected').forEach((planet) => planet.classList.remove('planet-selected'));
       }
 
+      function addCosmicDecorations(stage, compact = false) {
+        const sparkleField = document.createElement('div');
+        sparkleField.className = 'universe-sparkle-field';
+        sparkleField.setAttribute('aria-hidden', 'true');
+        const sparklePositions = [
+          [6, 16], [14, 73], [22, 30], [31, 83], [39, 12], [47, 67],
+          [57, 20], [65, 79], [73, 36], [82, 15], [90, 62], [95, 31],
+          [11, 46], [28, 54], [53, 91], [70, 57], [86, 88], [43, 42]
+        ];
+        const sparkleCount = compact ? 9 : sparklePositions.length;
+        for (let i = 0; i < sparkleCount; i++) {
+          const star = document.createElement('span');
+          star.className = 'universe-sparkle';
+          star.textContent = i % 4 === 0 ? '✦' : (i % 3 === 0 ? '✧' : '·');
+          const [x, y] = sparklePositions[i];
+          star.style.left = `${x}%`;
+          star.style.top = `${y}%`;
+          star.style.setProperty('--sparkle-delay', `${-(i * 0.47)}s`);
+          star.style.setProperty('--sparkle-duration', `${compact ? 4.8 + (i % 3) : 3.1 + (i % 4) * 0.7}s`);
+          sparkleField.append(star);
+        }
+
+        const heartField = document.createElement('div');
+        heartField.className = 'universe-heart-field';
+        heartField.setAttribute('aria-hidden', 'true');
+        const hearts = compact
+          ? [[9, 26, '♡'], [88, 43, '♥'], [18, 83, '✧']]
+          : [[7, 27, '♡'], [91, 20, '♥'], [15, 78, '♡'], [84, 73, '♥'], [48, 10, '♡'], [57, 88, '✧']];
+        hearts.forEach(([x, y, symbol], index) => {
+          const heart = document.createElement('span');
+          heart.className = 'universe-heart-floater';
+          heart.textContent = symbol;
+          heart.style.left = `${x}%`;
+          heart.style.top = `${y}%`;
+          heart.style.setProperty('--heart-delay', `${-(index * 1.6)}s`);
+          heart.style.setProperty('--heart-duration', `${compact ? 8 + index : 6.8 + index * 0.55}s`);
+          heartField.append(heart);
+        });
+        stage.append(sparkleField, heartField);
+      }
+
       function renderDesktopUniverse() {
         const host = $('filmContent');
         const matching = getFilteredMemories();
@@ -633,7 +674,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           empty.textContent = 'Chòm sao này đang chờ thêm những khoảnh khắc mới ♡';
           stage.append(nebula, aurora, starDust, twinkles, cometOne, cometTwo, orbitA, orbitB, orbitC, sun, empty, footer);
         } else {
-          const planetSize = 8;
+          const planetSize = matching.length <= 24 ? 4 : 8;
           const groups = [];
           for (let i = 0; i < matching.length; i += planetSize) groups.push(matching.slice(i, i + planetSize));
           stage.append(nebula, aurora, starDust, twinkles, cometOne, cometTwo, orbitA, orbitB, orbitC, sun);
@@ -643,6 +684,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           hint.innerHTML = '<span>✧</span> Chạm vào một hành tinh để mở những kỷ niệm đang ngủ bên trong <span>♡</span>';
           stage.append(hint, footer);
         }
+        addCosmicDecorations(stage, false);
         host.replaceChildren(stage);
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.classList.toggle('active', button.dataset.filter === activeFilter);
@@ -660,16 +702,28 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         nebula.className = 'universe-nebula';
         const starDust = document.createElement('div');
         starDust.className = 'universe-star-dust';
+        const aurora = document.createElement('div');
+        aurora.className = 'universe-aurora';
+        const twinkles = document.createElement('div');
+        twinkles.className = 'universe-twinkles';
+        const comet = document.createElement('div');
+        comet.className = 'universe-comet comet-one';
+        const orbitA = document.createElement('div');
+        orbitA.className = 'universe-orbit universe-orbit-a';
+        const orbitB = document.createElement('div');
+        orbitB.className = 'universe-orbit universe-orbit-b';
+        const orbitC = document.createElement('div');
+        orbitC.className = 'universe-orbit universe-orbit-c';
         const core = document.createElement('div');
         core.className = 'mobile-universe-core';
-        core.innerHTML = '<span class="mobile-core-orbit"></span><span class="mobile-core-heart">♡</span><strong>ANH <i>×</i> EM</strong><small>OUR LITTLE UNIVERSE</small>';
+        core.innerHTML = '<span class="mobile-core-orbit"></span><span class="mobile-core-orbit mobile-core-orbit--second"></span><span class="mobile-core-heart">♡</span><strong>ANH <i>×</i> EM</strong><small>OUR LITTLE UNIVERSE</small><span class="mobile-core-satellite">✦</span>';
         const planetGrid = document.createElement('div');
         planetGrid.className = 'mobile-planet-grid';
         const footer = document.createElement('div');
         footer.className = 'universe-stage-footer';
         footer.innerHTML = '<span>25 · 11 · 2024</span><span>EVERY MEMORY HAS ITS OWN PLANET</span>';
 
-        stage.append(nebula, starDust, core);
+        stage.append(nebula, aurora, starDust, twinkles, comet, orbitA, orbitB, orbitC, core);
         if (!matching.length) {
           const empty = document.createElement('div');
           empty.className = 'universe-mobile-empty';
@@ -682,7 +736,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           empty.append(add);
           stage.append(empty);
         } else {
-          const planetSize = 8;
+          const planetSize = matching.length <= 24 ? 4 : 8;
           const groups = [];
           for (let i = 0; i < matching.length; i += planetSize) groups.push(matching.slice(i, i + planetSize));
           groups.forEach((group, index) => planetGrid.append(makePlanetButton(group, index, groups.length)));
@@ -693,6 +747,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           stage.append(hint);
         }
         stage.append(footer);
+        addCosmicDecorations(stage, true);
         host.replaceChildren(stage);
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.classList.toggle('active', button.dataset.filter === activeFilter);
@@ -1497,11 +1552,6 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         });
       }
 
-      function isIndilaTrack(audio) {
-        const label = `${audio?.name || ''} ${audio?.path || ''}`.toLowerCase();
-        return /indila|india[\s_-]*love[\s_-]*story|love[\s_-]*story[\s_-]*india/i.test(label);
-      }
-
       async function loadMusic() {
         const player = $('audioPlayer');
         if (!player) return;
@@ -1522,18 +1572,14 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
             return;
           }
           const audio = setting.value;
-          if (isIndilaTrack(audio)) {
-            $('musicName').textContent = 'Đã tắt bài nhạc cũ';
-            $('musicStatus').textContent = 'Bài nhạc cũ đã được tắt. Anh tải bài MP3 muốn giữ lên để thay thế nhé.';
-            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Bài nhạc cũ đã được tắt theo yêu cầu của anh.';
-            return;
-          }
+          // Keep the single soundtrack currently saved in Cloud, including Love Story — Indila.
+          // Do not filter it by filename; the Cloud setting is the only music source.
           player.src = mediaPublicUrl(audio.path);
           player.preload = 'auto';
           player.loop = true;
           player.volume = 0.68;
           player.load();
-          $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
+          $('musicName').textContent = audio.name || 'Love Story — Indila';
           $('musicStatus').textContent = 'Đang chuẩn bị một bài nhạc duy nhất cho câu chuyện…';
           if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Đang chuẩn bị giai điệu cho câu chuyện của anh và em…';
           attemptBackgroundMusic();
