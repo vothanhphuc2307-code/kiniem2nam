@@ -1260,3 +1260,360 @@ body.is-admin .preview-repair-btn { display: inline-flex; }
 @media (prefers-reduced-motion: reduce) {
   .gate-open { transition: none; }
 }
+
+/* ================================================================
+   COSMIC LOVE 2.9 — enhanced desktop + planet-style mobile, optimized.
+   Decorative motion uses transform/opacity; mobile avoids heavy blur.
+   ================================================================ */
+@media (min-width: 901px) {
+  .universe-stage {
+    min-height: 790px;
+    border-color: rgba(255, 194, 224, .24);
+    background:
+      radial-gradient(ellipse at 50% 49%, rgba(246, 154, 207, .17), transparent 21%),
+      radial-gradient(ellipse at 14% 22%, rgba(143, 108, 210, .22), transparent 30%),
+      radial-gradient(ellipse at 87% 78%, rgba(88, 132, 210, .18), transparent 32%),
+      radial-gradient(ellipse at 49% 112%, rgba(213, 111, 168, .16), transparent 42%),
+      linear-gradient(145deg, #080a1e 0%, #17152f 45%, #24152f 100%);
+    box-shadow: inset 0 0 100px rgba(3, 4, 17, .75), 0 28px 82px rgba(0,0,0,.28), 0 0 50px rgba(223,134,190,.07);
+  }
+  .universe-aurora {
+    position: absolute;
+    z-index: -2;
+    inset: -18%;
+    pointer-events: none;
+    opacity: .5;
+    background:
+      radial-gradient(ellipse at 25% 42%, rgba(244, 121, 190, .22), transparent 25%),
+      radial-gradient(ellipse at 73% 55%, rgba(120, 135, 235, .2), transparent 29%),
+      radial-gradient(ellipse at 52% 20%, rgba(174, 120, 215, .16), transparent 24%);
+    filter: blur(34px);
+    transform: translate3d(0,0,0) rotate(-5deg);
+    animation: auroraGlide 24s ease-in-out infinite alternate;
+    contain: paint;
+  }
+  .universe-twinkles {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    opacity: .36;
+    background-image:
+      radial-gradient(2px 2px at 13% 26%, #fff 45%, transparent 70%),
+      radial-gradient(1.5px 1.5px at 31% 74%, #ffd7ee 45%, transparent 70%),
+      radial-gradient(2px 2px at 69% 22%, #fff 45%, transparent 70%),
+      radial-gradient(1px 1px at 84% 66%, #f3c9ff 45%, transparent 70%),
+      radial-gradient(1.5px 1.5px at 56% 91%, #fff 45%, transparent 70%);
+    background-size: 360px 290px, 420px 350px, 390px 320px, 310px 270px, 470px 390px;
+    animation: twinkleBreath 7s ease-in-out infinite alternate;
+  }
+  .universe-comet {
+    position: absolute;
+    z-index: 1;
+    width: 150px;
+    height: 2px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,233,247,.95), rgba(242,154,208,.5), transparent);
+    box-shadow: 0 0 12px rgba(255, 191, 224, .65);
+    transform: rotate(-30deg) translate3d(0,0,0);
+    animation: cometAcross 17s linear infinite;
+  }
+  .universe-comet::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: 24px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 12px 3px rgba(255, 214, 239, .72);
+  }
+  .comet-one { top: 16%; left: -14%; animation-delay: 1.5s; }
+  .comet-two { top: 63%; left: -18%; width: 105px; animation-duration: 23s; animation-delay: 9s; opacity: 0; }
+  .universe-sun-halo { animation: haloTurn 42s linear infinite; }
+  .universe-sun-core { animation: coreHeartbeat 4.8s ease-in-out infinite; }
+  .planet-node { will-change: transform; }
+  .planet-ring {
+    animation: planetRingTurn 34s linear infinite;
+    will-change: transform;
+  }
+  .planet-ring::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 50%;
+    background: #ffe9f5;
+    box-shadow: 0 0 11px 3px rgba(244,160,211,.65);
+    transform: translateY(-50%);
+  }
+  .planet-globe::after { animation: planetLight 6.5s ease-in-out infinite alternate; }
+  .planet-node:nth-of-type(3n) .planet-globe::after { animation-delay: -2.2s; }
+  .planet-node:nth-of-type(3n + 1) .planet-ring { animation-direction: reverse; }
+  .planet-memory-frame::after {
+    content: '';
+    position: absolute;
+    inset: -60% -30%;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.25) 49%, transparent 56%);
+    transform: translate3d(-65%,0,0);
+  }
+  .planet-memory-tile:hover .planet-memory-frame::after {
+    opacity: 1;
+    transform: translate3d(65%,0,0);
+    transition: transform .85s ease, opacity .2s ease;
+  }
+  .planet-memory-tile { backface-visibility: hidden; }
+}
+
+@keyframes auroraGlide {
+  0% { transform: translate3d(-1.2%, .5%, 0) rotate(-5deg) scale(1); opacity: .34; }
+  100% { transform: translate3d(1.4%, -.7%, 0) rotate(4deg) scale(1.04); opacity: .58; }
+}
+@keyframes twinkleBreath { from { opacity: .2; } to { opacity: .5; } }
+@keyframes cometAcross {
+  0%, 8% { opacity: 0; transform: rotate(-30deg) translate3d(0,0,0); }
+  12% { opacity: .85; }
+  28% { opacity: 0; transform: rotate(-30deg) translate3d(125vw, 22vh, 0); }
+  100% { opacity: 0; transform: rotate(-30deg) translate3d(125vw, 22vh, 0); }
+}
+@keyframes haloTurn { to { rotate: 360deg; } }
+@keyframes coreHeartbeat { 0%, 100% { transform: scale(1); } 8% { transform: scale(1.09); } 16% { transform: scale(1); } 24% { transform: scale(1.045); } 32% { transform: scale(1); } }
+@keyframes planetRingTurn { from { transform: rotate(-23deg); } to { transform: rotate(337deg); } }
+@keyframes planetLight { from { opacity: .68; } to { opacity: 1; } }
+
+/* Shared planet layout on phones/tablets. The visual language matches desktop,
+   but the planets become a compact grid and all expensive blur layers are off. */
+@media (max-width: 900px) {
+  .universe-stage--mobile {
+    position: relative;
+    display: block;
+    isolation: isolate;
+    min-height: 0;
+    margin-top: 10px;
+    padding: 18px 12px 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,190,222,.2);
+    border-radius: 21px;
+    color: #fff2f8;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(226,126,183,.17), transparent 38%),
+      radial-gradient(ellipse at 12% 76%, rgba(117,102,196,.13), transparent 40%),
+      linear-gradient(155deg,#0d1028,#1d1731 58%,#24172e);
+    box-shadow: inset 0 0 28px rgba(5,5,18,.42);
+  }
+  .universe-stage--mobile .universe-nebula {
+    inset: 0;
+    z-index: -2;
+    opacity: .3;
+    filter: none;
+    animation: none;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(213,115,179,.18), transparent 42%),
+      radial-gradient(ellipse at 84% 72%, rgba(119,129,218,.15), transparent 42%);
+  }
+  .universe-stage--mobile .universe-star-dust {
+    z-index: -1;
+    opacity: .32;
+    animation: none;
+    background-size: 160px 140px, 210px 180px, 240px 200px, 190px 170px, 260px 220px, 300px 260px;
+  }
+  .universe-stage--mobile .universe-aurora,
+  .universe-stage--mobile .universe-twinkles,
+  .universe-stage--mobile .universe-comet,
+  .universe-stage--mobile .universe-orbit { display: none !important; }
+  .mobile-universe-core {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-height: 104px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin: 0 auto 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,208,231,.18);
+    border-radius: 17px;
+    background: linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.018));
+  }
+  .mobile-core-orbit {
+    position: absolute;
+    width: 128px;
+    height: 52px;
+    border: 1px solid rgba(255,197,228,.38);
+    border-radius: 50%;
+    transform: rotate(-18deg);
+    animation: mobileCoreOrbit 34s linear infinite;
+  }
+  .mobile-core-heart {
+    position: relative;
+    z-index: 1;
+    color: #fff1f8;
+    font: 35px/1 var(--serif);
+    text-shadow: 0 0 15px rgba(255,190,222,.8);
+    animation: mobileHeartPulse 4.5s ease-in-out infinite;
+  }
+  .mobile-universe-core strong { position: relative; z-index: 1; color: #fff4fb; font: 800 10px var(--sans); letter-spacing: .22em; }
+  .mobile-universe-core strong i { color: #ffc3dd; font-style: normal; }
+  .mobile-universe-core small { position: relative; z-index: 1; color: rgba(239,214,232,.62); font: 700 6px var(--sans); letter-spacing: .2em; }
+  .mobile-planet-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+    margin: 0 auto;
+  }
+  .mobile-planet-node {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: 142px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 7px 4px 9px;
+    border: 1px solid rgba(255,209,231,.12);
+    border-radius: 15px;
+    background: linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+    transform: translate3d(0,0,0);
+    animation: mobilePlanetFloat 8.5s ease-in-out var(--planet-delay,0s) infinite;
+    transition: border-color .2s ease, background .2s ease;
+    contain: layout paint;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-planet-node:active { border-color: rgba(255,191,222,.5); background: rgba(255,255,255,.09); }
+  .mobile-planet-node .planet-ring {
+    top: 7px;
+    width: 83px;
+    height: 42px;
+    border-color: rgba(255,219,240,.38);
+    box-shadow: none;
+    transform: rotate(-23deg);
+    animation: mobileRingSway 18s ease-in-out infinite alternate;
+  }
+  .mobile-planet-node .planet-ring::before { width: 5px; height: 5px; left: 0; box-shadow: 0 0 7px 2px rgba(244,160,211,.5); }
+  .mobile-planet-node .planet-globe {
+    width: 60px;
+    height: 60px;
+    flex: 0 0 auto;
+    box-shadow: inset -8px -8px 12px rgba(10,10,35,.46), inset 5px 5px 10px rgba(255,255,255,.2), 0 0 13px var(--planet-glow-color,rgba(230,147,207,.24));
+    transition: transform .22s ease;
+  }
+  .mobile-planet-node .planet-heart { font-size: 27px; text-shadow: 0 0 9px #fff; }
+  .mobile-planet-node .planet-globe::before { opacity: .48; }
+  .mobile-planet-node .planet-globe::after { animation: none; }
+  .mobile-planet-node .planet-glow { display: none; }
+  .mobile-planet-node .planet-peek { top: 7px; right: 7px; width: 19px; height: 19px; font-size: 8px; box-shadow: none; }
+  .mobile-planet-node .planet-count { margin-top: -8px; padding: 3px 7px; font-size: 6px; box-shadow: none; }
+  .mobile-planet-node .planet-label { margin-top: 7px; font-size: 14px; line-height: 1.1; }
+  .mobile-planet-node .planet-subtitle { max-width: 100%; margin-top: 3px; font-size: 6px; letter-spacing: .06em; }
+  .universe-stage--mobile .universe-hint {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    margin: 15px auto 0;
+    padding: 8px 11px;
+    gap: 7px;
+    border-color: rgba(247,192,223,.16);
+    background: rgba(18,15,38,.48);
+    box-shadow: none;
+    font-size: 10px;
+    text-align: center;
+    transform: none;
+  }
+  .universe-stage--mobile .universe-stage-footer {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 15px;
+    margin-top: 12px;
+    font-size: 6px;
+    letter-spacing: .12em;
+  }
+  .universe-mobile-empty {
+    position: relative;
+    z-index: 2;
+    max-width: 310px;
+    margin: 4px auto 12px;
+    padding: 18px 12px;
+    border: 1px solid rgba(255,209,231,.13);
+    border-radius: 16px;
+    background: rgba(255,255,255,.04);
+    text-align: center;
+  }
+  .universe-mobile-empty .empty-orbit { width: 70px; height: 70px; font-size: 37px; margin-bottom: 10px; }
+  .universe-mobile-empty strong { display:block; color:#fff1f7; font:600 21px/1.08 var(--serif); }
+  .universe-mobile-empty p { color:#c5b5ca; font-size:10px; line-height:1.6; }
+  .universe-filter-empty { position: relative; left:auto; top:auto; width:auto; margin: 25px auto; transform:none; font-size:16px; }
+
+  /* On touch devices, opening a planet is quick and avoids backdrop-filter. */
+  .planet-reveal-overlay {
+    padding: 10px;
+    background: rgba(7,7,20,.92);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transition: opacity .24s ease;
+  }
+  .planet-reveal-overlay.is-open { backdrop-filter: none !important; }
+  .planet-reveal-panel {
+    width: 100%;
+    max-height: 91dvh;
+    overflow-y: auto;
+    padding: 18px 13px 20px;
+    border-radius: 19px;
+    box-shadow: 0 16px 42px rgba(0,0,0,.48);
+    transform: translate3d(0,13px,0) scale(.985);
+    transition: transform .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .planet-reveal-overlay.is-open .planet-reveal-panel { transform: translate3d(0,0,0) scale(1); }
+  .planet-reveal-panel::before { top:-35px; font-size:130px; }
+  .planet-reveal-title { margin-top: 7px; font-size: 31px; }
+  .planet-reveal-subtitle { margin-bottom: 14px; font-size: 12px; }
+  .planet-reveal-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; perspective: none; }
+  .planet-memory-tile {
+    padding: 5px 5px 8px;
+    border-radius: 11px;
+    box-shadow: 0 5px 13px rgba(0,0,0,.18);
+    animation-duration: .32s;
+    transform: translate3d(0,10px,0) scale(.98);
+  }
+  .planet-memory-frame { aspect-ratio: 1.08 / 1; }
+  .planet-memory-caption { margin-top: 6px; font-size: 10px; }
+  .planet-video-mark { width: 34px; height: 34px; }
+}
+@media (max-width: 390px) {
+  .universe-stage--mobile { padding-inline: 9px; }
+  .mobile-planet-grid { gap: 6px; }
+  .mobile-planet-node { min-height: 136px; }
+  .mobile-planet-node .planet-globe { width: 55px; height: 55px; }
+  .mobile-planet-node .planet-label { font-size: 13px; }
+  .planet-reveal-grid { gap: 7px; }
+}
+@keyframes mobilePlanetFloat { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(0,-3px,0); } }
+@keyframes mobileRingSway { from { rotate: -5deg; } to { rotate: 5deg; } }
+@keyframes mobileCoreOrbit { from { rotate: 0deg; } to { rotate: 360deg; } }
+@keyframes mobileHeartPulse { 0%,100% { opacity: .9; transform: scale(1); } 50% { opacity: 1; transform: scale(1.045); } }
+@media (prefers-reduced-motion: reduce) {
+  .universe-aurora, .universe-twinkles, .universe-comet, .planet-ring,
+  .mobile-planet-node, .mobile-core-orbit, .mobile-core-heart { animation: none !important; }
+  .planet-memory-tile { animation: none !important; opacity: 1; transform: none; }
+}

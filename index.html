@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171322">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Our Story ♡</title>
+  <title>The Little Archive — Cosmic Love 2.9 ♡</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
@@ -106,8 +106,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
       <section class="section music-section" aria-labelledby="musicTitle">
         <div class="section-head"><div><div class="section-kicker">the soundtrack of us</div><h2 id="musicTitle">Một bài hát, nhiều lần nhớ.</h2><p class="section-sub">Bật giai điệu quen thuộc lên và để những kỷ niệm tự tìm về.</p></div></div>
-        <div class="music-card"><div class="disc" id="disc">♫</div><div class="music-meta"><strong id="musicName">Love Story — Indila</strong><small id="musicStatus">Đăng nhập quản trị để tải nhạc lên một lần cho cả hai cùng nghe.</small><div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><div class="music-actions"><button class="icon-btn" id="soundToggle" type="button" aria-label="Tắt âm thanh nút bấm" aria-pressed="true" title="Âm thanh nút bấm: bật">♪</button><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div><input class="sr-only" type="file" id="audioInput" accept="audio/*"></div>
-        <audio id="audioPlayer" loop autoplay preload="auto" playsinline></audio>
+        <div class="music-card"><div class="disc" id="disc">♫</div><div class="music-meta"><strong id="musicName">Chưa có nhạc nền</strong><small id="musicStatus">Chưa có nhạc nền · Anh đăng nhập quản trị để tải một bài MP3 lên Cloud.</small><div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><div class="music-actions"><button class="icon-btn" id="soundToggle" type="button" aria-label="Tắt âm thanh nút bấm" aria-pressed="true" title="Âm thanh nút bấm: bật">♪</button><button class="icon-btn" id="chooseMusic" aria-label="Chọn nhạc">＋</button><button class="icon-btn" id="playMusic" aria-label="Phát nhạc">▶</button></div><input class="sr-only" type="file" id="audioInput" accept="audio/*"></div>
+        <audio id="audioPlayer" loop preload="auto" playsinline></audio>
         <div class="privacy-note">♡ Ảnh, video, nhạc và lời nhắn được lưu trên đám mây nên hai người mở cùng đường link sẽ thấy cùng nội dung. Chỉ tài khoản quản trị mới được tải lên, xóa ảnh hoặc chỉnh lời chúc. Album là công khai với bất kỳ ai có đường link.</div>
       </section>
     </main>
@@ -134,7 +134,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       let clickAudioContext = null;
       let clickSoundEnabled = true;
       let toastTimer;
-      try { clickSoundEnabled = localStorage.getItem('our-love-click-sound') !== 'off'; } catch (_) { clickSoundEnabled = true; }
+      try { clickSoundEnabled = localStorage.getItem('our-love-click-sound-v2') !== 'off'; } catch (_) { clickSoundEnabled = true; }
+      let lastButtonSoundAt = 0;
+      let audioAutoplayBlocked = false;
       let slideshowTimer = null;
       let slideshowIndex = 0;
       let isSlideshow = false;
@@ -198,33 +200,67 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function playButtonSound() {
-        if (!clickSoundEnabled) return;
+        if (!clickSoundEnabled || document.hidden) return;
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextClass) return;
+        const nowWall = Date.now();
+        if (nowWall - lastButtonSoundAt < 65) return;
+        lastButtonSoundAt = nowWall;
         try {
-          if (!clickAudioContext) clickAudioContext = new AudioContextClass();
-          if (clickAudioContext.state === 'suspended') clickAudioContext.resume().catch(() => {});
+          if (!clickAudioContext || clickAudioContext.state === 'closed') {
+            try { clickAudioContext = new AudioContextClass({ latencyHint: 'interactive' }); }
+            catch (_) { clickAudioContext = new AudioContextClass(); }
+          }
           const context = clickAudioContext;
-          const now = context.currentTime;
-          const oscillator = context.createOscillator();
-          const gain = context.createGain();
-          oscillator.type = 'sine';
-          oscillator.frequency.setValueAtTime(740, now);
-          oscillator.frequency.exponentialRampToValueAtTime(1040, now + 0.075);
-          oscillator.frequency.exponentialRampToValueAtTime(680, now + 0.16);
-          gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.exponentialRampToValueAtTime(0.035, now + 0.018);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.19);
-          oscillator.connect(gain);
-          gain.connect(context.destination);
-          oscillator.start(now);
-          oscillator.stop(now + 0.2);
-        } catch (error) { console.debug('Button sound unavailable:', error); }
+          const playChime = () => {
+            if (!clickSoundEnabled || context.state !== 'running') return;
+            const startAt = context.currentTime + 0.006;
+            const master = context.createGain();
+            master.gain.setValueAtTime(0.82, startAt);
+            master.connect(context.destination);
+
+            const notes = [
+              { frequency: 720, delay: 0, duration: 0.13, peak: 0.075 },
+              { frequency: 1080, delay: 0.035, duration: 0.17, peak: 0.045 }
+            ];
+            for (const note of notes) {
+              const oscillator = context.createOscillator();
+              const envelope = context.createGain();
+              const noteAt = startAt + note.delay;
+              oscillator.type = 'sine';
+              oscillator.frequency.setValueAtTime(note.frequency, noteAt);
+              oscillator.frequency.exponentialRampToValueAtTime(note.frequency * 1.08, noteAt + 0.045);
+              oscillator.frequency.exponentialRampToValueAtTime(note.frequency * 0.91, noteAt + note.duration);
+              envelope.gain.setValueAtTime(0.0001, noteAt);
+              envelope.gain.exponentialRampToValueAtTime(note.peak, noteAt + 0.012);
+              envelope.gain.exponentialRampToValueAtTime(0.0001, noteAt + note.duration);
+              oscillator.connect(envelope);
+              envelope.connect(master);
+              oscillator.start(noteAt);
+              oscillator.stop(noteAt + note.duration + 0.015);
+              oscillator.addEventListener('ended', () => {
+                try { oscillator.disconnect(); envelope.disconnect(); } catch (_) {}
+              }, { once: true });
+            }
+            setTimeout(() => { try { master.disconnect(); } catch (_) {} }, 280);
+          };
+
+          if (context.state === 'running') {
+            playChime();
+          } else {
+            // Resume inside the actual pointer/click gesture, then schedule the chime.
+            context.resume().then(playChime).catch((error) => {
+              console.debug('Button sound resume was blocked:', error);
+            });
+          }
+        } catch (error) {
+          console.debug('Button sound unavailable:', error);
+        }
       }
 
       function setDeviceAdvice() {
         if (!$('deviceAdviceTag') || !$('deviceAdviceTitle') || !$('deviceAdviceText') || !$('openStory')) return;
-        const mobile = window.matchMedia('(max-width: 760px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const mobile = window.matchMedia('(max-width: 900px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         if (mobile) {
           $('deviceAdviceTag').textContent = '✦ LAPTOP RECOMMENDED';
           $('deviceAdviceTitle').textContent = 'Em bé đang xem bằng điện thoại nè ♡';
@@ -399,7 +435,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function isDesktopGalaxy() {
-        return window.matchMedia('(min-width: 761px)').matches;
+        return window.matchMedia('(min-width: 901px)').matches;
       }
 
       function getFilteredMemories() {
@@ -407,61 +443,13 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function applyGalleryFilter() {
-        if (isDesktopGalaxy()) {
-          document.querySelectorAll('[data-filter]').forEach((button) => {
-            button.classList.toggle('active', button.dataset.filter === activeFilter);
-          });
-          if (mediaItems.length) renderDesktopUniverse();
-          return;
-        }
-
-        const cards = Array.from(document.querySelectorAll('.memory-card[data-kind]'));
-        const matching = cards.filter((card) => activeFilter === 'all' || card.dataset.kind === activeFilter);
-        const pageSize = galleryPageSize();
-        const totalPages = Math.max(1, Math.ceil(matching.length / pageSize));
-        galleryPage = Math.min(Math.max(0, galleryPage), totalPages - 1);
-        const first = galleryPage * pageSize;
-        const visibleCards = new Set(matching.slice(first, first + pageSize));
-
-        cards.forEach((card) => {
-          const visible = visibleCards.has(card);
-          card.hidden = !visible;
-          const image = card.querySelector('img.memory-media[data-src]');
-          const video = card.querySelector('video.memory-media[data-src]');
-          if (!visible) {
-            if (image && image.getAttribute('src')) image.removeAttribute('src');
-            if (video && video.getAttribute('src')) { video.pause(); video.removeAttribute('src'); video.load(); }
-            return;
-          }
-          if (image && !image.getAttribute('src')) {
-            image.loading = 'lazy';
-            image.decoding = 'async';
-            image.fetchPriority = 'low';
-            image.dataset.fallback = '0';
-            image.onerror = () => {
-              if (image.dataset.fallback !== '1' && image.dataset.fullSrc) {
-                image.dataset.fallback = '1';
-                image.src = image.dataset.fullSrc;
-              }
-            };
-            image.src = image.dataset.src;
-          }
-        });
-
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.classList.toggle('active', button.dataset.filter === activeFilter);
         });
-
-        const pager = $('galleryPager');
-        if (pager) {
-          const previous = $('galleryPrevious');
-          const next = $('galleryNext');
-          const label = $('galleryPageLabel');
-          pager.hidden = matching.length <= pageSize;
-          previous.disabled = galleryPage === 0;
-          next.disabled = galleryPage >= totalPages - 1;
-          label.textContent = `Chòm sao ${String(galleryPage + 1).padStart(2, '0')} / ${String(totalPages).padStart(2, '0')} · ${matching.length} khoảnh khắc`;
-        }
+        // Both desktop and mobile now share the same planetary gallery concept.
+        // Mobile uses a compact two-column planet layout with lighter animation.
+        if (isDesktopGalaxy()) renderDesktopUniverse();
+        else renderMobileUniverse();
       }
 
       const planetTitles = [
@@ -488,7 +476,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const title = planetTitles[index % planetTitles.length];
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'planet-node';
+        button.className = isDesktopGalaxy() ? 'planet-node' : 'planet-node mobile-planet-node';
         button.dataset.tone = planetTones[index % planetTones.length];
         button.style.left = `${position.x}%`;
         button.style.top = `${position.y}%`;
@@ -618,6 +606,14 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         nebula.className = 'universe-nebula';
         const starDust = document.createElement('div');
         starDust.className = 'universe-star-dust';
+        const aurora = document.createElement('div');
+        aurora.className = 'universe-aurora';
+        const twinkles = document.createElement('div');
+        twinkles.className = 'universe-twinkles';
+        const cometOne = document.createElement('div');
+        cometOne.className = 'universe-comet comet-one';
+        const cometTwo = document.createElement('div');
+        cometTwo.className = 'universe-comet comet-two';
         const orbitA = document.createElement('div');
         orbitA.className = 'universe-orbit universe-orbit-a';
         const orbitB = document.createElement('div');
@@ -635,12 +631,12 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           const empty = document.createElement('div');
           empty.className = 'universe-filter-empty';
           empty.textContent = 'Chòm sao này đang chờ thêm những khoảnh khắc mới ♡';
-          stage.append(nebula, starDust, orbitA, orbitB, orbitC, sun, empty, footer);
+          stage.append(nebula, aurora, starDust, twinkles, cometOne, cometTwo, orbitA, orbitB, orbitC, sun, empty, footer);
         } else {
           const planetSize = 8;
           const groups = [];
           for (let i = 0; i < matching.length; i += planetSize) groups.push(matching.slice(i, i + planetSize));
-          stage.append(nebula, starDust, orbitA, orbitB, orbitC, sun);
+          stage.append(nebula, aurora, starDust, twinkles, cometOne, cometTwo, orbitA, orbitB, orbitC, sun);
           groups.forEach((group, index) => stage.append(makePlanetButton(group, index, groups.length)));
           const hint = document.createElement('div');
           hint.className = 'universe-hint';
@@ -653,14 +649,61 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         });
       }
 
+      function renderMobileUniverse() {
+        const host = $('filmContent');
+        const matching = getFilteredMemories();
+        const stage = document.createElement('div');
+        stage.className = 'universe-stage universe-stage--mobile';
+        stage.setAttribute('aria-label', 'Thiên hà kỷ niệm của anh và em');
+
+        const nebula = document.createElement('div');
+        nebula.className = 'universe-nebula';
+        const starDust = document.createElement('div');
+        starDust.className = 'universe-star-dust';
+        const core = document.createElement('div');
+        core.className = 'mobile-universe-core';
+        core.innerHTML = '<span class="mobile-core-orbit"></span><span class="mobile-core-heart">♡</span><strong>ANH <i>×</i> EM</strong><small>OUR LITTLE UNIVERSE</small>';
+        const planetGrid = document.createElement('div');
+        planetGrid.className = 'mobile-planet-grid';
+        const footer = document.createElement('div');
+        footer.className = 'universe-stage-footer';
+        footer.innerHTML = '<span>25 · 11 · 2024</span><span>EVERY MEMORY HAS ITS OWN PLANET</span>';
+
+        stage.append(nebula, starDust, core);
+        if (!matching.length) {
+          const empty = document.createElement('div');
+          empty.className = 'universe-mobile-empty';
+          empty.innerHTML = '<div class="empty-orbit"><span>♡</span><i>✦</i></div><strong>Những hành tinh đầu tiên đang chờ anh và em</strong><p>Đăng nhập quản trị rồi thêm ảnh/video. Mỗi nhóm kỷ niệm sẽ trở thành một hành tinh nhỏ.</p>';
+          const add = document.createElement('button');
+          add.className = 'soft-btn';
+          add.type = 'button';
+          add.textContent = 'Bắt đầu thêm kỷ niệm';
+          add.addEventListener('click', () => $('addMedia').click());
+          empty.append(add);
+          stage.append(empty);
+        } else {
+          const planetSize = 8;
+          const groups = [];
+          for (let i = 0; i < matching.length; i += planetSize) groups.push(matching.slice(i, i + planetSize));
+          groups.forEach((group, index) => planetGrid.append(makePlanetButton(group, index, groups.length)));
+          stage.append(planetGrid);
+          const hint = document.createElement('div');
+          hint.className = 'universe-hint';
+          hint.innerHTML = '<span>✧</span> Chạm một hành tinh để mở kỷ niệm <span>♡</span>';
+          stage.append(hint);
+        }
+        stage.append(footer);
+        host.replaceChildren(stage);
+        document.querySelectorAll('[data-filter]').forEach((button) => {
+          button.classList.toggle('active', button.dataset.filter === activeFilter);
+        });
+      }
+
       function renderMedia() {
         $('mediaCount').textContent = `${mediaItems.length} khoảnh khắc`;
         renderHeroPhotos();
-        if (isDesktopGalaxy() && mediaItems.length) {
-          renderDesktopUniverse();
-        } else {
-          renderMobileMedia();
-        }
+        if (isDesktopGalaxy()) renderDesktopUniverse();
+        else renderMobileUniverse();
       }
 
       function renderMobileMedia() {
@@ -1433,29 +1476,73 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         } catch (error) { console.error(error); notify('Chưa lưu được lời chúc. Kiểm tra quyền SQL/RLS.'); }
       }
 
+      function clearMusicSource(player) {
+        if (!player) return;
+        player.pause();
+        player.removeAttribute('src');
+        player.querySelectorAll('source').forEach((source) => source.remove());
+        player.load();
+        updateMusicUI(false);
+      }
+
+      function stopOtherAudioPlayers(keepPlayer) {
+        document.querySelectorAll('audio').forEach((audio) => {
+          if (audio === keepPlayer) return;
+          try {
+            audio.pause();
+            audio.removeAttribute('src');
+            audio.querySelectorAll('source').forEach((source) => source.remove());
+            audio.load();
+          } catch (_) {}
+        });
+      }
+
+      function isIndilaTrack(audio) {
+        const label = `${audio?.name || ''} ${audio?.path || ''}`.toLowerCase();
+        return /indila|india[\s_-]*love[\s_-]*story|love[\s_-]*story[\s_-]*india/i.test(label);
+      }
+
       async function loadMusic() {
-        if (!supabaseClient) return;
+        const player = $('audioPlayer');
+        if (!player) return;
+        // Always clear the previous source first. Never let two background tracks overlap.
+        stopOtherAudioPlayers(player);
+        clearMusicSource(player);
+        if (!supabaseClient) {
+          $('musicName').textContent = 'Chưa có nhạc nền';
+          $('musicStatus').textContent = 'Chưa kết nối Cloud để tải nhạc chung.';
+          return;
+        }
         try {
           const setting = await getSetting('audio');
           if (!setting?.value?.path) {
-            $('musicName').textContent = 'Love Story — Indila';
-            $('musicStatus').textContent = 'Đăng nhập quản trị để tải file nhạc lên một lần cho cả hai cùng nghe.';
-            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Anh chưa tải nhạc nền lên Cloud; em vẫn có thể mở câu chuyện bình thường.';
+            $('musicName').textContent = 'Chưa có nhạc nền';
+            $('musicStatus').textContent = 'Anh đăng nhập quản trị để tải lên một bài nhạc cho cả hai cùng nghe nhé.';
+            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Chưa có nhạc nền. Anh có thể tải một bài hát riêng lên Cloud.';
             return;
           }
           const audio = setting.value;
-          const player = $('audioPlayer');
+          if (isIndilaTrack(audio)) {
+            $('musicName').textContent = 'Đã tắt bài nhạc cũ';
+            $('musicStatus').textContent = 'Bài nhạc cũ đã được tắt. Anh tải bài MP3 muốn giữ lên để thay thế nhé.';
+            if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Bài nhạc cũ đã được tắt theo yêu cầu của anh.';
+            return;
+          }
           player.src = mediaPublicUrl(audio.path);
           player.preload = 'auto';
+          player.loop = true;
           player.volume = 0.68;
           player.load();
           $('musicName').textContent = audio.name || 'Bài hát của chúng mình';
-          $('musicStatus').textContent = 'Đang chuẩn bị nhạc nền tự động…';
+          $('musicStatus').textContent = 'Đang chuẩn bị một bài nhạc duy nhất cho câu chuyện…';
           if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Đang chuẩn bị giai điệu cho câu chuyện của anh và em…';
-          // Try autoplay immediately. Browsers that permit autoplay will start here;
-          // others retry on the first welcome-button tap.
           attemptBackgroundMusic();
-        } catch (error) { console.error(error); notify('Chưa tải được thông tin nhạc từ cloud.'); }
+        } catch (error) {
+          console.error(error);
+          clearMusicSource(player);
+          $('musicName').textContent = 'Chưa có nhạc nền';
+          notify('Chưa tải được thông tin nhạc từ cloud.');
+        }
       }
 
       function musicErrorMessage(error, stage) {
@@ -1499,6 +1586,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           return;
         }
         const path = `${currentUser.id}/audio-${crypto.randomUUID()}-${safeFileName(file.name)}`;
+        const player = $('audioPlayer');
+        stopOtherAudioPlayers(player);
+        clearMusicSource(player);
         let uploaded = false;
         let stage = 'settings-read';
         $('musicStatus').textContent = 'Đang tải nhạc lên đám mây…';
@@ -1668,7 +1758,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('playMusic').addEventListener('click', toggleMusic);
         $('soundToggle').addEventListener('click', () => {
           clickSoundEnabled = !clickSoundEnabled;
-          try { localStorage.setItem('our-love-click-sound', clickSoundEnabled ? 'on' : 'off'); } catch (_) {}
+          try { localStorage.setItem('our-love-click-sound-v2', clickSoundEnabled ? 'on' : 'off'); } catch (_) {}
           updateSoundToggle();
           if (clickSoundEnabled) playButtonSound();
           notify(clickSoundEnabled ? 'Đã bật âm thanh chạm nút ♡' : 'Đã tắt âm thanh chạm nút.');
@@ -1680,11 +1770,17 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           if ($('musicStatus')) $('musicStatus').textContent = 'Không tải được file nhạc từ cloud. Kiểm tra file nhạc trong Storage nhé.';
           if ($('gateAudioHint')) $('gateAudioHint').textContent = '♫ Chưa tải được nhạc nền. Anh vẫn có thể mở câu chuyện cho em xem nhé.';
         });
-        // A tiny generated chime gives buttons tactile feedback without downloading sound assets.
-        document.addEventListener('click', (event) => {
-          const control = event.target.closest('button, a, [role="button"]');
+        // Generate a clearly audible two-note chime on trusted pointer/keyboard input.
+        // The context is resumed from the gesture itself (important for iOS Safari/Chrome).
+        const playControlSfx = (event) => {
+          const control = event.target.closest?.('button, a, [role="button"]');
           if (!control || control.disabled || control.dataset.noSfx === 'true') return;
           if (control.id !== 'soundToggle') playButtonSound();
+        };
+        document.addEventListener('pointerdown', playControlSfx, true);
+        document.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          playControlSfx(event);
         }, true);
         $('shareSite').addEventListener('click', shareSite);
         $('adminToggle').addEventListener('click', openAdminModal);
@@ -1700,9 +1796,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         setDeviceAdvice();
         updateSoundToggle();
         wireEvents();
-        const galleryBreakpoint = window.matchMedia('(min-width: 761px)');
+        const galleryBreakpoint = window.matchMedia('(min-width: 901px)');
         galleryBreakpoint.addEventListener?.('change', () => renderMedia());
-        window.matchMedia('(max-width: 760px)').addEventListener?.('change', () => setDeviceAdvice());
+        window.matchMedia('(max-width: 900px)').addEventListener?.('change', () => setDeviceAdvice());
         updateCounter();
         setInterval(updateCounter, 1000);
         updateAdminUI();
