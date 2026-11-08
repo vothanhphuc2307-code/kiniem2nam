@@ -134,8 +134,17 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
     <div class="journey-main" id="journeyMain">
       <div class="journey-intro" id="journeyIntro"><span class="journey-intro-orb">♡</span><small>ANH × EM · 25.11.2024</small><h2>Mình cùng đi qua những vì sao nhé.</h2><p>Một cuộn phim nhỏ, gom lại những ngày anh và em đã có nhau.</p></div>
       <div class="journey-scene" id="journeyScene" aria-live="polite">
+        <div class="journey-spatial-field" id="journeySpatialField" aria-hidden="true">
+          <span class="journey-depth-ring journey-depth-ring--far"></span>
+          <span class="journey-depth-ring journey-depth-ring--mid"></span>
+          <span class="journey-depth-ring journey-depth-ring--near"></span>
+          <span class="journey-warp-stars"></span>
+          <span class="journey-floating-heart journey-floating-heart--one">♡</span>
+          <span class="journey-floating-heart journey-floating-heart--two">✧</span>
+          <span class="journey-floating-heart journey-floating-heart--three">♥</span>
+        </div>
         <div class="journey-portal" aria-hidden="true"><span></span><i>♡</i></div>
-        <div class="journey-media-frame" id="journeyMediaFrame"></div>
+        <div class="journey-media-frame" id="journeyMediaFrame" data-orientation="landscape"></div>
         <div class="journey-scene-caption"><small id="journeyCounter">READY TO TRAVEL</small><h2 id="journeyTitle">Our little memories</h2><p id="journeyCaption">Chạm bắt đầu để du hành qua album của hai người.</p></div>
       </div>
       <div class="journey-finish" id="journeyFinish" hidden><span class="journey-finish-heart">♡</span><small>END OF THIS LITTLE JOURNEY</small><h2>Hết một vòng ngân hà,<br>nhưng chuyện mình vẫn tiếp tục.</h2><p>Cảm ơn em đã cùng anh đi qua những khoảnh khắc này.</p><button class="journey-replay" id="journeyReplay" type="button">↻ Du hành lần nữa</button></div>
@@ -1527,6 +1536,10 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         if (!journeyActive) return;
         journeyPaused = paused;
         clearJourneyTimers();
+        if (paused) {
+          $('journeyScene').classList.remove('scene-exit');
+          $('journeyScene').classList.add('scene-enter');
+        }
         if (journeyVideo) {
           if (paused) journeyVideo.pause();
           else journeyVideo.play().catch(() => {});
@@ -1540,7 +1553,65 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       function scheduleJourneyAdvance(duration = JOURNEY_IMAGE_DURATION) {
         clearJourneyTimers();
         if (!journeyActive || journeyPaused) return;
-        journeyTimer = setTimeout(() => showJourneyItem(journeyIndex + 1), duration);
+        journeyTimer = setTimeout(() => {
+          if (!journeyActive || journeyPaused) return;
+          const scene = $('journeyScene');
+          scene.classList.remove('scene-enter');
+          scene.classList.add('scene-exit');
+          // Let the current memory fly past the camera before the next one
+          // emerges from deep space. The short timer is cancellable by controls.
+          journeyTimer = setTimeout(() => {
+            scene.classList.remove('scene-exit');
+            showJourneyItem(journeyIndex + 1);
+          }, 520);
+        }, duration);
+      }
+
+      function setJourneyMediaOrientation(media, frame, kind) {
+        const width = kind === 'video' ? media.videoWidth : media.naturalWidth;
+        const height = kind === 'video' ? media.videoHeight : media.naturalHeight;
+        if (!width || !height) return;
+        const ratio = width / height;
+        frame.dataset.orientation = ratio < 0.82 ? 'portrait' : (ratio > 1.2 ? 'landscape' : 'square');
+        frame.style.setProperty('--journey-media-ratio', `${width} / ${height}`);
+
+        // Size the floating frame to the real photo ratio instead of forcing
+        // every photo into one landscape rectangle. The image itself always
+        // uses contain, so no edge or subject is cropped away.
+        const compact = window.matchMedia('(max-width: 760px)').matches;
+        const maxWidth = compact ? Math.min(window.innerWidth * 0.84, 380) : Math.min(window.innerWidth * 0.56, 820);
+        const maxHeight = compact ? Math.min(window.innerHeight * 0.47, 450) : Math.min(window.innerHeight * 0.50, 540);
+        const fittedWidth = Math.max(150, Math.round(Math.min(maxWidth, maxHeight * ratio)));
+        const fittedHeight = Math.max(150, Math.round(fittedWidth / ratio));
+        frame.style.width = `${fittedWidth}px`;
+        frame.style.height = `${fittedHeight}px`;
+      }
+
+      function renderJourneyOrbitPhotos() {
+        const field = $('journeySpatialField');
+        if (!field) return;
+        field.querySelectorAll('.journey-orbit-memory').forEach((node) => node.remove());
+        const neighbors = [
+          { item: journeyItems[journeyIndex - 1], side: 'previous' },
+          { item: journeyItems[journeyIndex + 1], side: 'next' }
+        ];
+        neighbors.forEach(({ item, side }) => {
+          // Only use the tiny Cloud thumbnail here; never pull a 20+ MB original
+          // just to decorate the 3D scene. Older photos without thumbs are skipped.
+          if (!item || item.kind !== 'image' || !item.previewUrl) return;
+          const card = document.createElement('div');
+          card.className = `journey-orbit-memory journey-orbit-memory--${side}`;
+          const image = document.createElement('img');
+          image.alt = '';
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          image.src = item.previewUrl;
+          image.onerror = () => card.remove();
+          const label = document.createElement('span');
+          label.textContent = side === 'previous' ? 'KỶ NIỆM VỪA QUA' : 'VÌ SAO TIẾP THEO';
+          card.append(image, label);
+          field.append(card);
+        });
       }
 
       function preloadNextJourneyItem() {
@@ -1582,10 +1653,24 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyPrev').hidden = false;
         $('journeyNext').hidden = false;
         $('journeyPlay').textContent = 'Ⅱ Tạm dừng';
-        $('journeyScene').classList.remove('scene-enter');
+        $('journeyScene').classList.remove('scene-enter', 'scene-exit');
         const frame = $('journeyMediaFrame');
         frame.replaceChildren();
         const item = journeyItems[journeyIndex];
+        const entryDirections = [-1, 1, -0.65, 0.7, 0, -0.35, 0.45];
+        const entryYaws = [-28, 25, -19, 22, -12, 16, -8];
+        const travelSlot = journeyIndex % entryDirections.length;
+        const entryX = entryDirections[travelSlot] * 13;
+        const entryYaw = entryYaws[travelSlot];
+        const entryRoll = (travelSlot % 2 ? 1 : -1) * (5 + travelSlot);
+        frame.style.setProperty('--journey-entry-x', `${entryX}vw`);
+        frame.style.setProperty('--journey-entry-x-soft', `${entryX * 0.18}vw`);
+        frame.style.setProperty('--journey-entry-yaw', `${entryYaw}deg`);
+        frame.style.setProperty('--journey-entry-yaw-soft', `${entryYaw * 0.25}deg`);
+        frame.style.setProperty('--journey-entry-roll', `${entryRoll}deg`);
+        frame.style.setProperty('--journey-entry-roll-soft', `${entryRoll * 0.2}deg`);
+        frame.dataset.orientation = 'landscape';
+        renderJourneyOrbitPhotos();
         const media = item.kind === 'video' ? document.createElement('video') : document.createElement('img');
         media.className = 'journey-media';
         if (item.kind === 'video') {
@@ -1605,6 +1690,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         }
         const beginScene = () => {
           if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+          clearTimeout(journeyLoadFallbackTimer);
+          journeyLoadFallbackTimer = null;
           requestAnimationFrame(() => {
             if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
             $('journeyScene').classList.remove('scene-enter');
@@ -1619,14 +1706,16 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           if (!journeyPaused) scheduleJourneyAdvance(item.kind === 'video' ? JOURNEY_VIDEO_DURATION : JOURNEY_IMAGE_DURATION);
         };
         if (item.kind === 'video') {
+          media.addEventListener('loadedmetadata', () => setJourneyMediaOrientation(media, frame, 'video'), { once: true });
           media.src = item.url;
           frame.append(media);
           const playAttempt = media.play();
           if (playAttempt?.catch) playAttempt.catch(() => {});
           beginScene();
         } else {
-          media.onload = beginScene;
           media.onerror = () => {
+            // Keep the full-quality cloud image as the main memory. If it cannot
+            // be fetched, gracefully fall back to the small aspect-safe preview.
             if (item.previewUrl && media.src !== item.previewUrl) {
               media.src = item.previewUrl;
             } else {
@@ -1634,7 +1723,14 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
               beginScene();
             }
           };
+          media.onload = () => {
+            setJourneyMediaOrientation(media, frame, 'image');
+            beginScene();
+          };
           frame.append(media);
+          // Use the full-quality optimized Cloud image for the main 3D frame.
+          // Small side memories use thumbnails only, and the main frame falls
+          // back to its thumbnail if the original cannot be loaded.
           media.src = item.url || item.previewUrl;
           // A very slow original file must not stall the whole journey indefinitely.
           journeyLoadFallbackTimer = setTimeout(() => {
@@ -1643,7 +1739,10 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
               media.src = item.previewUrl;
               return;
             }
-            if (media.complete && media.naturalWidth) beginScene();
+            if (media.complete && media.naturalWidth) {
+              setJourneyMediaOrientation(media, frame, 'image');
+              beginScene();
+            }
             else {
               $('journeyCaption').textContent = 'Ảnh này đang tải hơi lâu, anh sẽ đưa em đến khoảnh khắc tiếp theo nhé ♡';
               beginScene();
@@ -1692,6 +1791,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('journey-lock');
         $('journeyMediaFrame').replaceChildren();
+        $('journeyScene').classList.remove('scene-enter', 'scene-exit');
         $('journeyPlay').textContent = '✦ Bắt đầu du hành';
       }
 
