@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171322">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Cosmic Love 3.1 ♡</title>
+  <title>The Little Archive — Cosmic Journey 3.2 ♡</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
@@ -70,7 +70,7 @@
 
       <section class="section film-section" id="memories" aria-labelledby="filmTitle">
         <div class="love-hearts" aria-hidden="true"><span>♡</span><span>♥</span><span>♡</span><span>✦</span><span>♡</span><span>♥</span><span>♡</span><span>✧</span><span>♥</span><span>♡</span></div>
-        <div class="section-head"><div><div class="section-kicker">THE GALAXY OF US · 001 → ∞</div><h2 id="filmTitle">Vũ trụ của anh và em ✦</h2><p class="section-sub">Mỗi bức ảnh là một vì sao trong vũ trụ của anh và em. Hãy mở từng hành tinh để tìm lại những khoảnh khắc mình muốn giữ mãi.</p></div><div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn" id="playFilm">▶ Xem lại hành trình</button></div></div>
+        <div class="section-head"><div><div class="section-kicker">THE GALAXY OF US · 001 → ∞</div><h2 id="filmTitle">Vũ trụ của anh và em ✦</h2><p class="section-sub">Mỗi bức ảnh là một vì sao trong vũ trụ của anh và em. Hãy mở từng hành tinh để tìm lại những khoảnh khắc mình muốn giữ mãi.</p></div><div class="film-toolbar"><span class="count-chip" id="mediaCount">0 khoảnh khắc</span><button class="soft-btn galaxy-journey-trigger" id="playFilm" type="button">✦ Du hành thiên hà</button></div></div>
         <div class="upload-panel"><div class="upload-info"><div class="upload-icon">✦</div><div><strong>Album chung trên đám mây</strong><small>Đăng nhập quản trị để thêm nhiều ảnh/video cùng lúc · Mở link trên máy nào cũng xem được</small></div></div><button class="primary-btn" id="addMedia">+ Thêm ảnh/video</button><input class="sr-only" id="mediaInput" type="file" accept="image/*,video/*" multiple></div>
         <div class="progress" id="uploadProgress" role="status" aria-live="polite">
           <div class="progress-meta"><span id="uploadProgressText">Đang chuẩn bị tải lên…</span><span id="uploadProgressCount">0/0</span></div>
@@ -117,6 +117,39 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
   <div class="modal-backdrop" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><button class="close-modal" data-close="letterModal" aria-label="Đóng">×</button><h3 id="editModalTitle">Viết lời nhắn của anh và em 💌</h3><p class="modal-intro">Sửa tên, tiêu đề và lời chúc theo cách hai người hay nói với nhau. Nội dung sẽ được lưu lên đám mây để người mở cùng đường link đều thấy.</p><label class="field"><span>Dòng mở đầu</span><input id="editSalute" maxlength="90" placeholder="Gửi em, người anh thương,"></label><label class="field"><span>Tiêu đề lời nhắn</span><input id="editHeading" maxlength="130"></label><label class="field"><span>Lời chúc</span><textarea id="editBody" maxlength="2500"></textarea></label><label class="field"><span>Ký tên</span><input id="editSignature" maxlength="80" placeholder="Anh thương em nhiều ♡"></label><button class="primary-btn" id="saveLetter">Lưu lời nhắn ♡</button></div></div>
   <div class="modal-backdrop" id="viewer" role="dialog" aria-modal="true"><button class="close-modal viewer-close" data-close="viewer" aria-label="Đóng">×</button><div class="viewer-content" id="viewerContent"></div></div>
   <div class="modal-backdrop" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle"><div class="modal"><button class="close-modal" data-close="adminModal" aria-label="Đóng">×</button><h3 id="adminModalTitle">Khu vực quản trị ♡</h3><p class="modal-intro" id="adminState">Đăng nhập tài khoản quản trị để tải ảnh/video, đổi nhạc và chỉnh lời chúc. Người xem link không cần đăng nhập.</p><label class="field"><span>Email quản trị</span><input id="adminEmail" type="email" autocomplete="username" placeholder="email của ông"></label><label class="field"><span>Mật khẩu</span><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu Supabase"></label><button class="primary-btn" id="loginSubmit">Đăng nhập ♡</button><button class="soft-btn" id="logoutSubmit" hidden>Đăng xuất</button><p class="modal-intro" style="margin-top:14px">Tài khoản được tạo trước trong Supabase Dashboard. Không gửi mật khẩu này cho người xem album.</p></div></div>
+  <div class="galaxy-journey" id="galaxyJourney" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Du hành qua những kỷ niệm của anh và em">
+    <div class="journey-cosmos" aria-hidden="true">
+      <span class="journey-nebula journey-nebula-a"></span>
+      <span class="journey-nebula journey-nebula-b"></span>
+      <span class="journey-star-layer"></span>
+      <span class="journey-orbit journey-orbit-a"></span>
+      <span class="journey-orbit journey-orbit-b"></span>
+      <span class="journey-heart journey-heart-a">♡</span>
+      <span class="journey-heart journey-heart-b">✧</span>
+    </div>
+    <header class="journey-topbar">
+      <div class="journey-brand"><span>✦</span><div><strong>A LITTLE JOURNEY THROUGH US</strong><small>mỗi khoảnh khắc là một vì sao</small></div></div>
+      <button class="journey-close" id="journeyClose" type="button" aria-label="Thoát chế độ du hành">×</button>
+    </header>
+    <div class="journey-main" id="journeyMain">
+      <div class="journey-intro" id="journeyIntro"><span class="journey-intro-orb">♡</span><small>ANH × EM · 25.11.2024</small><h2>Mình cùng đi qua những vì sao nhé.</h2><p>Một cuộn phim nhỏ, gom lại những ngày anh và em đã có nhau.</p></div>
+      <div class="journey-scene" id="journeyScene" aria-live="polite">
+        <div class="journey-portal" aria-hidden="true"><span></span><i>♡</i></div>
+        <div class="journey-media-frame" id="journeyMediaFrame"></div>
+        <div class="journey-scene-caption"><small id="journeyCounter">READY TO TRAVEL</small><h2 id="journeyTitle">Our little memories</h2><p id="journeyCaption">Chạm bắt đầu để du hành qua album của hai người.</p></div>
+      </div>
+      <div class="journey-finish" id="journeyFinish" hidden><span class="journey-finish-heart">♡</span><small>END OF THIS LITTLE JOURNEY</small><h2>Hết một vòng ngân hà,<br>nhưng chuyện mình vẫn tiếp tục.</h2><p>Cảm ơn em đã cùng anh đi qua những khoảnh khắc này.</p><button class="journey-replay" id="journeyReplay" type="button">↻ Du hành lần nữa</button></div>
+    </div>
+    <footer class="journey-controls">
+      <div class="journey-progress-wrap"><div class="journey-progress-meta"><span id="journeyProgressLabel">SẴN SÀNG KHỞI HÀNH</span><span id="journeyProgressCount">0 / 0</span></div><div class="journey-progress"><span id="journeyProgressBar"></span></div></div>
+      <div class="journey-control-row">
+        <button class="journey-control" id="journeyPrev" type="button" aria-label="Khoảnh khắc trước">←</button>
+        <button class="journey-control journey-play" id="journeyPlay" type="button">✦ Bắt đầu du hành</button>
+        <button class="journey-control" id="journeyNext" type="button" aria-label="Khoảnh khắc tiếp theo">→</button>
+      </div>
+      <small class="journey-footnote">Ảnh lần lượt xuất hiện · Có thể tạm dừng hoặc thoát bất cứ lúc nào ♡</small>
+    </footer>
+  </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -140,6 +173,13 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       let slideshowTimer = null;
       let slideshowIndex = 0;
       let isSlideshow = false;
+      let journeyTimer = null;
+      let journeyItems = [];
+      let journeyIndex = 0;
+      let journeyActive = false;
+      let journeyPaused = false;
+      let journeyVideo = null;
+      let journeyLoadFallbackTimer = null;
       let activeViewerVideo = null;
       let activeFilter = 'all';
       let galleryPage = 0;
@@ -1450,7 +1490,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         isSlideshow = false;
         clearTimeout(slideshowTimer);
         slideshowTimer = null;
-        $('playFilm').textContent = '▶ Xem lại hành trình';
+        $('playFilm').textContent = '✦ Du hành thiên hà';
         if (closeViewer && $('viewer').classList.contains('open')) closeModal('viewer');
       }
 
@@ -1463,13 +1503,214 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         showViewer(mediaItems[slideshowIndex], true);
       }
 
+      const JOURNEY_IMAGE_DURATION = 4700;
+      const JOURNEY_VIDEO_DURATION = 6800;
+
+      function setJourneyProgress() {
+        const total = journeyItems.length;
+        const current = Math.min(journeyIndex + (journeyActive ? 1 : 0), total);
+        $('journeyProgressCount').textContent = `${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+        $('journeyProgressBar').style.width = `${total ? (current / total) * 100 : 0}%`;
+        $('journeyProgressLabel').textContent = journeyActive
+          ? (journeyPaused ? 'ĐANG TẠM DỪNG' : 'ĐANG DU HÀNH QUA KỶ NIỆM')
+          : (current >= total && total ? 'ĐÃ ĐI QUA CẢ CUỘN PHIM' : 'SẴN SÀNG KHỞI HÀNH');
+      }
+
+      function clearJourneyTimers() {
+        clearTimeout(journeyTimer);
+        clearTimeout(journeyLoadFallbackTimer);
+        journeyTimer = null;
+        journeyLoadFallbackTimer = null;
+      }
+
+      function setJourneyPaused(paused) {
+        if (!journeyActive) return;
+        journeyPaused = paused;
+        clearJourneyTimers();
+        if (journeyVideo) {
+          if (paused) journeyVideo.pause();
+          else journeyVideo.play().catch(() => {});
+        }
+        $('journeyPlay').textContent = paused ? '▶ Tiếp tục' : 'Ⅱ Tạm dừng';
+        $('galaxyJourney').classList.toggle('is-paused', paused);
+        setJourneyProgress();
+        if (!paused) scheduleJourneyAdvance(journeyVideo ? JOURNEY_VIDEO_DURATION : JOURNEY_IMAGE_DURATION);
+      }
+
+      function scheduleJourneyAdvance(duration = JOURNEY_IMAGE_DURATION) {
+        clearJourneyTimers();
+        if (!journeyActive || journeyPaused) return;
+        journeyTimer = setTimeout(() => showJourneyItem(journeyIndex + 1), duration);
+      }
+
+      function preloadNextJourneyItem() {
+        const next = journeyItems[journeyIndex + 1];
+        if (!next || next.kind !== 'image' || !next.url) return;
+        // At most one image is preloaded ahead, keeping memory and network use modest.
+        const preload = new Image();
+        preload.decoding = 'async';
+        preload.src = next.previewUrl || next.url;
+      }
+
+      function showJourneyFinish() {
+        clearJourneyTimers();
+        journeyActive = false;
+        journeyPaused = false;
+        if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
+        $('journeyScene').hidden = true;
+        $('journeyIntro').hidden = true;
+        $('journeyFinish').hidden = false;
+        $('journeyPlay').hidden = true;
+        $('journeyPrev').hidden = true;
+        $('journeyNext').hidden = true;
+        $('journeyProgressLabel').textContent = 'ĐÃ ĐI QUA CẢ CUỘN PHIM';
+        $('journeyProgressCount').textContent = `${String(journeyItems.length).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')}`;
+        $('journeyProgressBar').style.width = '100%';
+      }
+
+      function showJourneyItem(index) {
+        clearJourneyTimers();
+        if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
+        if (index >= journeyItems.length) { showJourneyFinish(); return; }
+        journeyIndex = Math.max(0, index);
+        journeyActive = true;
+        journeyPaused = false;
+        $('journeyIntro').hidden = true;
+        $('journeyFinish').hidden = true;
+        $('journeyScene').hidden = false;
+        $('journeyPlay').hidden = false;
+        $('journeyPrev').hidden = false;
+        $('journeyNext').hidden = false;
+        $('journeyPlay').textContent = 'Ⅱ Tạm dừng';
+        $('journeyScene').classList.remove('scene-enter');
+        const frame = $('journeyMediaFrame');
+        frame.replaceChildren();
+        const item = journeyItems[journeyIndex];
+        const media = item.kind === 'video' ? document.createElement('video') : document.createElement('img');
+        media.className = 'journey-media';
+        if (item.kind === 'video') {
+          media.muted = true;
+          media.defaultMuted = true;
+          media.playsInline = true;
+          media.autoplay = true;
+          media.loop = true;
+          media.preload = 'metadata';
+          media.setAttribute('aria-label', item.name);
+          journeyVideo = media;
+        } else {
+          media.alt = item.name;
+          media.decoding = 'async';
+          media.loading = 'eager';
+          media.fetchPriority = 'high';
+        }
+        const beginScene = () => {
+          if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+          requestAnimationFrame(() => {
+            if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+            $('journeyScene').classList.remove('scene-enter');
+            void $('journeyScene').offsetWidth;
+            $('journeyScene').classList.add('scene-enter');
+          });
+          $('journeyCounter').textContent = `MEMORY ${String(journeyIndex + 1).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')}`;
+          $('journeyTitle').textContent = item.kind === 'video' ? 'Một thước phim của chúng mình' : 'Một vì sao mang tên em';
+          $('journeyCaption').textContent = item.name || 'Một khoảnh khắc anh muốn giữ thật lâu ♡';
+          setJourneyProgress();
+          preloadNextJourneyItem();
+          if (!journeyPaused) scheduleJourneyAdvance(item.kind === 'video' ? JOURNEY_VIDEO_DURATION : JOURNEY_IMAGE_DURATION);
+        };
+        if (item.kind === 'video') {
+          media.src = item.url;
+          frame.append(media);
+          const playAttempt = media.play();
+          if (playAttempt?.catch) playAttempt.catch(() => {});
+          beginScene();
+        } else {
+          media.onload = beginScene;
+          media.onerror = () => {
+            if (item.previewUrl && media.src !== item.previewUrl) {
+              media.src = item.previewUrl;
+            } else {
+              $('journeyCaption').textContent = 'Khoảnh khắc này tạm thời chưa tải được. Mình sẽ tiếp tục nhé ♡';
+              beginScene();
+            }
+          };
+          frame.append(media);
+          media.src = item.url || item.previewUrl;
+          // A very slow original file must not stall the whole journey indefinitely.
+          journeyLoadFallbackTimer = setTimeout(() => {
+            if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+            if ((!media.complete || !media.naturalWidth) && item.previewUrl && media.src !== item.previewUrl) {
+              media.src = item.previewUrl;
+              return;
+            }
+            if (media.complete && media.naturalWidth) beginScene();
+            else {
+              $('journeyCaption').textContent = 'Ảnh này đang tải hơi lâu, anh sẽ đưa em đến khoảnh khắc tiếp theo nhé ♡';
+              beginScene();
+            }
+          }, 9000);
+        }
+        $('journeyPrev').disabled = journeyIndex === 0;
+        $('journeyScene').dataset.kind = item.kind;
+      }
+
+      function startGalaxyJourney() {
+        journeyItems = getFilteredMemories().slice();
+        if (!journeyItems.length) { notify('Album chưa có ảnh/video nào để du hành nha ♡'); return; }
+        stopSlideshow(false);
+        closePlanetReveal();
+        clearJourneyTimers();
+        journeyIndex = 0;
+        journeyActive = false;
+        journeyPaused = true;
+        $('journeyScene').hidden = true;
+        $('journeyFinish').hidden = true;
+        $('journeyIntro').hidden = false;
+        $('journeyPlay').hidden = false;
+        $('journeyPrev').hidden = true;
+        $('journeyNext').hidden = true;
+        $('journeyPlay').textContent = 'Bỏ qua mở đầu →';
+        $('galaxyJourney').classList.add('is-open');
+        $('galaxyJourney').setAttribute('aria-hidden', 'false');
+        document.body.classList.add('journey-lock');
+        $('journeyProgressLabel').textContent = 'CHUẨN BỊ KHỞI HÀNH…';
+        setJourneyProgress();
+        // One tap on the gallery button starts the cinematic intro, then the film rolls automatically.
+        journeyTimer = setTimeout(() => {
+          if ($('galaxyJourney').classList.contains('is-open') && !journeyActive) showJourneyItem(0);
+        }, 1350);
+      }
+
+      function stopGalaxyJourney() {
+        clearJourneyTimers();
+        journeyActive = false;
+        journeyPaused = false;
+        if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
+        const overlay = $('galaxyJourney');
+        if (!overlay) return;
+        overlay.classList.remove('is-open', 'is-paused');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('journey-lock');
+        $('journeyMediaFrame').replaceChildren();
+        $('journeyPlay').textContent = '✦ Bắt đầu du hành';
+      }
+
+      function toggleGalaxyJourney() {
+        if (!$('galaxyJourney').classList.contains('is-open')) { startGalaxyJourney(); return; }
+        if (!journeyActive && $('journeyFinish').hidden) {
+          showJourneyItem(0);
+          return;
+        }
+        if (journeyActive) setJourneyPaused(!journeyPaused);
+      }
+
       function closeModal(id) {
         $(id).classList.remove('open');
         if (id === 'viewer') {
           isSlideshow = false;
           clearTimeout(slideshowTimer);
           slideshowTimer = null;
-          $('playFilm').textContent = '▶ Xem lại hành trình';
+          $('playFilm').textContent = '✦ Du hành thiên hà';
           if (activeViewerVideo) activeViewerVideo.pause();
           activeViewerVideo = null;
           $('viewerContent').replaceChildren();
@@ -1795,7 +2036,13 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('editLetter').addEventListener('click', openLetterEditor);
         $('saveLetter').addEventListener('click', saveLetter);
         $('addMedia').addEventListener('click', async () => { if (await requireAdmin()) $('mediaInput').click(); });
-        $('playFilm').addEventListener('click', toggleSlideshow);
+        $('playFilm').addEventListener('click', startGalaxyJourney);
+        $('journeyPlay').addEventListener('click', toggleGalaxyJourney);
+        $('journeyClose').addEventListener('click', stopGalaxyJourney);
+        $('journeyPrev').addEventListener('click', () => showJourneyItem(journeyIndex - 1));
+        $('journeyNext').addEventListener('click', () => showJourneyItem(journeyIndex + 1));
+        $('journeyReplay').addEventListener('click', () => { $('journeyScene').hidden = false; $('journeyFinish').hidden = true; $('journeyIntro').hidden = true; $('journeyPlay').hidden = false; showJourneyItem(0); });
+        $('galaxyJourney').addEventListener('click', (event) => { if (event.target === $('galaxyJourney')) stopGalaxyJourney(); });
         $('mediaInput').addEventListener('change', async (event) => { await addFiles(event.target.files); event.target.value = ''; });
         $('createOldPreviews').addEventListener('click', createOldPreviews);
         $('chooseMusic').addEventListener('click', async () => { if (await requireAdmin()) $('audioInput').click(); });
@@ -1835,7 +2082,16 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('adminPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') signIn(); });
         document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => closeModal(button.dataset.close)));
         document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(backdrop.id); }));
-        document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closePlanetReveal(); closeModal('letterModal'); closeModal('viewer'); closeModal('adminModal'); } });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') { stopGalaxyJourney(); closePlanetReveal(); closeModal('letterModal'); closeModal('viewer'); closeModal('adminModal'); }
+          if (!$('galaxyJourney').classList.contains('is-open')) return;
+          if (journeyActive && event.key === 'ArrowRight') showJourneyItem(journeyIndex + 1);
+          if (journeyActive && event.key === 'ArrowLeft' && journeyIndex > 0) showJourneyItem(journeyIndex - 1);
+          if (event.code === 'Space' && !event.target.closest('button, input, textarea')) { event.preventDefault(); toggleGalaxyJourney(); }
+        });
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && journeyActive && !journeyPaused) setJourneyPaused(true);
+        });
       }
 
       async function init() {
