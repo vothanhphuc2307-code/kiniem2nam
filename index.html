@@ -212,6 +212,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           <span class="journey-light-streak journey-light-streak--one"></span>
           <span class="journey-light-streak journey-light-streak--two"></span>
         </div>
+        <div class="journey-satellite-rail" id="journeySatelliteRail" aria-hidden="true"></div>
         <div class="journey-portal" aria-hidden="true"><span></span><i>♡</i></div>
         <div class="journey-media-frame" id="journeyMediaFrame" data-orientation="landscape"></div>
         <div class="journey-scene-caption"><div class="journey-caption-kicker">✦ ANH × EM · A MEMORY IN THE STARS ✦</div><small id="journeyCounter">READY TO TRAVEL</small><h2 id="journeyTitle">Our little memories</h2><p id="journeyCaption">Chạm bắt đầu để du hành qua album của hai người.</p></div>
@@ -1687,19 +1688,24 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const isMobile = window.matchMedia('(max-width: 760px)').matches;
         const viewportW = Math.max(320, document.documentElement.clientWidth || window.innerWidth || 320);
         const viewportH = Math.max(480, window.innerHeight || 700);
-        // Size the paper frame to the actual photo ratio. This removes the old
-        // wide empty rectangle around portrait memories while keeping contain-fit.
-        const maxW = isMobile ? Math.min(viewportW * 0.76, 350) : Math.min(viewportW * 0.52, 660);
-        const maxH = isMobile ? Math.min(viewportH * 0.39, 330) : Math.min(viewportH * 0.52, 468);
+        // Leave real room for both satellite cards. The hero frame follows the
+        // photo ratio, so portrait images no longer sit inside a wide blank panel.
+        const maxW = isMobile ? Math.min(viewportW * 0.55, 350) : Math.min(viewportW * 0.49, 660);
+        const maxH = isMobile ? Math.min(viewportH * 0.38, 320) : Math.min(viewportH * 0.52, 468);
         const safeRatio = Math.min(2.4, Math.max(0.48, ratio));
-        const frameW = Math.max(120, Math.round(Math.min(maxW, maxH * safeRatio)));
-        const frameH = Math.max(150, Math.round(frameW / safeRatio));
+        const frameW = Math.max(116, Math.round(Math.min(maxW, maxH * safeRatio)));
+        const frameH = Math.max(104, Math.round(frameW / safeRatio));
         frame.dataset.orientation = ratio < 0.82 ? 'portrait' : (ratio > 1.2 ? 'landscape' : 'square');
         frame.style.setProperty('--journey-media-ratio', `${width} / ${height}`);
         frame.style.setProperty('--journey-frame-width', `${frameW}px`);
         frame.style.setProperty('--journey-frame-height', `${frameH}px`);
-        frame.style.width = `${frameW}px`;
-        frame.style.height = `${frameH}px`;
+        // Important inline values deliberately win over legacy responsive rules
+        // accumulated in earlier versions of the stylesheet.
+        frame.style.setProperty('width', `${frameW}px`, 'important');
+        frame.style.setProperty('height', `${frameH}px`, 'important');
+        frame.style.setProperty('min-height', '0px', 'important');
+        frame.style.setProperty('max-width', 'none', 'important');
+        frame.style.setProperty('max-height', 'none', 'important');
         const scene = frame.closest('.journey-scene');
         if (scene) {
           scene.style.setProperty('--journey-frame-width', `${frameW}px`);
@@ -1711,52 +1717,42 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       function resolveJourneySatelliteUrl(item) {
         if (!item || item.kind !== 'image') return Promise.resolve(null);
         if (journeySatelliteUrlCache.has(item.id)) return journeySatelliteUrlCache.get(item.id);
-        const candidates = [...new Set([item.previewUrl, item.url].filter(Boolean))];
-        const task = new Promise((resolve) => {
-          const tryCandidate = (index) => {
-            if (index >= candidates.length) { resolve(null); return; }
-            const url = candidates[index];
-            const probe = new Image();
-            probe.decoding = 'async';
-            if ('fetchPriority' in probe) probe.fetchPriority = 'low';
-            probe.onload = () => {
-              const finish = () => resolve(url);
-              if (typeof probe.decode === 'function') probe.decode().then(finish, finish);
-              else finish();
-            };
-            probe.onerror = () => tryCandidate(index + 1);
-            probe.src = url;
-          };
-          tryCandidate(0);
-        });
+        // Return a URL only; the visible <img> performs the single actual fetch/decode.
+        // This avoids probing an image and then downloading/decoding it a second time.
+        const preferred = item.previewUrl || item.url || null;
+        const task = Promise.resolve(preferred);
         journeySatelliteUrlCache.set(item.id, task);
-        // Bound retained promises; the browser itself may keep successful image
-        // responses in its HTTP cache for the next scene.
-        while (journeySatelliteUrlCache.size > 12) {
-          const oldestKey = journeySatelliteUrlCache.keys().next().value;
-          journeySatelliteUrlCache.delete(oldestKey);
+        while (journeySatelliteUrlCache.size > 16) {
+          journeySatelliteUrlCache.delete(journeySatelliteUrlCache.keys().next().value);
         }
         return task;
       }
 
       function renderJourneyOrbitPhotos() {
-        const field = $('journeySpatialField');
-        if (!field) return;
-        // Fade out the previous pair instead of abruptly removing them.
-        field.querySelectorAll('.journey-orbit-memory:not(.is-retiring)').forEach((node) => {
+        const rail = $('journeySatelliteRail');
+        if (!rail) return;
+        rail.querySelectorAll('.journey-orbit-memory:not(.is-retiring)').forEach((node) => {
           node.classList.add('is-retiring');
-          setTimeout(() => node.remove(), 520);
+          const removeNode = () => node.remove();
+          node.addEventListener('animationend', (event) => {
+            if (event.target === node && event.animationName === 'satelliteSoftRetire47') removeNode();
+          }, { once: true });
+          setTimeout(removeNode, 520);
         });
 
+        const total = journeyItems.length;
+        if (total < 2) return;
+        const previousItem = journeyItems[(journeyIndex - 1 + total) % total];
+        const nextItem = journeyItems[(journeyIndex + 1) % total];
         const previews = [
-          { item: journeyItems[journeyIndex - 1], side: 'previous', label: 'TRƯỚC ĐÓ' },
-          { item: journeyItems[journeyIndex + 1], side: 'next', label: 'TIẾP THEO' }
+          { item: previousItem, side: 'previous', label: 'KỶ NIỆM' },
+          { item: nextItem, side: 'next', label: 'SẮP TỚI' }
         ];
 
         previews.forEach(({ item, side, label }) => {
           if (!item) return;
-          const card = document.createElement('div');
-          card.className = `journey-orbit-memory journey-orbit-memory--${side} is-loading`;
+          const card = document.createElement('figure');
+          card.className = `journey-orbit-memory journey-orbit-memory--${side} is-entering is-loading`;
           card.setAttribute('aria-hidden', 'true');
           card.dataset.kind = item.kind;
 
@@ -1774,9 +1770,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
             if ('fetchPriority' in image) image.fetchPriority = 'low';
             image.draggable = false;
             image.onerror = () => {
-              // If a preview is missing for an older upload, use the optimized
-              // main image as a fallback. If that also fails, keep a cute tile.
-              if (image.dataset.fallback !== '1' && item.url && image.getAttribute('src') !== item.url) {
+              // Old uploads may not have thumbnails. Fall back once to the real
+              // image; keep the heart placeholder visible until it decodes.
+              if (image.dataset.fallback !== '1' && item.url && image.src !== item.url) {
                 image.dataset.fallback = '1';
                 image.src = item.url;
                 return;
@@ -1787,32 +1783,36 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
             };
             image.onload = () => {
               if (image.naturalWidth && image.naturalHeight) {
+                const ratio = image.naturalWidth / image.naturalHeight;
                 card.style.aspectRatio = `${image.naturalWidth} / ${image.naturalHeight}`;
-                card.dataset.orientation = image.naturalWidth / image.naturalHeight < 0.82 ? 'portrait' : (image.naturalWidth / image.naturalHeight > 1.2 ? 'landscape' : 'square');
+                card.dataset.orientation = ratio < 0.82 ? 'portrait' : (ratio > 1.2 ? 'landscape' : 'square');
               }
-              if (typeof image.decode === 'function') {
-                image.decode().then(() => card.classList.add('has-image'), () => card.classList.add('has-image'));
-              } else card.classList.add('has-image');
-              card.classList.remove('is-loading');
+              const decoded = typeof image.decode === 'function' ? image.decode().catch(() => {}) : Promise.resolve();
+              decoded.then(() => {
+                if (!card.isConnected) return;
+                card.classList.add('has-image');
+                card.classList.remove('is-loading');
+              });
             };
             card.append(image);
             resolveJourneySatelliteUrl(item).then((url) => {
-              if (!card.isConnected) return;
-              if (url) image.src = url;
-              else {
-                card.classList.remove('is-loading');
-                card.classList.add('is-placeholder');
-              }
+              if (!card.isConnected || !url) return;
+              image.src = url;
             });
           } else {
             card.classList.remove('is-loading');
             card.classList.add('is-placeholder', 'is-video-memory');
           }
 
-          const labelNode = document.createElement('span');
+          const labelNode = document.createElement('figcaption');
           labelNode.textContent = label;
           card.append(labelNode);
-          field.append(card);
+          rail.append(card);
+          // Stop the one-shot entrance animation after it finishes; no permanent
+          // compositor work is needed for stationary satellite cards.
+          card.addEventListener('animationend', (event) => {
+            if (event.target === card && event.animationName === 'satelliteSoftEnter47') card.classList.remove('is-entering');
+          }, { once: true });
         });
       }
 
@@ -1861,6 +1861,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const frame = $('journeyMediaFrame');
         const previousIndex = journeyIndex;
         const hadVisibleMemory = !!frame.querySelector('.journey-media.is-current, .journey-media.is-arriving');
+        const isFirstJourneyFrame = !hadVisibleMemory;
         const slideDirection = !hadVisibleMemory ? 'initial' : (index >= previousIndex ? 'forward' : 'backward');
         journeyIndex = Math.max(0, index);
         journeyActive = true;
@@ -1946,7 +1947,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
           media.classList.remove('journey-media--pending');
           media.classList.add('is-arriving');
-          scene.classList.remove('scene-enter', 'scene-exit');
+          scene.classList.remove('scene-exit', 'journey-transition-active', 'journey-initial-reveal');
           frame.classList.add('is-love-focus');
           let loveEffects = frame.querySelector('.journey-photo-love-effects');
           if (!loveEffects) {
@@ -1959,7 +1960,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           loveEffects.classList.remove('is-active');
           requestAnimationFrame(() => {
             if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
-            scene.classList.add('scene-enter');
+            scene.classList.add(isFirstJourneyFrame ? 'journey-initial-reveal' : 'journey-transition-active');
             loveEffects.classList.add('is-active');
           });
 
@@ -1969,7 +1970,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
             incomingSettled = true;
             media.classList.remove('is-arriving');
             media.classList.add('is-current');
-            scene.classList.remove('journey-slide-forward', 'journey-slide-backward', 'journey-slide-initial');
+            scene.classList.remove('journey-slide-forward', 'journey-slide-backward', 'journey-slide-initial', 'journey-transition-active', 'journey-initial-reveal');
             // Refresh left and right satellite cards only after the main photo
             // has completed its horizontal movement, so no previews pop mid-slide.
             renderJourneyOrbitPhotos();
@@ -2109,6 +2110,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('journey-lock');
         $('journeyMediaFrame').replaceChildren();
+        $('journeySatelliteRail')?.replaceChildren();
         journeyPreloadImage = null;
         journeyPreloadId = null;
         $('journeyScene').classList.remove('scene-enter', 'scene-exit');

@@ -5935,3 +5935,260 @@ footer { color: #937a9a; }
   .journey-media.is-arriving,.journey-media.is-current { opacity: 1 !important; transform: none !important; }
   .journey-media.is-leaving { opacity: 0 !important; }
 }
+
+
+/* ================================================================
+   PHOTO RIBBON 4.7 — FINAL LAYOUT + SMOOTHNESS PATCH
+   Fixes: oversized empty hero frame, hidden satellites, grid overlap,
+   repeated scene intro animations, and duplicate satellite image probing.
+   ================================================================ */
+.journey-scene {
+  --journey-frame-width: 560px;
+  --journey-frame-height: 360px;
+  --journey-satellite-width: 154px;
+  --journey-satellite-gap: 16px;
+  position: relative !important;
+  overflow: visible !important;
+  perspective: 1250px !important;
+  perspective-origin: 50% 48% !important;
+  isolation: isolate;
+}
+
+/* The background field stays behind everything; the satellite rail is a
+   separate sibling so its cards cannot be buried inside the field's stack. */
+.journey-spatial-field {
+  z-index: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+.journey-satellite-rail {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 6 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  transform-style: preserve-3d;
+}
+
+/* Ratio-aware frame. JS sets both custom properties and important inline
+   dimensions after the image has loaded; no old fixed landscape width wins. */
+.journey-media-frame,
+.journey-media-frame[data-orientation="portrait"],
+.journey-media-frame[data-orientation="square"],
+.journey-media-frame[data-orientation="landscape"] {
+  position: relative !important;
+  display: block !important;
+  width: var(--journey-frame-width, 560px) !important;
+  height: var(--journey-frame-height, 360px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  box-sizing: border-box !important;
+  padding: 6px !important;
+  overflow: hidden !important;
+  z-index: 5 !important;
+  border: 1px solid rgba(255,255,255,.98) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(145deg, #fffaff, #fff0f8 58%, #f0eaff) !important;
+  box-shadow: 0 18px 46px rgba(76,48,94,.16), 0 0 0 4px rgba(255,255,255,.12), 0 0 32px rgba(255,173,220,.34), 0 0 72px rgba(187,165,255,.20) !important;
+  transition: box-shadow .28s ease !important;
+  contain: layout paint style;
+}
+.journey-media-frame::before {
+  inset: -4px !important;
+  border-radius: 26px !important;
+  box-shadow: 0 0 18px rgba(255,194,225,.24), 0 0 34px rgba(193,169,255,.16) !important;
+}
+.journey-media-frame::after {
+  inset: 6px !important;
+  border-radius: 15px !important;
+}
+.journey-media {
+  position: absolute !important;
+  inset: 6px !important;
+  width: calc(100% - 12px) !important;
+  height: calc(100% - 12px) !important;
+  max-width: none !important;
+  max-height: none !important;
+  display: block !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  border-radius: 15px !important;
+  background: linear-gradient(145deg, #fffaff, #f7effb) !important;
+  backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
+}
+
+/* Side photo cards: fixed, fully visible, larger, and outside the hero frame. */
+.journey-orbit-memory,
+.journey-orbit-memory[data-orientation="portrait"],
+.journey-orbit-memory[data-orientation="landscape"],
+.journey-orbit-memory[data-orientation="square"] {
+  position: absolute !important;
+  margin: 0 !important;
+  top: 48% !important;
+  width: var(--journey-satellite-width, 154px) !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: 230px !important;
+  aspect-ratio: 4 / 3;
+  display: block !important;
+  box-sizing: border-box !important;
+  padding: 5px !important;
+  overflow: visible !important;
+  z-index: 7 !important;
+  border: 2px solid rgba(255,255,255,.98) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(145deg, #fff, #fff0f8 58%, #eee8ff) !important;
+  box-shadow: 0 12px 30px rgba(66,43,86,.14), 0 0 0 3px rgba(255,255,255,.12), 0 0 24px rgba(255,177,222,.30) !important;
+  opacity: .98 !important;
+  transform-style: preserve-3d !important;
+  backface-visibility: hidden !important;
+  pointer-events: none !important;
+  will-change: transform, opacity;
+}
+.journey-orbit-memory--previous {
+  left: calc(50% - var(--journey-frame-width, 560px) / 2 - var(--journey-satellite-width, 154px) - var(--journey-satellite-gap, 16px)) !important;
+  right: auto !important;
+  transform: translate3d(0,-50%,-24px) rotateY(7deg) rotateZ(-2deg) scale(.98) !important;
+}
+.journey-orbit-memory--next {
+  right: calc(50% - var(--journey-frame-width, 560px) / 2 - var(--journey-satellite-width, 154px) - var(--journey-satellite-gap, 16px)) !important;
+  left: auto !important;
+  transform: translate3d(0,-50%,-32px) rotateY(-7deg) rotateZ(2deg) scale(.98) !important;
+}
+.journey-orbit-memory .journey-orbit-photo {
+  position: absolute !important;
+  inset: 5px !important;
+  display: block !important;
+  width: calc(100% - 10px) !important;
+  height: calc(100% - 10px) !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 10px !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: linear-gradient(145deg, #fffaff, #f5edf9) !important;
+  opacity: 0 !important;
+  transition: opacity .22s ease !important;
+}
+.journey-orbit-memory.has-image .journey-orbit-photo { opacity: 1 !important; }
+.journey-orbit-placeholder {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: auto !important;
+  height: auto !important;
+  margin: auto !important;
+  border: 1px solid rgba(255,255,255,.96) !important;
+  border-radius: 50% !important;
+  color: #b86e9f !important;
+  background: radial-gradient(circle, rgba(255,255,255,.96), rgba(255,226,243,.78)) !important;
+  box-shadow: 0 0 22px rgba(255,171,219,.34) !important;
+  font: 900 22px var(--sans) !important;
+  pointer-events: none !important;
+  opacity: 1 !important;
+  transition: opacity .22s ease, transform .22s ease !important;
+}
+.journey-orbit-memory.has-image .journey-orbit-placeholder { opacity: 0 !important; transform: scale(.72) !important; }
+.journey-orbit-memory figcaption {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: -12px !important;
+  z-index: 4 !important;
+  padding: 4px 10px !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  border-radius: 999px !important;
+  color: #935f8d !important;
+  background: rgba(255,250,255,.96) !important;
+  box-shadow: 0 4px 12px rgba(79,48,94,.10) !important;
+  font: 900 8px/1 var(--sans) !important;
+  letter-spacing: .08em !important;
+  white-space: nowrap !important;
+  transform: translateX(-50%) !important;
+}
+.journey-orbit-memory.is-loading { background: linear-gradient(145deg, #fffaff, #ffeaf5 58%, #eee8ff) !important; }
+.journey-orbit-memory.is-placeholder { display: block !important; }
+
+@keyframes satelliteSoftEnter47 {
+  0% { opacity: 0; transform: translate3d(0,12px,-80px) rotateY(var(--satellite-yaw, 0deg)) rotateZ(var(--satellite-roll, 0deg)) scale(.88); }
+  100% { opacity: .98; transform: translate3d(0,-50%,-24px) rotateY(var(--satellite-yaw, 0deg)) rotateZ(var(--satellite-roll, 0deg)) scale(.98); }
+}
+@keyframes satelliteSoftRetire47 {
+  to { opacity: 0; transform: translate3d(0,-50%,-90px) scale(.86); }
+}
+.journey-orbit-memory--previous { --satellite-yaw: 7deg; --satellite-roll: -2deg; }
+.journey-orbit-memory--next { --satellite-yaw: -7deg; --satellite-roll: 2deg; }
+.journey-orbit-memory.is-entering { animation: satelliteSoftEnter47 .56s cubic-bezier(.2,.72,.2,1) both !important; }
+.journey-orbit-memory.is-retiring { animation: satelliteSoftRetire47 .32s ease-in both !important; }
+
+/* Do not restart all nebula, depth rings and background effects on each photo.
+   Only the media and the tiny love accents animate during a normal slide. */
+.journey-scene.journey-transition-active .journey-depth-ring,
+.journey-scene.journey-transition-active .journey-warp-stars,
+.journey-scene.journey-transition-active .journey-floating-heart,
+.journey-scene.journey-transition-active .journey-cute-spark { animation-play-state: paused !important; }
+.journey-scene.journey-transition-active .journey-media-frame::after {
+  animation: ribbonFrameGlint46 .82s .12s ease-out both !important;
+}
+.journey-scene.journey-initial-reveal .journey-depth-ring { animation-duration: 1.1s, 68s !important; }
+.journey-scene.journey-initial-reveal .journey-warp-stars { animation: journeyStarWarp .78s ease-out both !important; }
+
+@media (max-width: 760px) {
+  .journey-scene {
+    --journey-satellite-width: clamp(48px, 14.2vw, 58px);
+    --journey-satellite-gap: 7px;
+    perspective: 1050px !important;
+  }
+  .journey-media-frame,
+  .journey-media-frame[data-orientation="portrait"],
+  .journey-media-frame[data-orientation="square"],
+  .journey-media-frame[data-orientation="landscape"] {
+    width: var(--journey-frame-width, 210px) !important;
+    height: var(--journey-frame-height, 280px) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 55vw !important;
+    max-height: 38vh !important;
+    padding: 4px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 24px rgba(76,48,94,.12), 0 0 18px rgba(255,173,220,.25) !important;
+  }
+  .journey-media { inset: 4px !important; width: calc(100% - 8px) !important; height: calc(100% - 8px) !important; border-radius: 12px !important; }
+  .journey-orbit-memory,
+  .journey-orbit-memory[data-orientation="portrait"],
+  .journey-orbit-memory[data-orientation="landscape"],
+  .journey-orbit-memory[data-orientation="square"] {
+    width: var(--journey-satellite-width) !important;
+    max-height: 92px !important;
+    top: 48% !important;
+    padding: 3px !important;
+    border-radius: 9px !important;
+    box-shadow: 0 5px 12px rgba(66,43,86,.10), 0 0 10px rgba(255,177,222,.22) !important;
+  }
+  .journey-orbit-memory--previous {
+    left: calc(50% - var(--journey-frame-width, 210px) / 2 - var(--journey-satellite-width) - var(--journey-satellite-gap)) !important;
+    transform: translate3d(0,-50%,-8px) rotateZ(-2deg) scale(.98) !important;
+  }
+  .journey-orbit-memory--next {
+    right: calc(50% - var(--journey-frame-width, 210px) / 2 - var(--journey-satellite-width) - var(--journey-satellite-gap)) !important;
+    transform: translate3d(0,-50%,-10px) rotateZ(2deg) scale(.98) !important;
+  }
+  .journey-orbit-memory .journey-orbit-photo { inset: 3px !important; width: calc(100% - 6px) !important; height: calc(100% - 6px) !important; border-radius: 6px !important; }
+  .journey-orbit-memory figcaption { bottom: -10px !important; padding: 3px 5px !important; font-size: 6px !important; }
+  .journey-orbit-placeholder { font-size: 15px !important; }
+  .journey-orbit-memory.is-entering { animation-duration: .42s !important; }
+}
+@media (max-width: 360px) {
+  .journey-scene { --journey-satellite-width: 46px; --journey-satellite-gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-orbit-memory.is-entering,
+  .journey-orbit-memory.is-retiring,
+  .journey-scene.journey-initial-reveal .journey-depth-ring,
+  .journey-scene.journey-initial-reveal .journey-warp-stars { animation: none !important; }
+}
