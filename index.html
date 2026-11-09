@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Romance Motion 3.8 ♡</title>
+  <title>The Little Archive — Dream Motion 3.9 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -14,10 +14,10 @@
 <body class="intro-locked">
   <div class="ambient" aria-hidden="true"><div class="glow one"></div><div class="glow two"></div><span class="sparkle">✦</span><span class="sparkle">♡</span><span class="sparkle">✧</span></div>
   <div class="intro-gate" id="introGate">
-    <div class="welcome-sparkles" aria-hidden="true"><i>♡</i><i>✦</i><i>✧</i><i>♡</i><i>·</i><i>✦</i><i>♡</i><i>✧</i><i>·</i><i>♡</i></div>
+    <div class="welcome-sparkles" aria-hidden="true"><span class="welcome-orbit welcome-orbit--one"></span><span class="welcome-orbit welcome-orbit--two"></span><span class="welcome-orbit-dot welcome-orbit-dot--one">✦</span><span class="welcome-orbit-dot welcome-orbit-dot--two">♡</span><i>♡</i><i>✦</i><i>✧</i><i>♡</i><i>·</i><i>✦</i><i>♡</i><i>✧</i><i>·</i><i>♡</i><i>♥</i><i>✧</i><i>♡</i><i>✦</i></div>
     <div class="gate-content">
       <div class="gate-kicker">a little archive of us</div>
-      <div class="book-scene"><div class="story-book" id="storyBook"><div class="book-pages"></div><div class="book-cover"><small>the story of two</small><em>♡</em><strong>OUR<br>STORY</strong><span>25 · 11 · 2024</span></div></div></div>
+      <div class="book-scene"><span class="book-orbit book-orbit--one" aria-hidden="true"></span><span class="book-orbit book-orbit--two" aria-hidden="true"></span><span class="book-orbit-spark book-orbit-spark--one" aria-hidden="true">✦</span><span class="book-orbit-spark book-orbit-spark--two" aria-hidden="true">♡</span><div class="story-book" id="storyBook"><div class="book-pages"></div><div class="book-cover"><small>the story of two</small><em>♡</em><strong>OUR<br>STORY</strong><span>25 · 11 · 2024</span></div></div></div>
       <h2 class="gate-title">Một câu chuyện, hai trái tim.</h2>
       <p class="gate-caption">Có một cuốn lưu bút nhỏ đang giữ lại những điều đẹp nhất của chúng mình. Chạm để mở trang đầu nhé.</p>
       <aside class="gate-device-card" id="deviceAdvice" role="note" aria-live="polite">
@@ -174,6 +174,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           <span class="journey-floating-heart journey-floating-heart--one">♡</span>
           <span class="journey-floating-heart journey-floating-heart--two">✧</span>
           <span class="journey-floating-heart journey-floating-heart--three">♥</span>
+          <span class="journey-light-streak journey-light-streak--one"></span>
+          <span class="journey-light-streak journey-light-streak--two"></span>
         </div>
         <div class="journey-portal" aria-hidden="true"><span></span><i>♡</i></div>
         <div class="journey-media-frame" id="journeyMediaFrame" data-orientation="landscape"></div>
@@ -1595,7 +1597,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           journeyTimer = setTimeout(() => {
             scene.classList.remove('scene-exit');
             showJourneyItem(journeyIndex + 1);
-          }, 520);
+          }, 680);
         }, duration);
       }
 
@@ -1719,16 +1721,22 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           media.decoding = 'async';
           media.loading = 'eager';
           media.fetchPriority = 'high';
+          media.setAttribute('draggable', 'false');
         }
         const beginScene = () => {
           if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
           clearTimeout(journeyLoadFallbackTimer);
           journeyLoadFallbackTimer = null;
+          const scene = $('journeyScene');
+          scene.classList.remove('scene-enter', 'scene-exit');
+          // Restart the scene animation over two frames instead of forcing a
+          // synchronous layout read (offsetWidth), which can hitch on phones.
           requestAnimationFrame(() => {
             if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
-            $('journeyScene').classList.remove('scene-enter');
-            void $('journeyScene').offsetWidth;
-            $('journeyScene').classList.add('scene-enter');
+            requestAnimationFrame(() => {
+              if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+              scene.classList.add('scene-enter');
+            });
           });
           $('journeyCounter').textContent = `MEMORY ${String(journeyIndex + 1).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')}`;
           $('journeyTitle').textContent = item.kind === 'video' ? 'Một thước phim của chúng mình' : 'Một vì sao mang tên em';
@@ -1785,8 +1793,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyScene').dataset.kind = item.kind;
       }
 
-      const HEAVEN_GATE_DURATION = 3120;
-      const HEAVEN_GATE_CROSSING_DURATION = 460;
+      const HEAVEN_GATE_DURATION = 3260;
+      const HEAVEN_GATE_CROSSING_DURATION = 680;
 
       function beginJourneyFilm() {
         const overlay = $('galaxyJourney');
