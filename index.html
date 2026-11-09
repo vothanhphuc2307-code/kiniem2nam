@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171322">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Cinematic Galaxy 3.4 ♡</title>
+  <title>The Little Archive — Cinematic Galaxy 3.5 ♡</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
@@ -38,7 +38,15 @@
           <div class="eyebrow"><i></i> 25.11.2024 — still choosing you</div>
           <h1 id="heroTitle">Hai năm.<br>Vô vàn điều <em>bé xíu.</em></h1>
           <p class="hero-copy">Từ một ngày rất bình thường, chúng mình đã gom được thật nhiều điều đáng nhớ. Đây là vũ trụ nhỏ để anh cất giữ những nụ cười của em, những chuyến đi, những đoạn video rung tay và cả những khoảnh khắc chẳng cần lý do.</p>
-          <div class="hero-buttons"><button class="primary-btn" id="jumpMemories">Khám phá ký ức ↓</button><button class="soft-btn" id="openLetter">Đọc lời nhắn ♡</button></div>
+          <div class="journey-cta-wrap">
+            <button class="journey-hero-cta" id="heroJourney" type="button" aria-label="Mở cổng thiên hà và bắt đầu du hành qua kỷ niệm của anh và em" aria-describedby="journeyCtaHint">
+              <span class="journey-cta-orbit" aria-hidden="true"><span>✦</span><i>♡</i></span>
+              <span class="journey-cta-copy"><small>CHUYẾN ĐI RIÊNG CỦA ANH VÀ EM</small><strong>Mở cổng thiên hà</strong><em>Du hành qua những kỷ niệm của chúng mình ♡</em></span>
+              <span class="journey-cta-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="journey-cta-hint" id="journeyCtaHint"><span>✧</span> Nhấn một lần để bắt đầu chuyến đi <span>✧</span></div>
+          </div>
+          <div class="hero-buttons"><button class="primary-btn" id="jumpMemories">Khám phá album ↓</button><button class="soft-btn" id="openLetter">Đọc lời nhắn ♡</button></div>
           <div class="hero-note">A LOVE STORY IN LITTLE FRAMES · 25 NOV 2024 — 25 NOV 2026</div>
         </div>
         <div class="hero-art" aria-label="Những khung ảnh kỷ niệm">
@@ -2101,6 +2109,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         // Wire the two topbar controls first so a missing optional control cannot
         // prevent the primary Share/Admin actions from working.
         $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
+        $('heroJourney').addEventListener('click', startGalaxyJourney);
         $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
         $('openStory').addEventListener('click', () => {
           // This tap is the browser-approved gesture used to start the shared soundtrack.
