@@ -4840,3 +4840,363 @@ footer { color: #937a9a; }
   .journey-cute-spark { animation: none !important; }
   .journey-scene.scene-enter .journey-media-frame { animation: none !important; opacity: 1; transform: none; }
 }
+
+
+/* ================================================================
+   GENTLE JOURNEY 4.2
+   A balanced rhythm: 4.9s per photo + 0.48s transition; videos 7s.
+   Entrance, pause, and exit are staggered to feel cinematic without
+   stacking expensive filters or long-running GPU effects.
+   ================================================================ */
+.journey-scene.scene-enter .journey-media-frame {
+  animation: gentleMemoryArrive42 1.16s cubic-bezier(.2,.78,.22,1) both !important;
+  will-change: transform, opacity;
+}
+@keyframes gentleMemoryArrive42 {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--journey-entry-x,-7vw), 28px, -760px)
+      rotateX(10deg) rotateY(var(--journey-entry-yaw,-16deg))
+      rotateZ(var(--journey-entry-roll,-4deg)) scale(.52);
+  }
+  48% {
+    opacity: 1;
+    transform: translate3d(calc(var(--journey-entry-x-soft,-1vw)), 5px, -125px)
+      rotateX(3deg) rotateY(var(--journey-entry-yaw-soft,-3deg))
+      rotateZ(var(--journey-entry-roll-soft,-.8deg)) scale(.91);
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(0,-2px,24px) rotateX(-.5deg) rotateY(.6deg) scale(1.012);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1);
+  }
+}
+.journey-scene.scene-enter .journey-depth-ring--far {
+  animation: gentleRingArrive42 1.12s cubic-bezier(.18,.76,.22,1) both,
+             journeyDepthRingSpin 64s 1.12s linear infinite;
+}
+.journey-scene.scene-enter .journey-depth-ring--mid {
+  animation: gentleRingArrive42 .98s .06s cubic-bezier(.18,.76,.22,1) both,
+             journeyDepthRingSpin 48s 1.04s linear infinite reverse;
+}
+.journey-scene.scene-enter .journey-depth-ring--near {
+  animation: gentleRingArrive42 .86s .12s cubic-bezier(.18,.76,.22,1) both,
+             journeyDepthRingSpin 38s .98s linear infinite;
+}
+@keyframes gentleRingArrive42 {
+  0% { opacity: 0; transform: translate3d(0,0,-620px) scale(.72) rotate(-8deg); }
+  65% { opacity: .72; transform: translate3d(0,0,-70px) scale(1.04) rotate(1deg); }
+  100% { opacity: var(--ring-final-opacity,.58); transform: translate3d(0,0,-35px) scale(1) rotate(0); }
+}
+.journey-scene.scene-enter .journey-media-frame::after {
+  animation: gentlePhotoGlint42 .92s .34s cubic-bezier(.2,.72,.2,1) both;
+}
+@keyframes gentlePhotoGlint42 {
+  0% { opacity: 0; transform: translate3d(-125%,0,24px) skewX(-16deg); }
+  32% { opacity: .62; }
+  100% { opacity: 0; transform: translate3d(130%,0,24px) skewX(-16deg); }
+}
+.journey-scene.scene-enter .journey-scene-caption {
+  animation: gentleCaptionArrive42 .58s .28s cubic-bezier(.2,.76,.22,1) both;
+}
+@keyframes gentleCaptionArrive42 {
+  from { opacity: 0; transform: translate3d(0,10px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+.journey-scene.scene-exit .journey-media-frame {
+  animation: gentleMemoryExit42 .48s cubic-bezier(.48,.04,.82,.38) both !important;
+  will-change: transform, opacity;
+}
+@keyframes gentleMemoryExit42 {
+  0% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateX(0); }
+  40% { opacity: .96; transform: translate3d(0,-7px,72px) scale(1.025) rotateX(-2deg); }
+  100% { opacity: 0; transform: translate3d(0,-18px,-680px) scale(.62) rotateX(7deg) rotateY(-4deg); }
+}
+.journey-scene.scene-exit .journey-scene-caption {
+  animation: gentleCaptionExit42 .24s ease-in both;
+}
+@keyframes gentleCaptionExit42 {
+  to { opacity: 0; transform: translate3d(0,-5px,0); }
+}
+.journey-scene.scene-enter .journey-orbit-memory--previous,
+.journey-scene.scene-enter .journey-orbit-memory--next {
+  animation-duration: 1.12s !important;
+}
+.journey-scene.scene-exit .journey-orbit-memory--previous,
+.journey-scene.scene-exit .journey-orbit-memory--next {
+  animation-duration: .42s !important;
+}
+/* Tiny decorative pulses are transform/opacity only; no full-screen blur. */
+.journey-scene.scene-enter .journey-cute-spark--one,
+.journey-scene.scene-enter .journey-cute-spark--three,
+.journey-scene.scene-enter .journey-floating-heart--one {
+  animation: gentleSparkPop42 .8s .18s cubic-bezier(.18,.76,.22,1) both,
+             gentleSparkFloat42 5.8s 1s ease-in-out infinite;
+}
+.journey-scene.scene-enter .journey-cute-spark--two,
+.journey-scene.scene-enter .journey-cute-spark--four,
+.journey-scene.scene-enter .journey-floating-heart--two {
+  animation: gentleSparkPop42 .75s .32s cubic-bezier(.18,.76,.22,1) both,
+             gentleSparkFloat42 6.4s 1.08s ease-in-out infinite;
+}
+@keyframes gentleSparkPop42 {
+  0% { opacity: 0; transform: translate3d(0,8px,0) scale(.55); }
+  72% { opacity: 1; transform: translate3d(0,-2px,0) scale(1.12); }
+  100% { opacity: .9; transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes gentleSparkFloat42 {
+  0%,100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+.journey-media-frame,
+.journey-scene-caption,
+.journey-orbit-memory { backface-visibility: hidden; }
+
+@media (max-width: 760px) {
+  .journey-scene.scene-enter .journey-media-frame {
+    animation-duration: 1.02s !important;
+  }
+  .journey-scene.scene-enter .journey-depth-ring--far { animation-duration: .94s, 64s; }
+  .journey-scene.scene-enter .journey-depth-ring--mid { animation-duration: .82s, 48s; }
+  .journey-scene.scene-enter .journey-depth-ring--near { animation-duration: .72s, 38s; }
+  .journey-scene.scene-enter .journey-media-frame::after { animation-duration: .78s; }
+  .journey-scene.scene-exit .journey-media-frame { animation-duration: .42s !important; }
+  .journey-scene.scene-enter .journey-cute-spark--five,
+  .journey-scene.scene-enter .journey-cute-spark--six,
+  .journey-scene.scene-enter .journey-floating-heart--three { display: none; }
+  .journey-scene.scene-enter .journey-media { animation: none !important; }
+  .journey-nebula { filter: none !important; }
+  .journey-media-frame { will-change: auto; }
+  .journey-scene.scene-enter .journey-media-frame,
+  .journey-scene.scene-exit .journey-media-frame { will-change: transform, opacity; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-scene.scene-enter .journey-media-frame,
+  .journey-scene.scene-exit .journey-media-frame,
+  .journey-scene.scene-enter .journey-depth-ring--far,
+  .journey-scene.scene-enter .journey-depth-ring--mid,
+  .journey-scene.scene-enter .journey-depth-ring--near,
+  .journey-scene.scene-enter .journey-media-frame::after,
+  .journey-scene.scene-enter .journey-scene-caption,
+  .journey-scene.scene-enter .journey-cute-spark,
+  .journey-scene.scene-enter .journey-floating-heart { animation: none !important; }
+  .journey-media-frame { opacity: 1; transform: none; }
+}
+
+
+/* ================================================================
+   TRIO GALAXY JOURNEY 4.3
+   Three consecutive memories travel together: one hero + two satellites.
+   The side images use Cloud thumbnails only; all movement stays on
+   transform/opacity to keep PC cinematic and mobile lightweight.
+   ================================================================ */
+.journey-scene {
+  width: min(1320px, 98vw);
+  perspective: 1900px;
+  perspective-origin: 50% 43%;
+  transform-style: preserve-3d;
+}
+.journey-spatial-field {
+  transform-style: preserve-3d;
+  perspective: 1800px;
+}
+.journey-media-frame {
+  z-index: 5;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  box-shadow:
+    0 26px 66px rgba(37, 22, 66, .22),
+    0 0 0 5px rgba(255, 245, 253, .22),
+    0 0 38px rgba(255, 166, 219, .42),
+    0 0 82px rgba(183, 172, 255, .22),
+    inset 0 1px 0 #fff;
+}
+.journey-orbit-memory {
+  top: 47%;
+  z-index: 3;
+  display: grid;
+  width: clamp(142px, 17vw, 232px);
+  height: clamp(112px, 13vw, 184px);
+  aspect-ratio: auto;
+  padding: 7px;
+  overflow: visible;
+  border: 2px solid rgba(255, 255, 255, .94);
+  border-radius: 17px;
+  opacity: .94;
+  background: linear-gradient(145deg, #fffaff, #ffe9f5 52%, #eeeaff);
+  box-shadow:
+    0 17px 38px rgba(49, 29, 73, .18),
+    0 0 0 4px rgba(255, 245, 253, .14),
+    0 0 27px rgba(255, 177, 221, .36),
+    inset 0 1px 0 #fff;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.journey-orbit-memory--previous {
+  left: 2.5%;
+  transform: translate3d(0, -50%, -265px) rotateY(27deg) rotateX(5deg) rotateZ(-8deg) scale(.84);
+}
+.journey-orbit-memory--next {
+  right: 2.5%;
+  transform: translate3d(0, -50%, -310px) rotateY(-29deg) rotateX(-5deg) rotateZ(8deg) scale(.78);
+}
+.journey-orbit-memory img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: contain;
+  background: linear-gradient(145deg, #fffaff, #f8eafa 55%, #eeeaff);
+}
+.journey-orbit-memory > span {
+  right: 8px;
+  bottom: 8px;
+  padding: 4px 8px;
+  color: #88517c;
+  border: 1px solid rgba(226, 180, 216, .65);
+  background: rgba(255, 250, 255, .96);
+  font-size: 7px;
+  letter-spacing: .10em;
+}
+.journey-orbit-memory.is-placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255,255,255,.96), transparent 38%),
+    linear-gradient(145deg, #ffe7f3, #e9e2ff 65%, #fff2f8);
+}
+.journey-orbit-placeholder {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 50%;
+  color: #bd75a7;
+  background: rgba(255,255,255,.62);
+  box-shadow: 0 0 22px rgba(255,174,221,.40);
+  font: 800 22px var(--sans);
+}
+
+/* Hero memory floats forward while its two satellites settle into an orbit. */
+.journey-scene.scene-enter .journey-media-frame {
+  animation: trioHeroArrive43 1.34s cubic-bezier(.19,.78,.18,1) both !important;
+}
+@keyframes trioHeroArrive43 {
+  0% { opacity: 0; transform: translate3d(0, 30px, -720px) rotateX(12deg) rotateY(-3deg) scale(.48); }
+  50% { opacity: 1; transform: translate3d(0, -7px, -90px) rotateX(3deg) rotateY(1deg) scale(.94); }
+  76% { opacity: 1; transform: translate3d(0, -2px, 24px) rotateX(-.7deg) scale(1.012); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1); }
+}
+.journey-scene.scene-enter .journey-orbit-memory--previous {
+  animation: trioLeftSatellite43 1.26s .10s cubic-bezier(.18,.76,.2,1) both, trioSatelliteFloat43 7s 1.38s ease-in-out infinite;
+}
+.journey-scene.scene-enter .journey-orbit-memory--next {
+  animation: trioRightSatellite43 1.32s .18s cubic-bezier(.18,.76,.2,1) both, trioSatelliteFloat43 7.8s 1.50s ease-in-out infinite;
+}
+@keyframes trioLeftSatellite43 {
+  0% { opacity: 0; transform: translate3d(-18vw,-50%,-760px) rotateY(58deg) rotateZ(-17deg) scale(.42); }
+  68% { opacity: .9; transform: translate3d(5px,-50%,-210px) rotateY(32deg) rotateZ(-10deg) scale(.88); }
+  100% { opacity: .94; transform: translate3d(0,-50%,-265px) rotateY(27deg) rotateX(5deg) rotateZ(-8deg) scale(.84); }
+}
+@keyframes trioRightSatellite43 {
+  0% { opacity: 0; transform: translate3d(18vw,-50%,-840px) rotateY(-60deg) rotateZ(18deg) scale(.38); }
+  70% { opacity: .88; transform: translate3d(-5px,-50%,-240px) rotateY(-34deg) rotateZ(10deg) scale(.82); }
+  100% { opacity: .94; transform: translate3d(0,-50%,-310px) rotateY(-29deg) rotateX(-5deg) rotateZ(8deg) scale(.78); }
+}
+@keyframes trioSatelliteFloat43 {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+/* When a new memory arrives, the three visible frames depart together. */
+.journey-scene.scene-exit .journey-media-frame {
+  animation: trioHeroGlideOut43 .66s cubic-bezier(.48,.04,.82,.34) both !important;
+}
+.journey-scene.scene-exit .journey-orbit-memory--previous {
+  animation: trioLeftGlideOut43 .62s ease-in both !important;
+}
+.journey-scene.scene-exit .journey-orbit-memory--next {
+  animation: trioRightGlideOut43 .64s ease-in both !important;
+}
+@keyframes trioHeroGlideOut43 {
+  to { opacity: 0; transform: translate3d(-3vw,-10px,-540px) rotateY(-8deg) rotateX(5deg) scale(.76); }
+}
+@keyframes trioLeftGlideOut43 {
+  to { opacity: 0; transform: translate3d(-22vw,-50%,-520px) rotateY(54deg) rotateZ(-13deg) scale(.52); }
+}
+@keyframes trioRightGlideOut43 {
+  to { opacity: 0; transform: translate3d(22vw,-50%,-580px) rotateY(-56deg) rotateZ(13deg) scale(.5); }
+}
+.journey-scene.scene-enter .journey-scene-caption {
+  animation: gentleCaptionArrive42 .62s .30s cubic-bezier(.2,.76,.22,1) both;
+}
+.journey-scene.scene-enter .journey-media-frame::after {
+  animation: gentlePhotoGlint42 1.05s .42s cubic-bezier(.2,.72,.2,1) both;
+}
+
+@media (max-width: 760px) {
+  .journey-scene {
+    width: 100vw;
+    min-height: min(62vh, 580px);
+    perspective: 1150px;
+    perspective-origin: 50% 44%;
+  }
+  .journey-orbit-memory {
+    width: clamp(78px, 22vw, 100px);
+    height: clamp(88px, 24vw, 112px);
+    top: 47%;
+    padding: 4px;
+    border-radius: 12px;
+    opacity: .92;
+    box-shadow: 0 10px 22px rgba(48, 28, 70, .14), 0 0 16px rgba(255, 177, 221, .30);
+  }
+  .journey-orbit-memory--previous {
+    left: 1%;
+    transform: translate3d(0,-50%,-155px) rotateY(25deg) rotateZ(-8deg) scale(.82);
+  }
+  .journey-orbit-memory--next {
+    right: 1%;
+    transform: translate3d(0,-50%,-180px) rotateY(-27deg) rotateZ(8deg) scale(.78);
+  }
+  .journey-orbit-memory > span {
+    right: 4px;
+    bottom: 4px;
+    padding: 3px 5px;
+    font-size: 5px;
+  }
+  .journey-orbit-placeholder { width: 30px; height: 30px; font-size: 16px; }
+  .journey-media-frame {
+    padding: 6px;
+    border-radius: 17px;
+    box-shadow: 0 15px 34px rgba(43, 27, 66, .18), 0 0 20px rgba(255, 170, 218, .28), inset 0 1px 0 #fff;
+  }
+  .journey-media-frame::before { inset: -7px; border-radius: 22px; box-shadow: 0 0 18px rgba(255,165,218,.22); }
+  .journey-media-frame::after { border-radius: 12px; }
+  .journey-scene.scene-enter .journey-media-frame { animation-duration: 1.12s !important; }
+  .journey-scene.scene-enter .journey-orbit-memory--previous { animation-duration: 1.02s, 8s !important; }
+  .journey-scene.scene-enter .journey-orbit-memory--next { animation-duration: 1.08s, 8.5s !important; }
+  .journey-scene.scene-exit .journey-media-frame { animation-duration: .58s !important; }
+  .journey-scene.scene-exit .journey-orbit-memory--previous,
+  .journey-scene.scene-exit .journey-orbit-memory--next { animation-duration: .56s !important; }
+  .journey-scene-caption { margin-top: 10px; padding-inline: 12px; }
+  .journey-scene-caption p { max-width: 82vw; }
+}
+@media (max-width: 390px) {
+  .journey-orbit-memory { width: 76px; height: 86px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-scene.scene-enter .journey-media-frame,
+  .journey-scene.scene-enter .journey-orbit-memory--previous,
+  .journey-scene.scene-enter .journey-orbit-memory--next,
+  .journey-scene.scene-exit .journey-media-frame,
+  .journey-scene.scene-exit .journey-orbit-memory--previous,
+  .journey-scene.scene-exit .journey-orbit-memory--next { animation: none !important; opacity: 1; transform: none; }
+}
+
+/* Keep satellite memories above the cosmic backdrop but behind the hero photo. */
+.journey-spatial-field { z-index: 2 !important; }
+.journey-orbit-memory { z-index: 3; }
+.journey-media-frame { z-index: 5; }

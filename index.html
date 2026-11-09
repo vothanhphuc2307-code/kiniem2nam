@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Mobile Love Dock 4.0 ♡</title>
+  <title>The Little Archive — Trio Galaxy Journey 4.3 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -225,7 +225,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         <button class="journey-control journey-play" id="journeyPlay" type="button">✦ Bắt đầu du hành</button>
         <button class="journey-control" id="journeyNext" type="button" aria-label="Khoảnh khắc tiếp theo">→</button>
       </div>
-      <small class="journey-footnote">Ảnh lần lượt xuất hiện · Có thể tạm dừng hoặc thoát bất cứ lúc nào ♡</small>
+      <small class="journey-footnote">Ba khung hình cùng lướt qua · Có thể tạm dừng hoặc thoát bất cứ lúc nào ♡</small>
     </footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1627,16 +1627,18 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         showViewer(mediaItems[slideshowIndex], true);
       }
 
-      const JOURNEY_IMAGE_DURATION = 4700;
-      const JOURNEY_VIDEO_DURATION = 6800;
+      const JOURNEY_IMAGE_DURATION = 6200;
+      const JOURNEY_VIDEO_DURATION = 8000;
+      const JOURNEY_EXIT_DURATION = 660;
 
       function setJourneyProgress() {
         const total = journeyItems.length;
         const current = Math.min(journeyIndex + (journeyActive ? 1 : 0), total);
+        const visibleFrames = journeyActive ? Math.min(3, Math.max(0, total - journeyIndex)) : 0;
         $('journeyProgressCount').textContent = `${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
         $('journeyProgressBar').style.width = `${total ? (current / total) * 100 : 0}%`;
         $('journeyProgressLabel').textContent = journeyActive
-          ? (journeyPaused ? 'ĐANG TẠM DỪNG' : 'ĐANG DU HÀNH QUA KỶ NIỆM')
+          ? (journeyPaused ? 'ĐANG TẠM DỪNG' : `${visibleFrames} KHUNG HÌNH CÙNG DU HÀNH`)
           : (current >= total && total ? 'ĐÃ ĐI QUA CẢ CUỘN PHIM' : 'SẴN SÀNG KHỞI HÀNH');
       }
 
@@ -1678,7 +1680,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           journeyTimer = setTimeout(() => {
             scene.classList.remove('scene-exit');
             showJourneyItem(journeyIndex + 1);
-          }, 680);
+          }, JOURNEY_EXIT_DURATION);
         }, duration);
       }
 
@@ -1694,8 +1696,11 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         // every photo into one landscape rectangle. The image itself always
         // uses contain, so no edge or subject is cropped away.
         const compact = window.matchMedia('(max-width: 760px)').matches;
-        const maxWidth = compact ? Math.min(window.innerWidth * 0.84, 380) : Math.min(window.innerWidth * 0.56, 820);
-        const maxHeight = compact ? Math.min(window.innerHeight * 0.47, 450) : Math.min(window.innerHeight * 0.50, 540);
+        // Reserve horizontal space for two visible satellite memories.
+        // A slightly smaller hero frame makes the 3-card composition readable
+        // without forcing any source photo to crop or distort.
+        const maxWidth = compact ? Math.min(window.innerWidth * 0.66, 310) : Math.min(window.innerWidth * 0.48, 720);
+        const maxHeight = compact ? Math.min(window.innerHeight * 0.43, 390) : Math.min(window.innerHeight * 0.49, 540);
         const fittedWidth = Math.max(150, Math.round(Math.min(maxWidth, maxHeight * ratio)));
         const fittedHeight = Math.max(150, Math.round(fittedWidth / ratio));
         frame.style.width = `${fittedWidth}px`;
@@ -1706,36 +1711,67 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const field = $('journeySpatialField');
         if (!field) return;
         field.querySelectorAll('.journey-orbit-memory').forEach((node) => node.remove());
-        const neighbors = [
-          { item: journeyItems[journeyIndex - 1], side: 'previous' },
-          { item: journeyItems[journeyIndex + 1], side: 'next' }
+
+        // Keep three consecutive memories visible at once:
+        // the current full-size memory in the center, followed by two small
+        // Cloud previews floating left and right like 3D satellites.
+        const previews = [
+          { item: journeyItems[journeyIndex + 1], side: 'previous', label: 'TIẾP THEO' },
+          { item: journeyItems[journeyIndex + 2], side: 'next', label: 'SAU ĐÓ' }
         ];
-        neighbors.forEach(({ item, side }) => {
-          // Only use the tiny Cloud thumbnail here; never pull a 20+ MB original
-          // just to decorate the 3D scene. Older photos without thumbs are skipped.
-          if (!item || item.kind !== 'image' || !item.previewUrl) return;
+
+        previews.forEach(({ item, side, label }) => {
+          if (!item) return;
           const card = document.createElement('div');
           card.className = `journey-orbit-memory journey-orbit-memory--${side}`;
-          const image = document.createElement('img');
-          image.alt = '';
-          image.loading = 'lazy';
-          image.decoding = 'async';
-          image.src = item.previewUrl;
-          image.onerror = () => card.remove();
-          const label = document.createElement('span');
-          label.textContent = side === 'previous' ? 'KỶ NIỆM VỪA QUA' : 'VÌ SAO TIẾP THEO';
-          card.append(image, label);
+          card.setAttribute('aria-hidden', 'true');
+          card.dataset.kind = item.kind;
+
+          if (item.kind === 'image' && item.previewUrl) {
+            const image = document.createElement('img');
+            image.alt = '';
+            image.loading = 'eager';
+            image.decoding = 'async';
+            image.fetchPriority = 'low';
+            image.src = item.previewUrl;
+            image.onerror = () => {
+              image.remove();
+              card.classList.add('is-placeholder');
+            };
+            card.append(image);
+          } else {
+            // Do not fetch a full-size original or an entire video just to make
+            // a decorative side card. A light pastel tile keeps the trio layout.
+            card.classList.add('is-placeholder');
+            const symbol = document.createElement('b');
+            symbol.className = 'journey-orbit-placeholder';
+            symbol.textContent = item.kind === 'video' ? '▶' : '♡';
+            card.append(symbol);
+          }
+
+          const labelNode = document.createElement('span');
+          labelNode.textContent = label;
+          card.append(labelNode);
           field.append(card);
         });
       }
 
+      let journeyPreloadImage = null;
+      let journeyPreloadId = null;
       function preloadNextJourneyItem() {
         const next = journeyItems[journeyIndex + 1];
-        if (!next || next.kind !== 'image' || !next.url) return;
-        // At most one image is preloaded ahead, keeping memory and network use modest.
+        // Mobile already fetches two tiny satellite previews; avoid warming another
+        // full-size source in the background on phones. Desktop may preload one.
+        if (window.matchMedia('(max-width: 760px)').matches) return;
+        if (!next || next.kind !== 'image' || !next.url || journeyPreloadId === next.id) return;
+        // Warm exactly one upcoming full-size image at low priority. This matches
+        // the resource used in the main frame, while avoiding a multi-image burst.
+        journeyPreloadId = next.id;
         const preload = new Image();
         preload.decoding = 'async';
-        preload.src = next.previewUrl || next.url;
+        if ('fetchPriority' in preload) preload.fetchPriority = 'low';
+        preload.src = next.url;
+        journeyPreloadImage = preload;
       }
 
       function showJourneyFinish() {
@@ -1819,8 +1855,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
               scene.classList.add('scene-enter');
             });
           });
-          $('journeyCounter').textContent = `MEMORY ${String(journeyIndex + 1).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')}`;
-          $('journeyTitle').textContent = item.kind === 'video' ? 'Một thước phim của chúng mình' : 'Một vì sao mang tên em';
+          const visibleFrames = Math.min(3, journeyItems.length - journeyIndex);
+          $('journeyCounter').textContent = `MEMORY ${String(journeyIndex + 1).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')} · ${visibleFrames} KHUNG HÌNH`;
+          $('journeyTitle').textContent = item.kind === 'video' ? 'Một thước phim giữa những vì sao' : 'Kỷ niệm của anh và em';
           $('journeyCaption').textContent = item.name || 'Một khoảnh khắc anh muốn giữ thật lâu ♡';
           setJourneyProgress();
           preloadNextJourneyItem();
@@ -1846,7 +1883,13 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           };
           media.onload = () => {
             setJourneyMediaOrientation(media, frame, 'image');
-            beginScene();
+            // Ask the browser to finish decoding before animating the memory
+            // into view, so a large photo is less likely to hitch on its first frame.
+            if (typeof media.decode === 'function') {
+              media.decode().then(beginScene, beginScene);
+            } else {
+              beginScene();
+            }
           };
           frame.append(media);
           // Use the full-quality optimized Cloud image for the main 3D frame.
@@ -1935,6 +1978,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('journey-lock');
         $('journeyMediaFrame').replaceChildren();
+        journeyPreloadImage = null;
+        journeyPreloadId = null;
         $('journeyScene').classList.remove('scene-enter', 'scene-exit');
         $('journeyPlay').textContent = '✦ Bắt đầu du hành';
       }
