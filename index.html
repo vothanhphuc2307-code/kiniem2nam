@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#171322">
+  <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Cinematic Galaxy 3.5 ♡</title>
+  <title>The Little Archive — Heaven Gate 3.6 ♡</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="intro-locked">
@@ -137,6 +140,22 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       <span class="journey-orbit journey-orbit-b"></span>
       <span class="journey-heart journey-heart-a">♡</span>
       <span class="journey-heart journey-heart-b">✧</span>
+    </div>
+    <div class="heaven-gate" id="journeyGateSequence" aria-label="Cánh cổng thiên hà đang mở">
+      <div class="heaven-gate-sky"></div>
+      <div class="heaven-gate-stars" aria-hidden="true"><i>✦</i><i>✧</i><i>♡</i><i>✦</i><i>·</i><i>✧</i><i>♡</i></div>
+      <div class="heaven-gate-halo heaven-gate-halo--outer"></div>
+      <div class="heaven-gate-halo heaven-gate-halo--inner"></div>
+      <div class="heaven-gate-portal-core"><span>♡</span><small>ANH × EM</small></div>
+      <div class="heaven-gate-door heaven-gate-door--left">
+        <span class="heaven-gate-door-line"></span><span class="heaven-gate-door-heart">♡</span><span class="heaven-gate-door-star">✧</span><span class="heaven-gate-door-label">OUR LITTLE UNIVERSE</span>
+      </div>
+      <div class="heaven-gate-door heaven-gate-door--right">
+        <span class="heaven-gate-door-line"></span><span class="heaven-gate-door-heart">♡</span><span class="heaven-gate-door-star">✦</span><span class="heaven-gate-door-label">FOREVER IN ORBIT</span>
+      </div>
+      <div class="heaven-gate-latch" aria-hidden="true">♡</div>
+      <div class="heaven-gate-copy"><small>ANH ĐÃ GIỮ MỘT VŨ TRỤ NHỎ CHO EM</small><strong>Cánh cổng kỷ niệm<br>đang mở ra...</strong><p>Đi cùng anh qua những vì sao nhé, em.</p></div>
+      <button class="heaven-gate-skip" id="journeyGateSkip" type="button">Đi thẳng vào vũ trụ <span>→</span></button>
     </div>
     <header class="journey-topbar">
       <div class="journey-brand"><span>✦</span><div><strong>A LITTLE JOURNEY THROUGH US</strong><small>mỗi khoảnh khắc là một vì sao</small></div></div>
@@ -1764,6 +1783,18 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyScene').dataset.kind = item.kind;
       }
 
+      const HEAVEN_GATE_DURATION = 2860;
+
+      function beginJourneyFilm() {
+        const overlay = $('galaxyJourney');
+        if (!overlay || !overlay.classList.contains('is-open')) return;
+        clearJourneyTimers();
+        overlay.classList.remove('is-opening');
+        $('journeyIntro').hidden = true;
+        $('journeyProgressLabel').textContent = 'CHUYẾN ĐI CỦA ANH VÀ EM BẮT ĐẦU…';
+        showJourneyItem(0);
+      }
+
       function startGalaxyJourney() {
         journeyItems = getFilteredMemories().slice();
         if (!journeyItems.length) { notify('Album chưa có ảnh/video nào để du hành nha ♡'); return; }
@@ -1775,20 +1806,21 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         journeyPaused = true;
         $('journeyScene').hidden = true;
         $('journeyFinish').hidden = true;
-        $('journeyIntro').hidden = false;
+        $('journeyIntro').hidden = true;
         $('journeyPlay').hidden = false;
         $('journeyPrev').hidden = true;
         $('journeyNext').hidden = true;
-        $('journeyPlay').textContent = 'Bỏ qua mở đầu →';
-        $('galaxyJourney').classList.add('is-open');
+        $('journeyPlay').textContent = '✦ Đang mở cổng…';
+        $('galaxyJourney').classList.add('is-open', 'is-opening');
         $('galaxyJourney').setAttribute('aria-hidden', 'false');
         document.body.classList.add('journey-lock');
-        $('journeyProgressLabel').textContent = 'CHUẨN BỊ KHỞI HÀNH…';
-        setJourneyProgress();
-        // One tap on the gallery button starts the cinematic intro, then the film rolls automatically.
+        $('journeyProgressLabel').textContent = 'CÁNH CỔNG THIÊN ĐƯỜNG ĐANG MỞ…';
+        $('journeyProgressCount').textContent = `00 / ${String(journeyItems.length).padStart(2, '0')}`;
+        $('journeyProgressBar').style.width = '0%';
+        // The two gates open first. Once the reveal completes, the 3D film begins by itself.
         journeyTimer = setTimeout(() => {
-          if ($('galaxyJourney').classList.contains('is-open') && !journeyActive) showJourneyItem(0);
-        }, 1350);
+          if ($('galaxyJourney').classList.contains('is-open') && $('galaxyJourney').classList.contains('is-opening')) beginJourneyFilm();
+        }, HEAVEN_GATE_DURATION);
       }
 
       function stopGalaxyJourney() {
@@ -1798,7 +1830,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
         const overlay = $('galaxyJourney');
         if (!overlay) return;
-        overlay.classList.remove('is-open', 'is-paused');
+        overlay.classList.remove('is-open', 'is-paused', 'is-opening');
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('journey-lock');
         $('journeyMediaFrame').replaceChildren();
@@ -1807,7 +1839,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function toggleGalaxyJourney() {
-        if (!$('galaxyJourney').classList.contains('is-open')) { startGalaxyJourney(); return; }
+        const overlay = $('galaxyJourney');
+        if (!overlay.classList.contains('is-open')) { startGalaxyJourney(); return; }
+        if (overlay.classList.contains('is-opening')) { beginJourneyFilm(); return; }
         if (!journeyActive && $('journeyFinish').hidden) {
           showJourneyItem(0);
           return;
@@ -2150,10 +2184,11 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('addMedia').addEventListener('click', async () => { if (await requireAdmin()) $('mediaInput').click(); });
         $('playFilm').addEventListener('click', startGalaxyJourney);
         $('journeyPlay').addEventListener('click', toggleGalaxyJourney);
+        $('journeyGateSkip').addEventListener('click', beginJourneyFilm);
         $('journeyClose').addEventListener('click', stopGalaxyJourney);
         $('journeyPrev').addEventListener('click', () => showJourneyItem(journeyIndex - 1));
         $('journeyNext').addEventListener('click', () => showJourneyItem(journeyIndex + 1));
-        $('journeyReplay').addEventListener('click', () => { $('journeyScene').hidden = false; $('journeyFinish').hidden = true; $('journeyIntro').hidden = true; $('journeyPlay').hidden = false; showJourneyItem(0); });
+        $('journeyReplay').addEventListener('click', () => { $('galaxyJourney').classList.remove('is-opening'); $('journeyScene').hidden = false; $('journeyFinish').hidden = true; $('journeyIntro').hidden = true; $('journeyPlay').hidden = false; showJourneyItem(0); });
         $('galaxyJourney').addEventListener('click', (event) => { if (event.target === $('galaxyJourney')) stopGalaxyJourney(); });
         $('mediaInput').addEventListener('change', async (event) => { await addFiles(event.target.files); event.target.value = ''; });
         $('createOldPreviews').addEventListener('click', createOldPreviews);

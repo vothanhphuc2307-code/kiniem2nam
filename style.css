@@ -3273,3 +3273,422 @@ h2 { color: #fff8fd; text-shadow: 0 3px 24px rgba(230,174,221,.13); }
   .journey-hero-cta::before { display: none; }
   .journey-hero-cta:hover { transform: none; }
 }
+
+/* =====================================================================
+   HEAVEN GATE + CUTE PASTEL REDESIGN 3.6
+   Light, romantic scrapbook UI with a short 3D gate-opening transition.
+   Gate motion uses transform/opacity only; no canvas or particle loops.
+   ===================================================================== */
+:root {
+  --night: #fff4fa;
+  --night-2: #fbeafa;
+  --night-3: #f2e4fb;
+  --paper: #fffafd;
+  --paper-2: #f9edf7;
+  --ink: #49324f;
+  --muted: #88718f;
+  --rose: #ed8fbd;
+  --rose-2: #d66fa8;
+  --gold: #d9a9cf;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Nunito', 'DM Sans', system-ui, sans-serif;
+  --shadow: 0 24px 65px rgba(139, 83, 139, .13);
+}
+html { background: #fff5fb; }
+body {
+  color: #503957;
+  background: #fff5fb;
+  font-family: var(--sans);
+}
+body::before {
+  background:
+    radial-gradient(ellipse at 8% 4%, rgba(255, 190, 222, .58), transparent 33rem),
+    radial-gradient(ellipse at 94% 17%, rgba(207, 190, 255, .48), transparent 31rem),
+    radial-gradient(ellipse at 48% 76%, rgba(255, 223, 231, .56), transparent 38rem),
+    linear-gradient(180deg, #fff8fc 0%, #fdf1fa 48%, #f7f0ff 100%);
+}
+body::after {
+  opacity: .25;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 19%, #e99ac7 50%, transparent 58%),
+    radial-gradient(1px 1px at 72% 13%, #b9a5ef 50%, transparent 58%),
+    radial-gradient(1.5px 1.5px at 90% 48%, #f2b4d5 50%, transparent 58%),
+    radial-gradient(1px 1px at 45% 70%, #c9b5f1 50%, transparent 58%),
+    radial-gradient(1px 1px at 25% 83%, #f1bad5 50%, transparent 58%);
+}
+.ambient .glow { opacity: .12; filter: blur(82px); }
+.ambient .glow.one { background: #ff9ecb; }
+.ambient .glow.two { background: #bba4fa; }
+.sparkle { color: #e78cbd; text-shadow: 0 0 17px rgba(240, 144, 201, .62); opacity: .7; }
+.shell { color: #503957; }
+.topbar {
+  border-bottom-color: rgba(198, 143, 188, .22);
+  background: rgba(255, 248, 253, .82);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 26px rgba(155, 109, 160, .06);
+}
+.brand { color: #76517d; }
+.brand-mark { color: #de7fae; border-color: rgba(222, 127, 174, .42); background: #fff; box-shadow: 0 5px 16px rgba(217, 130, 179, .12); }
+.pill-btn { color: #79577f; background: rgba(255,255,255,.76); border-color: rgba(198,143,188,.28); box-shadow: 0 5px 15px rgba(171,119,168,.07); }
+.pill-btn:hover { color: #b34f88; background: #fff; border-color: rgba(223,133,183,.52); }
+.setup-banner { color: #89516f; background: rgba(255,232,244,.9); border-color: #edb7d4; }
+.hero {
+  border: 1px solid rgba(255,255,255,.9);
+  background:
+    radial-gradient(circle at 77% 48%, rgba(255, 198, 227, .72), transparent 25rem),
+    radial-gradient(circle at 15% 8%, rgba(255,255,255,.92), transparent 24rem),
+    linear-gradient(128deg, #fffaff 0%, #f9eafa 52%, #f4e9ff 100%);
+  box-shadow: 0 26px 72px rgba(173, 117, 172, .16), inset 0 1px 0 #fff;
+}
+.hero::before { opacity: .25; background: repeating-linear-gradient(115deg,transparent 0 45px,rgba(190,142,195,.05) 46px 47px,transparent 48px 94px); }
+.hero::after { color: rgba(181, 116, 163, .33); }
+.eyebrow { color: #a85e91; border-color: #ecc3dd; background: rgba(255,255,255,.74); box-shadow: 0 5px 17px rgba(210,144,190,.09); }
+.eyebrow i { background: #ee86b8; box-shadow: 0 0 13px #ee86b8; }
+h1 { color: #5a3e61; text-shadow: 0 3px 0 rgba(255,255,255,.75); }
+h1 em { color: #df78aa; text-shadow: 0 4px 18px rgba(226,126,177,.18); }
+.hero-copy { color: #806c88; }
+.hero-note { color: #a07e9b; }
+.hero-art::before { border-color: rgba(219,139,189,.36); box-shadow: 0 0 0 22px rgba(255,255,255,.24),0 0 0 52px rgba(234,194,235,.12),inset 0 0 50px rgba(242,168,187,.11); }
+.orbit-ring { border-color: rgba(220,130,185,.48); }
+.orbit-ring::before,.orbit-ring::after { color: #e68ab9; text-shadow: 0 0 16px #f3b3d6; }
+.hero-shot { box-shadow: 0 22px 48px rgba(128,87,130,.2); }
+.hero-sticker { box-shadow: 0 10px 25px rgba(164,112,150,.16); }
+.hero-photo-count { color: #9b78a0; }
+.section-kicker { color: #c16ca0; }
+.section h2,.section-head h2 { color: #67466f; text-shadow: 0 2px 0 rgba(255,255,255,.55); }
+.section-sub { color: #8e7895; }
+.counter-card {
+  border-color: rgba(226,178,211,.7);
+  background: radial-gradient(circle at 85% 15%, rgba(255,220,239,.8), transparent 23rem), linear-gradient(120deg,#fff,#f8edff 58%,#fff0f7);
+  box-shadow: 0 19px 48px rgba(161,112,169,.13), inset 0 1px 0 #fff;
+}
+.counter-card::after { color: rgba(218,139,190,.11); }
+.counter-label { color: #a06f96; }
+.counter-number strong { color: #d66fa8; text-shadow: 0 0 28px rgba(242,168,187,.2); }
+.counter-number span { color: #8e7694; }
+.counter-date { color: #a78da5; }
+.time-box { border-color: #edcde2; background: rgba(255,255,255,.76); box-shadow: 0 6px 18px rgba(176,124,173,.07); backdrop-filter: none; }
+.time-box strong { color: #a75f92; }
+.time-box span { color: #a084a0; }
+.chapter-card {
+  border-color: rgba(230,194,222,.86);
+  background: linear-gradient(145deg,rgba(255,255,255,.94),rgba(250,237,255,.84));
+  box-shadow: 0 12px 30px rgba(173,119,170,.09), inset 0 1px 0 #fff;
+}
+.chapter-card:hover { border-color: #e4a5cd; box-shadow: 0 18px 35px rgba(201,129,178,.15); }
+.chapter-no { color: #bc76a2; }
+.chapter-symbol { color: #e78dbd; }
+.chapter-card h3 { color: #68476c; }
+.chapter-card p { color: #927b98; }
+.chapter-card::after { color: rgba(216,147,193,.08); }
+.film-section { border: 1px solid rgba(255,255,255,.94); background: linear-gradient(140deg,#fffaff,#fff0f7 52%,#f5efff); box-shadow: 0 24px 60px rgba(167,112,164,.15); }
+.film-section h2 { color: #604165; }
+.film-section .section-kicker { color: #c06c9d; }
+.film-section .section-sub { color: #8d7791; }
+.count-chip { color: #a45f8b; background: #fbe2f0; border: 1px solid #f1c9df; }
+.upload-panel { border-color: #e7b9d3; background: rgba(255,255,255,.84); box-shadow: 0 8px 22px rgba(180,127,174,.07); }
+.upload-info strong { color: #6a4a70; }
+.upload-info small { color: #9a829d; }
+.upload-icon { color: #fff; background: linear-gradient(135deg,#ee9bc2,#ba9be5); box-shadow: 0 8px 18px rgba(184,115,172,.20); }
+.upload-hint { color: #977f9a; }
+.gallery-label { color: #a66d98; }
+.filter-btn { color: #9b7598; border-color: #e8c9df; background: rgba(255,255,255,.72); }
+.filter-btn.active,.filter-btn:hover { color: #fff; border-color: #cb78a9; background: linear-gradient(135deg,#dc87b6,#ad91dc); }
+.empty-state { border-color: #e5bad6; background: rgba(255,255,255,.78); box-shadow: inset 0 1px 0 #fff; }
+.empty-state strong { color: #69486f; }
+.empty-state p { color: #927b98; }
+.empty-state .soft-btn { color: #93618a; border-color: #ebc9de; background: #fff; }
+.little-things { border-color: #ead0e6; background: linear-gradient(145deg,rgba(255,255,255,.90),rgba(249,237,255,.82)); box-shadow: 0 15px 40px rgba(176,122,177,.10), inset 0 1px 0 #fff; }
+.promise-face { border-color: rgba(255,255,255,.95); background: linear-gradient(145deg,#f8d9ef,#d9d0fb 58%,#fbe2ed); box-shadow: 0 12px 28px rgba(176,121,175,.13); }
+.promise-face strong { color: #6c4772; }
+.promise-face small { color: #9e6e9b; }
+.promise-symbol { color: #c76ca4; }
+.promise-face.back { background: linear-gradient(145deg,#fff0f6,#f3e7ff 62%,#ffe9dc); border-color: #eac8df; }
+.promise-face.back strong { color: #63436d; }
+.promise-face.back small { color: #9a719c; }
+.surprise-row { background: rgba(255,255,255,.82); border: 1px solid #eacde3; box-shadow: 0 8px 22px rgba(178,125,174,.07); }
+.surprise-row p { color: #8e6790; }
+.surprise-message { color: #d16fa7; }
+.letter-stamp { border-color: #ebc4df; background: radial-gradient(circle at 50% 35%,#fff0f8,#eccaf0 54%,#c7b6ef 100%); box-shadow: 0 18px 42px rgba(171,122,181,.16); }
+.letter-stamp::before,.letter-stamp::after { border-color: rgba(255,255,255,.68); box-shadow: 0 0 35px rgba(255,255,255,.3); }
+.letter-stamp span { color: #fff; background: linear-gradient(145deg,#f7bcd8,#cb91d9); box-shadow: 0 12px 28px rgba(157,95,155,.2); }
+.letter-stamp small { color: #946c9c; }
+.letter-card { box-shadow: 0 18px 48px rgba(174,121,159,.13); }
+.music-section { border-color: #e9c8df; background: radial-gradient(circle at 82% 50%,rgba(255,211,236,.82),transparent 20rem),linear-gradient(125deg,#fffaff,#f3eaff 58%,#fff0f6); box-shadow: 0 20px 50px rgba(172,120,174,.13); }
+.music-meta strong { color: #69476f; }
+.music-meta small { color: #937c98; }
+.music-card { border-color: #edd2e6; background: rgba(255,255,255,.78); box-shadow: 0 10px 28px rgba(166,117,172,.09); backdrop-filter: none; }
+.icon-btn { color: #a55c91; border-color: #e8c7df; background: #fff; box-shadow: 0 5px 14px rgba(181,123,175,.10); }
+.icon-btn:hover { color: #fff; background: #d881b1; }
+.privacy-note { color: #977f9a; border-color: #e8cfe5; background: rgba(255,255,255,.7); }
+footer { color: #937a9a; }
+.footer-date { color: #b18eac; }
+.toast { color: #fff; background: linear-gradient(120deg,#9868a8,#c76d9f); border-color: rgba(255,255,255,.55); box-shadow: 0 12px 30px rgba(142,84,143,.22); }
+.modal-backdrop { background: rgba(85,54,91,.42); backdrop-filter: blur(10px); }
+.modal { border-color: #f2d7e8; box-shadow: 0 28px 85px rgba(114,71,119,.23); }
+.primary-btn { background: linear-gradient(135deg,#ffd4e8,#edadd0 55%,#d8b9f4); box-shadow: 0 12px 28px rgba(215,126,177,.20); }
+.primary-btn:hover { box-shadow: 0 16px 34px rgba(215,126,177,.28); }
+.soft-btn { color: #98678e; border-color: #e8cce0; background: rgba(255,255,255,.8); }
+.soft-btn:hover { background: #fff; border-color: #dfa8ca; }
+
+/* The original opening book is now a bright little keepsake moment. */
+.intro-gate {
+  background:
+    radial-gradient(ellipse at 50% 24%,rgba(255,255,255,.94),transparent 34%),
+    radial-gradient(ellipse at 12% 76%,rgba(255,199,224,.72),transparent 35%),
+    radial-gradient(ellipse at 88% 78%,rgba(209,190,255,.68),transparent 36%),
+    linear-gradient(145deg,#fff5fb,#f8e8fa 52%,#f2eaff);
+}
+.intro-gate::before,.intro-gate::after { border-color: rgba(218,139,190,.24); box-shadow: 0 0 0 34px rgba(255,255,255,.24),0 0 0 70px rgba(224,183,224,.12); }
+.gate-kicker { color: #bd6e9f; }
+.book-cover { color: #fff; background: linear-gradient(145deg,#f2b7d7,#c18cce 55%,#9c8fd8); box-shadow: inset 7px 0 0 rgba(255,255,255,.18),inset -2px 0 0 rgba(110,71,128,.08),0 15px 32px rgba(152,102,160,.18); }
+.book-cover::before { border-color: rgba(255,255,255,.76); }
+.book-cover small,.book-cover span { color: #fff8fe; }
+.book-cover em { color: #fff5fd; }
+.gate-title { color: #68476f; text-shadow: 0 2px 0 rgba(255,255,255,.75); }
+.gate-caption { color: #8c7394; }
+.gate-device-card { background: rgba(255,255,255,.66); border-color: #edc8e1; box-shadow: 0 10px 25px rgba(174,119,177,.10); }
+.gate-device-tag { color: #bb6a9e; }
+.gate-device-card strong { color: #6c4a74; }
+.gate-device-card p { color: #927a99; }
+.gate-audio-hint { color: #a56e99; }
+.gate-open { color: #71466f; border-color: #fff; background: linear-gradient(120deg,#fff0f8,#ffc9e4 42%,#e4d0ff 75%,#ffe8d9); box-shadow: 0 12px 32px rgba(211,126,183,.24),0 0 0 5px rgba(255,255,255,.35); }
+.gate-foot { color: #a98cad; }
+
+/* CTA gets a brighter candy-glass finish, still with a calm pulse. */
+.journey-cta-wrap { width: min(100%,560px); margin-top: 28px; }
+.journey-hero-cta {
+  min-height: 106px;
+  padding: 17px 21px 17px 18px;
+  border: 2px solid rgba(255,255,255,.98);
+  border-radius: 27px;
+  background: linear-gradient(115deg,#fff 0%,#ffe0f0 30%,#f1ddff 68%,#fff0dc 100%);
+  box-shadow: 0 15px 38px rgba(219,123,180,.30),0 0 0 5px rgba(255,255,255,.42),0 0 48px rgba(229,143,205,.34),inset 0 1px 0 #fff;
+}
+.journey-cta-copy small { color: #af6397; font-size: 9px; }
+.journey-cta-copy strong { color: #713d76; font-size: clamp(21px,2.3vw,28px); text-shadow: 0 2px 0 #fff; }
+.journey-cta-copy em { color: #91618f; font-size: 11px; }
+.journey-cta-hint { color: #a16f9c; text-shadow: none; font-size: 10px; }
+.journey-cta-hint span { color: #dc7fb2; }
+.journey-cta-orbit { box-shadow: 0 0 0 6px rgba(255,255,255,.62),0 0 30px rgba(194,122,207,.48),inset 0 0 14px rgba(255,255,255,.7); }
+
+/* =====================================================================
+   HEAVEN GATE OPENING — pearl doors part before the memory film begins.
+   A short 2.86s sequence, then hands control to the existing 3D journey.
+   ===================================================================== */
+.heaven-gate {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  isolation: isolate;
+  perspective: 1800px;
+  background: radial-gradient(ellipse at 50% 44%,#fff8ff 0%,#f6dfff 20%,#d9c4ff 42%,#8d79c9 68%,#29234f 100%);
+  transition: opacity .28s ease, visibility .28s ease;
+}
+.galaxy-journey.is-opening .heaven-gate { visibility: visible; opacity: 1; pointer-events: auto; }
+.heaven-gate-sky {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 50% 52%,rgba(255,255,255,.98) 0%,rgba(255,225,247,.70) 13%,transparent 37%),
+    radial-gradient(ellipse at 15% 25%,rgba(255,190,228,.70),transparent 36%),
+    radial-gradient(ellipse at 87% 28%,rgba(191,182,255,.68),transparent 34%),
+    radial-gradient(ellipse at 50% 100%,rgba(255,224,235,.64),transparent 44%),
+    linear-gradient(135deg,#fbeaff,#dacfff 48%,#f7d9ec);
+  animation: heavenSkyGlow 4s ease-in-out infinite alternate;
+}
+.heaven-gate-halo {
+  position: absolute;
+  left: 50%; top: 48%;
+  width: min(72vh,760px); aspect-ratio: 1;
+  border: 2px solid rgba(255,255,255,.78);
+  border-radius: 50%;
+  transform: translate3d(-50%,-50%,0) scale(.45);
+  box-shadow: 0 0 0 14px rgba(255,255,255,.24),0 0 0 34px rgba(247,211,255,.22),0 0 70px rgba(255,255,255,.92),0 0 150px rgba(255,151,220,.64),inset 0 0 80px rgba(255,255,255,.55);
+  opacity: 0;
+}
+.heaven-gate-halo--outer { border-style: dashed; }
+.heaven-gate-halo--inner { width: min(54vh,560px); border-color: rgba(255,231,251,.94); box-shadow: 0 0 45px rgba(255,255,255,.9),0 0 110px rgba(240,149,222,.65),inset 0 0 65px rgba(255,255,255,.72); }
+.heaven-gate-portal-core {
+  position: absolute;
+  left: 50%; top: 48%; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  width: min(42vh,420px); aspect-ratio: 1;
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 50% 46%,#fff 0%,#ffeafa 10%,rgba(251,196,236,.74) 24%,rgba(189,161,245,.48) 49%,rgba(122,112,191,.10) 70%,transparent 72%);
+  text-shadow: 0 2px 18px rgba(181,111,182,.55);
+  transform: translate3d(-50%,-50%,0) scale(.18);
+  opacity: 0;
+}
+.heaven-gate-portal-core span { font: 86px/1 var(--serif); text-shadow: 0 0 18px #fff,0 0 46px #ff91d1,0 0 85px #c2a6ff; }
+.heaven-gate-portal-core small { color: #fff; font: 900 10px var(--sans); letter-spacing: .32em; }
+.heaven-gate-door {
+  position: absolute;
+  z-index: 3;
+  top: -2%; bottom: -2%;
+  width: 50.5%;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.96);
+  background:
+    radial-gradient(ellipse at 50% 48%,rgba(255,255,255,.72),transparent 48%),
+    linear-gradient(135deg,#fffaff 0%,#f8d9ef 36%,#d9c8fb 72%,#fff0f6 100%);
+  box-shadow: inset 0 0 45px rgba(255,255,255,.78),inset 0 0 110px rgba(209,157,220,.28),0 0 45px rgba(255,255,255,.28);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+.heaven-gate-door::before {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255,255,255,.94);
+  border-radius: 48% 48% 18px 18px;
+  box-shadow: inset 0 0 0 7px rgba(235,194,236,.16),0 0 28px rgba(255,255,255,.45);
+}
+.heaven-gate-door::after {
+  content: '✧';
+  position: absolute;
+  top: 22%;
+  color: #fff;
+  font-size: clamp(34px,5vw,72px);
+  text-shadow: 0 0 16px #fff,0 0 36px #f28fce,0 0 60px #b6a0f4;
+}
+.heaven-gate-door--left { left: -1px; transform-origin: left center; border-radius: 0 32% 0 0; border-right-color: rgba(212,162,224,.92); }
+.heaven-gate-door--right { right: -1px; transform-origin: right center; border-radius: 32% 0 0 0; border-left-color: rgba(212,162,224,.92); }
+.heaven-gate-door--left::after { right: 15%; }
+.heaven-gate-door--right::after { left: 15%; }
+.heaven-gate-door-line {
+  position: absolute;
+  top: 7%; bottom: 7%; left: 50%; width: 1px;
+  background: linear-gradient(transparent,rgba(255,255,255,.9),rgba(183,136,206,.42),rgba(255,255,255,.9),transparent);
+  box-shadow: 0 0 16px rgba(255,255,255,.8);
+}
+.heaven-gate-door-heart {
+  position: absolute; top: 48%; color: #fff;
+  font: clamp(42px,6vw,76px)/1 var(--serif);
+  text-shadow: 0 0 15px #fff,0 0 38px #ed8cc9,0 0 72px #b6a2f3;
+}
+.heaven-gate-door--left .heaven-gate-door-heart { right: 15%; }
+.heaven-gate-door--right .heaven-gate-door-heart { left: 15%; }
+.heaven-gate-door-star { position: absolute; bottom: 17%; color: #fff; font-size: 30px; text-shadow: 0 0 20px #fff,0 0 38px #eca1d4; }
+.heaven-gate-door--left .heaven-gate-door-star { right: 26%; }
+.heaven-gate-door--right .heaven-gate-door-star { left: 26%; }
+.heaven-gate-door-label {
+  position: absolute; bottom: 8%; left: 50%;
+  color: #b181bd; font: 900 8px var(--sans); letter-spacing: .25em; white-space: nowrap;
+  transform: translateX(-50%);
+}
+.heaven-gate-latch {
+  position: absolute; z-index: 5; left: 50%; top: 48%;
+  display: grid; width: 70px; height: 70px; place-items: center;
+  border: 2px solid rgba(255,255,255,.98); border-radius: 50%;
+  color: #fff; background: radial-gradient(circle at 32% 25%,#fff 0%,#ffc9e9 34%,#c89be9 78%);
+  box-shadow: 0 0 0 9px rgba(255,255,255,.25),0 0 30px rgba(255,255,255,.92),0 0 64px rgba(245,131,204,.78);
+  font: 42px var(--serif); text-shadow: 0 0 13px #f08bc9;
+  transform: translate(-50%,-50%);
+}
+.heaven-gate-copy {
+  position: absolute; z-index: 6; left: 50%; top: 11%; width: min(90vw,720px);
+  text-align: center; transform: translateX(-50%);
+  opacity: 0;
+}
+.heaven-gate-copy small { display: inline-block; color: #fff; font: 900 10px var(--sans); letter-spacing: .28em; text-shadow: 0 2px 14px #9a64b1; }
+.heaven-gate-copy strong { display: block; margin-top: 13px; color: #fff; font: 700 clamp(30px,5vw,58px)/1.04 var(--serif); text-shadow: 0 3px 18px rgba(111,68,143,.56),0 0 35px rgba(255,255,255,.72); }
+.heaven-gate-copy p { margin: 11px 0 0; color: #fff; font: 700 14px var(--sans); text-shadow: 0 2px 12px rgba(107,67,143,.58); }
+.heaven-gate-skip {
+  position: absolute; z-index: 8; left: 50%; bottom: max(24px,env(safe-area-inset-bottom));
+  padding: 11px 19px; border: 1px solid rgba(255,255,255,.9); border-radius: 999px;
+  color: #85528c; background: rgba(255,255,255,.78); box-shadow: 0 7px 24px rgba(112,74,147,.16);
+  font: 900 10px var(--sans); cursor: pointer; transform: translateX(-50%);
+  animation: gateSkipBreathe 2.4s ease-in-out infinite;
+}
+.heaven-gate-skip span { margin-left: 5px; color: #d16da9; }
+.galaxy-journey.is-opening .heaven-gate-halo--outer { animation: gateHaloBloom 2.55s cubic-bezier(.18,.72,.2,1) .05s both; }
+.galaxy-journey.is-opening .heaven-gate-halo--inner { animation: gateHaloBloom 2.25s cubic-bezier(.18,.72,.2,1) .15s both; }
+.galaxy-journey.is-opening .heaven-gate-portal-core { animation: gateCoreBloom 2.45s cubic-bezier(.15,.78,.18,1) .16s both; }
+.galaxy-journey.is-opening .heaven-gate-door--left { animation: heavenDoorLeftOpen 2.48s cubic-bezier(.62,.02,.24,1) .22s both; }
+.galaxy-journey.is-opening .heaven-gate-door--right { animation: heavenDoorRightOpen 2.48s cubic-bezier(.62,.02,.24,1) .22s both; }
+.galaxy-journey.is-opening .heaven-gate-latch { animation: gateLatchLift 1.15s cubic-bezier(.2,.8,.2,1) .35s both; }
+.galaxy-journey.is-opening .heaven-gate-copy { animation: gateCopyAppear 2.45s ease .08s both; }
+.galaxy-journey.is-opening .heaven-gate-stars i { animation: gateStarRise 2.7s ease-out both; }
+.galaxy-journey.is-opening .journey-topbar,
+.galaxy-journey.is-opening .journey-main,
+.galaxy-journey.is-opening .journey-controls { opacity: 0; pointer-events: none; }
+.galaxy-journey:not(.is-opening) .heaven-gate { opacity: 0; visibility: hidden; }
+.galaxy-journey.is-opening .heaven-gate-skip { animation-delay: .35s; }
+.heaven-gate-stars { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
+.heaven-gate-stars i { position: absolute; color: #fff; font-style: normal; text-shadow: 0 0 10px #fff,0 0 24px #f58fce; opacity: 0; }
+.heaven-gate-stars i:nth-child(1) { left: 14%; top: 30%; font-size: 25px; }
+.heaven-gate-stars i:nth-child(2) { left: 24%; top: 66%; font-size: 20px; }
+.heaven-gate-stars i:nth-child(3) { right: 17%; top: 27%; font-size: 27px; }
+.heaven-gate-stars i:nth-child(4) { right: 27%; top: 69%; font-size: 18px; }
+.heaven-gate-stars i:nth-child(5) { left: 51%; top: 18%; font-size: 45px; }
+.heaven-gate-stars i:nth-child(6) { left: 8%; top: 77%; font-size: 30px; }
+.heaven-gate-stars i:nth-child(7) { right: 8%; top: 78%; font-size: 29px; }
+@keyframes heavenSkyGlow { from { filter: saturate(1); } to { filter: saturate(1.18) brightness(1.06); } }
+@keyframes gateHaloBloom { 0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.35) rotate(-20deg); } 48% { opacity: 1; } 100% { opacity: .84; transform: translate3d(-50%,-50%,0) scale(1.16) rotate(18deg); } }
+@keyframes gateCoreBloom { 0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.12); filter: blur(12px); } 45% { opacity: 1; filter: blur(0); } 100% { opacity: .92; transform: translate3d(-50%,-50%,0) scale(1.24); filter: blur(0); } }
+@keyframes heavenDoorLeftOpen { 0%,15% { transform: perspective(1800px) rotateY(0deg); } 100% { transform: perspective(1800px) rotateY(-104deg) translateZ(38px); } }
+@keyframes heavenDoorRightOpen { 0%,15% { transform: perspective(1800px) rotateY(0deg); } 100% { transform: perspective(1800px) rotateY(104deg) translateZ(38px); } }
+@keyframes gateLatchLift { 0% { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(0); } 45% { opacity: 1; transform: translate(-50%,-67%) scale(1.18) rotate(12deg); } 100% { opacity: 0; transform: translate(-50%,-90%) scale(.25) rotate(28deg); } }
+@keyframes gateCopyAppear { 0%,10% { opacity: 0; translate: 0 12px; } 24%,68% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -13px; } }
+@keyframes gateStarRise { 0% { opacity: 0; transform: translateY(32px) scale(.3) rotate(0); } 36% { opacity: 1; } 100% { opacity: 0; transform: translateY(-120px) scale(1.3) rotate(75deg); } }
+@keyframes gateSkipBreathe { 0%,100% { box-shadow: 0 7px 24px rgba(112,74,147,.16); } 50% { box-shadow: 0 8px 32px rgba(112,74,147,.26),0 0 0 4px rgba(255,255,255,.22); } }
+@media (max-width: 760px) {
+  .heaven-gate-halo--outer { width: 94vw; }
+  .heaven-gate-halo--inner { width: 72vw; }
+  .heaven-gate-portal-core { width: 56vw; }
+  .heaven-gate-portal-core span { font-size: 62px; }
+  .heaven-gate-door { box-shadow: inset 0 0 26px rgba(255,255,255,.72),inset 0 0 60px rgba(209,157,220,.2); }
+  .heaven-gate-door::before { inset: 9px; }
+  .heaven-gate-door-heart { font-size: 42px; }
+  .heaven-gate-door-label { font-size: 6px; letter-spacing: .12em; }
+  .heaven-gate-copy { top: 14%; width: 94vw; }
+  .heaven-gate-copy small { font-size: 8px; letter-spacing: .15em; }
+  .heaven-gate-copy strong { font-size: clamp(26px,8vw,38px); }
+  .heaven-gate-copy p { font-size: 11px; }
+  .heaven-gate-latch { width: 54px; height: 54px; font-size: 32px; }
+  .heaven-gate-skip { bottom: max(18px,env(safe-area-inset-bottom)); font-size: 9px; }
+  .heaven-gate-stars i:nth-child(5),.heaven-gate-stars i:nth-child(6),.heaven-gate-stars i:nth-child(7) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heaven-gate-sky,.heaven-gate-skip { animation: none !important; }
+  .galaxy-journey.is-opening .heaven-gate-door--left,
+  .galaxy-journey.is-opening .heaven-gate-door--right { animation-duration: .01ms; }
+}
+
+/* A softer, cute scrapbook look across the rest of the site. */
+@media (max-width: 700px) {
+  .shell { width: min(100% - 26px, 1240px); }
+  .hero { background: linear-gradient(145deg,#fffaff,#f9eafb 56%,#f5e9ff); }
+  .journey-hero-cta { min-height: 88px; border-radius: 22px; box-shadow: 0 10px 28px rgba(219,123,180,.24),0 0 0 3px rgba(255,255,255,.62),0 0 28px rgba(229,143,205,.22); }
+  .journey-cta-copy strong { font-size: 18px; }
+  .hero-note { color: #a27d9d; font-size: 8px; }
+  .counter-card { background: linear-gradient(145deg,#fff,#f9edff 65%,#fff0f7); }
+  .chapter-card { background: linear-gradient(145deg,#fff,#f9edff); }
+  .little-things { background: linear-gradient(145deg,#fffaff,#f9edff); }
+  .music-section { background: linear-gradient(145deg,#fffaff,#f5eaff 56%,#fff0f7); }
+}
+@media (max-width: 420px) {
+  .heaven-gate-door-label { display: none; }
+  .heaven-gate-door-heart { font-size: 33px; }
+  .heaven-gate-copy strong { font-size: 27px; }
+}
+/* Final contrast fixes for controls that originally used ID-level selectors. */
+#playFilm.galaxy-journey-trigger {
+  color: #fff !important;
+  border-color: rgba(255,255,255,.9) !important;
+  background: linear-gradient(115deg,#df83b5,#bf91dc 58%,#e9a9c4) !important;
+  box-shadow: 0 9px 24px rgba(195,112,172,.22),0 0 0 3px rgba(255,255,255,.55),inset 0 1px 0 rgba(255,255,255,.48) !important;
+}
+#playFilm.galaxy-journey-trigger:hover { filter: brightness(1.06); box-shadow: 0 13px 28px rgba(195,112,172,.28),0 0 22px rgba(226,153,207,.25) !important; }
+#heroJourney .journey-cta-copy strong { color: #713d76; }
+#heroJourney .journey-cta-copy em { color: #875d8b; }
