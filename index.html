@@ -1684,11 +1684,27 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const height = kind === 'video' ? media.videoHeight : media.naturalHeight;
         if (!width || !height) return;
         const ratio = width / height;
+        const isMobile = window.matchMedia('(max-width: 760px)').matches;
+        const viewportW = Math.max(320, document.documentElement.clientWidth || window.innerWidth || 320);
+        const viewportH = Math.max(480, window.innerHeight || 700);
+        // Size the paper frame to the actual photo ratio. This removes the old
+        // wide empty rectangle around portrait memories while keeping contain-fit.
+        const maxW = isMobile ? Math.min(viewportW * 0.76, 350) : Math.min(viewportW * 0.52, 660);
+        const maxH = isMobile ? Math.min(viewportH * 0.39, 330) : Math.min(viewportH * 0.52, 468);
+        const safeRatio = Math.min(2.4, Math.max(0.48, ratio));
+        const frameW = Math.max(120, Math.round(Math.min(maxW, maxH * safeRatio)));
+        const frameH = Math.max(150, Math.round(frameW / safeRatio));
         frame.dataset.orientation = ratio < 0.82 ? 'portrait' : (ratio > 1.2 ? 'landscape' : 'square');
         frame.style.setProperty('--journey-media-ratio', `${width} / ${height}`);
-        // Keep the outer stage dimensions constant across portrait/landscape photos.
-        // This avoids a layout reflow on every memory change; the photo itself
-        // remains uncropped via object-fit: contain.
+        frame.style.setProperty('--journey-frame-width', `${frameW}px`);
+        frame.style.setProperty('--journey-frame-height', `${frameH}px`);
+        frame.style.width = `${frameW}px`;
+        frame.style.height = `${frameH}px`;
+        const scene = frame.closest('.journey-scene');
+        if (scene) {
+          scene.style.setProperty('--journey-frame-width', `${frameW}px`);
+          scene.style.setProperty('--journey-frame-height', `${frameH}px`);
+        }
       }
 
       const journeySatelliteUrlCache = new Map();
@@ -1770,6 +1786,10 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
               image.remove();
             };
             image.onload = () => {
+              if (image.naturalWidth && image.naturalHeight) {
+                card.style.aspectRatio = `${image.naturalWidth} / ${image.naturalHeight}`;
+                card.dataset.orientation = image.naturalWidth / image.naturalHeight < 0.82 ? 'portrait' : (image.naturalWidth / image.naturalHeight > 1.2 ? 'landscape' : 'square');
+              }
               if (typeof image.decode === 'function') {
                 image.decode().then(() => card.classList.add('has-image'), () => card.classList.add('has-image'));
               } else card.classList.add('has-image');

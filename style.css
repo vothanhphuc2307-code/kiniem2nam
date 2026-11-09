@@ -5707,3 +5707,231 @@ footer { color: #937a9a; }
   .journey-media.is-current { opacity: 1 !important; transform: none !important; }
   .journey-media.is-leaving { opacity: 0 !important; }
 }
+
+
+/* ================================================================
+   PHOTO RIBBON 4.6 — aspect-fit keepsake cards + smooth horizontal glide
+   The hero frame now follows each photo's natural ratio. No oversized blank
+   landscape panel around portrait images. Side memories sit beside the hero.
+   ================================================================ */
+.journey-scene {
+  --journey-frame-width: 560px;
+  --journey-frame-height: 360px;
+  perspective: 1450px !important;
+  perspective-origin: 50% 45% !important;
+  overflow: visible !important;
+}
+.journey-media-frame,
+.journey-media-frame[data-orientation="portrait"],
+.journey-media-frame[data-orientation="square"],
+.journey-media-frame[data-orientation="landscape"] {
+  width: var(--journey-frame-width, 560px) !important;
+  height: var(--journey-frame-height, 360px) !important;
+  min-width: 120px !important;
+  min-height: 150px !important;
+  max-width: 76vw !important;
+  max-height: 66vh !important;
+  padding: 5px !important;
+  border: 1px solid rgba(255,255,255,.96) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(255,241,250,.96) 55%, rgba(239,231,255,.96)) !important;
+  box-shadow: 0 16px 44px rgba(70,45,91,.16), 0 0 26px rgba(255,170,218,.34), 0 0 54px rgba(190,166,255,.18), inset 0 1px 0 #fff !important;
+  overflow: hidden !important;
+  transform: translateZ(0) !important;
+  transition: width .38s cubic-bezier(.22,.8,.22,1), height .38s cubic-bezier(.22,.8,.22,1), box-shadow .32s ease !important;
+}
+.journey-media-frame::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -5px !important;
+  border: 1px solid rgba(255,255,255,.58) !important;
+  border-radius: 27px !important;
+  box-shadow: 0 0 18px rgba(255,190,225,.26), 0 0 38px rgba(198,171,255,.12) !important;
+  pointer-events: none !important;
+}
+.journey-media-frame::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 5px !important;
+  border-radius: 17px !important;
+  pointer-events: none !important;
+  background: linear-gradient(112deg, transparent 22%, rgba(255,255,255,.04) 40%, rgba(255,255,255,.54) 49%, rgba(255,255,255,.06) 58%, transparent 78%) !important;
+  opacity: 0 !important;
+}
+.journey-media {
+  inset: 5px !important;
+  width: calc(100% - 10px) !important;
+  height: calc(100% - 10px) !important;
+  border-radius: 17px !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: transparent !important;
+  box-shadow: 0 5px 16px rgba(64,39,81,.10) !important;
+  transform-origin: 50% 50% !important;
+}
+.journey-media.is-current {
+  animation: ribbonHeroBreath46 5.8s ease-in-out infinite !important;
+}
+.journey-media.is-arriving {
+  animation-duration: .92s !important;
+  animation-timing-function: cubic-bezier(.22,.78,.18,1) !important;
+}
+.journey-scene.journey-slide-forward .journey-media.is-arriving {
+  animation: ribbonSlideIn46 .92s cubic-bezier(.22,.78,.18,1) both !important;
+}
+.journey-scene.journey-slide-backward .journey-media.is-arriving {
+  animation: ribbonSlideInBack46 .92s cubic-bezier(.22,.78,.18,1) both !important;
+}
+.journey-scene.journey-slide-forward .journey-media.is-leaving {
+  animation: ribbonSlideOut46 .78s cubic-bezier(.52,.04,.78,.34) both !important;
+}
+.journey-scene.journey-slide-backward .journey-media.is-leaving {
+  animation: ribbonSlideOutBack46 .78s cubic-bezier(.52,.04,.78,.34) both !important;
+}
+.journey-scene.journey-slide-initial .journey-media.is-arriving {
+  animation: ribbonFirstIn46 1s cubic-bezier(.2,.76,.2,1) both !important;
+}
+@keyframes ribbonFirstIn46 {
+  0% { opacity: 0; transform: translate3d(0,34px,-140px) scale(.92) rotateZ(1deg); }
+  72% { opacity: 1; transform: translate3d(0,-3px,8px) scale(1.012) rotateZ(-.25deg); }
+  100% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+}
+@keyframes ribbonSlideIn46 {
+  0% { opacity: .1; transform: translate3d(106%,0,0) scale(.965) rotateZ(1.2deg); }
+  58% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+  100% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+}
+@keyframes ribbonSlideInBack46 {
+  0% { opacity: .1; transform: translate3d(-106%,0,0) scale(.965) rotateZ(-1.2deg); }
+  58% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+  100% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+}
+@keyframes ribbonSlideOut46 {
+  0% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+  100% { opacity: 0; transform: translate3d(-100%,0,0) scale(.965) rotateZ(-1deg); }
+}
+@keyframes ribbonSlideOutBack46 {
+  0% { opacity: 1; transform: translate3d(0,0,0) scale(1) rotateZ(0); }
+  100% { opacity: 0; transform: translate3d(100%,0,0) scale(.965) rotateZ(1deg); }
+}
+@keyframes ribbonHeroBreath46 {
+  0%,100% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(0,-2px,0) scale(1.004); }
+}
+/* Real horizontal ribbon: side cards are close to the hero and have their own aspect ratios. */
+.journey-orbit-memory {
+  top: 44% !important;
+  width: clamp(104px, 10vw, 138px) !important;
+  height: auto !important;
+  aspect-ratio: 4 / 3;
+  padding: 5px !important;
+  border: 2px solid rgba(255,255,255,.92) !important;
+  border-radius: 15px !important;
+  background: linear-gradient(145deg, #fff, #fff0f8 68%, #f0eaff) !important;
+  box-shadow: 0 9px 24px rgba(68,44,88,.13), 0 0 18px rgba(255,180,222,.25) !important;
+  opacity: .9 !important;
+  transition: left .72s cubic-bezier(.22,.78,.18,1), right .72s cubic-bezier(.22,.78,.18,1), transform .72s cubic-bezier(.22,.78,.18,1), opacity .3s ease !important;
+}
+.journey-orbit-memory[data-orientation="portrait"] { width: clamp(82px, 8vw, 108px) !important; }
+.journey-orbit-memory[data-orientation="landscape"] { width: clamp(112px, 10vw, 144px) !important; }
+.journey-orbit-memory .journey-orbit-photo {
+  inset: 5px !important;
+  width: calc(100% - 10px) !important;
+  height: calc(100% - 10px) !important;
+  border-radius: 9px !important;
+  object-fit: contain !important;
+  background: linear-gradient(145deg,#fffaff,#f8effb) !important;
+}
+.journey-orbit-memory--previous {
+  left: clamp(2%, calc(50% - var(--journey-frame-width, 560px) / 2 - 145px - 28px), 18%) !important;
+  right: auto !important;
+  transform: translate3d(0,-50%,-150px) rotateY(17deg) rotateZ(-4deg) scale(.9) !important;
+}
+.journey-orbit-memory--next {
+  right: clamp(2%, calc(50% - var(--journey-frame-width, 560px) / 2 - 145px - 28px), 18%) !important;
+  left: auto !important;
+  transform: translate3d(0,-50%,-170px) rotateY(-17deg) rotateZ(4deg) scale(.88) !important;
+}
+.journey-scene.scene-enter.journey-slide-forward .journey-orbit-memory--next:not(.is-retiring) {
+  animation: ribbonSatelliteInRight46 .92s cubic-bezier(.22,.78,.18,1) both !important;
+}
+.journey-scene.scene-enter.journey-slide-forward .journey-orbit-memory--previous:not(.is-retiring) {
+  animation: ribbonSatelliteOutLeft46 .78s cubic-bezier(.52,.04,.78,.34) both !important;
+}
+.journey-scene.scene-enter.journey-slide-backward .journey-orbit-memory--previous:not(.is-retiring) {
+  animation: ribbonSatelliteInLeft46 .92s cubic-bezier(.22,.78,.18,1) both !important;
+}
+.journey-scene.scene-enter.journey-slide-backward .journey-orbit-memory--next:not(.is-retiring) {
+  animation: ribbonSatelliteOutRight46 .78s cubic-bezier(.52,.04,.78,.34) both !important;
+}
+@keyframes ribbonSatelliteInRight46 {
+  0% { opacity: 0; transform: translate3d(42px,-50%,-310px) rotateY(-28deg) scale(.72); }
+  100% { opacity: .9; transform: translate3d(0,-50%,-170px) rotateY(-17deg) rotateZ(4deg) scale(.88); }
+}
+@keyframes ribbonSatelliteInLeft46 {
+  0% { opacity: 0; transform: translate3d(-42px,-50%,-300px) rotateY(28deg) scale(.72); }
+  100% { opacity: .9; transform: translate3d(0,-50%,-150px) rotateY(17deg) rotateZ(-4deg) scale(.9); }
+}
+@keyframes ribbonSatelliteOutLeft46 {
+  to { opacity: 0; transform: translate3d(-80px,-50%,-320px) rotateY(28deg) scale(.66); }
+}
+@keyframes ribbonSatelliteOutRight46 {
+  to { opacity: 0; transform: translate3d(80px,-50%,-320px) rotateY(-28deg) scale(.66); }
+}
+.journey-scene.scene-enter .journey-media-frame::after {
+  animation: ribbonFrameGlint46 .95s .2s ease-out both !important;
+}
+@keyframes ribbonFrameGlint46 {
+  0% { opacity: 0; transform: translate3d(-120%,0,0) skewX(-18deg); }
+  35% { opacity: .72; }
+  100% { opacity: 0; transform: translate3d(150%,0,0) skewX(-18deg); }
+}
+
+@media (max-width: 760px) {
+  .journey-scene { perspective: 1100px !important; }
+  .journey-media-frame,
+  .journey-media-frame[data-orientation="portrait"],
+  .journey-media-frame[data-orientation="square"],
+  .journey-media-frame[data-orientation="landscape"] {
+    width: min(var(--journey-frame-width, 280px), 76vw) !important;
+    height: min(var(--journey-frame-height, 320px), 42vh) !important;
+    min-height: 120px !important;
+    max-height: 42vh !important;
+    padding: 4px !important;
+    border-radius: 17px !important;
+    box-shadow: 0 11px 28px rgba(78,47,98,.13), 0 0 18px rgba(255,174,220,.24) !important;
+    transition: width .28s ease-out, height .28s ease-out !important;
+  }
+  .journey-media { inset: 4px !important; width: calc(100% - 8px) !important; height: calc(100% - 8px) !important; border-radius: 13px !important; }
+  .journey-orbit-memory,
+  .journey-orbit-memory[data-orientation="portrait"],
+  .journey-orbit-memory[data-orientation="landscape"] {
+    width: clamp(58px, 17vw, 76px) !important;
+    max-height: 108px !important;
+    top: 46% !important;
+    padding: 3px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 14px rgba(78,47,98,.10), 0 0 10px rgba(255,174,220,.19) !important;
+  }
+  .journey-orbit-memory--previous { left: 1% !important; right: auto !important; transform: translate3d(0,-50%,-110px) rotateY(12deg) rotateZ(-3deg) scale(.88) !important; }
+  .journey-orbit-memory--next { right: 1% !important; left: auto !important; transform: translate3d(0,-50%,-120px) rotateY(-12deg) rotateZ(3deg) scale(.86) !important; }
+  .journey-orbit-memory .journey-orbit-photo { inset: 3px !important; width: calc(100% - 6px) !important; height: calc(100% - 6px) !important; border-radius: 7px !important; }
+  .journey-scene.journey-slide-forward .journey-media.is-arriving,
+  .journey-scene.journey-slide-backward .journey-media.is-arriving { animation-duration: .68s !important; }
+  .journey-scene.journey-slide-forward .journey-media.is-leaving,
+  .journey-scene.journey-slide-backward .journey-media.is-leaving { animation-duration: .58s !important; }
+  .journey-scene.scene-enter.journey-slide-forward .journey-orbit-memory--next:not(.is-retiring),
+  .journey-scene.scene-enter.journey-slide-backward .journey-orbit-memory--previous:not(.is-retiring) { animation-duration: .68s !important; }
+  .journey-scene.scene-enter.journey-slide-forward .journey-orbit-memory--previous:not(.is-retiring),
+  .journey-scene.scene-enter.journey-slide-backward .journey-orbit-memory--next:not(.is-retiring) { animation-duration: .58s !important; }
+  .journey-photo-spark--two { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-media.is-arriving,.journey-media.is-leaving,.journey-media.is-current,
+  .journey-orbit-memory,.journey-photo-heart,.journey-photo-spark,.journey-photo-glide {
+    animation: none !important;
+    transition: none !important;
+  }
+  .journey-media.is-arriving,.journey-media.is-current { opacity: 1 !important; transform: none !important; }
+  .journey-media.is-leaving { opacity: 0 !important; }
+}
