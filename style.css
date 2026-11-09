@@ -4615,3 +4615,228 @@ footer { color: #937a9a; }
 @media (prefers-reduced-motion:reduce) {
   .mobile-dock .dock-item,.mobile-dock .dock-icon,.guide-open-btn { transition:none !important; }
 }
+
+/* ================================================================
+   BLOSSOM JOURNEY 4.1 — brighter, sweeter and more legible journey.
+   A pastel twilight palette, floating petal-stars, pearl photo frames
+   and gentle transform/opacity motion. No extra JS or heavy libraries.
+   ================================================================ */
+.galaxy-journey {
+  color: #fffaff;
+  background:
+    radial-gradient(ellipse at 50% 17%, rgba(255, 222, 245, .30), transparent 36%),
+    radial-gradient(ellipse at 10% 78%, rgba(192, 169, 255, .25), transparent 42%),
+    linear-gradient(145deg, #40315f 0%, #594276 43%, #76547f 72%, #4b3a70 100%);
+}
+.journey-cosmos {
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255, 197, 231, .36), transparent 28%),
+    radial-gradient(ellipse at 13% 24%, rgba(173, 186, 255, .30), transparent 37%),
+    radial-gradient(ellipse at 88% 76%, rgba(255, 174, 216, .30), transparent 35%),
+    radial-gradient(ellipse at 54% 2%, rgba(255, 240, 251, .25), transparent 32%),
+    linear-gradient(145deg, #51416f 0%, #645080 44%, #805b89 74%, #51416f 100%);
+}
+.journey-cosmos::before {
+  opacity: .72;
+  background:
+    radial-gradient(ellipse at 22% 40%, rgba(255, 190, 229, .34), transparent 22%),
+    radial-gradient(ellipse at 78% 42%, rgba(178, 190, 255, .30), transparent 25%),
+    radial-gradient(ellipse at 50% 82%, rgba(255, 221, 240, .26), transparent 22%);
+  animation: blossomNebulaBreath 13s ease-in-out infinite alternate;
+}
+.journey-cosmos::after {
+  opacity: .52;
+  background-image:
+    radial-gradient(2px 2px at 15% 22%, rgba(255,255,255,.85) 50%, transparent 100%),
+    radial-gradient(2px 2px at 76% 19%, rgba(255,235,249,.8) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 84% 78%, rgba(225,222,255,.8) 50%, transparent 100%);
+  background-size: 240px 210px, 310px 250px, 370px 290px;
+}
+.journey-nebula-a {
+  opacity: .72;
+  background: radial-gradient(ellipse, rgba(255, 174, 220, .43), rgba(250, 202, 240, .13) 40%, transparent 70%);
+}
+.journey-nebula-b {
+  opacity: .64;
+  background: radial-gradient(ellipse, rgba(178, 190, 255, .40), rgba(219, 197, 255, .12) 42%, transparent 72%);
+}
+.journey-star-layer { opacity: .82; }
+.journey-depth-ring {
+  border-color: rgba(255, 226, 246, .40);
+  box-shadow: 0 0 22px rgba(255, 195, 232, .20), inset 0 0 24px rgba(212, 196, 255, .11);
+}
+.journey-depth-ring::before { border-color: rgba(255, 228, 246, .34); }
+.journey-depth-ring::after { border-color: rgba(218, 215, 255, .34); }
+.journey-depth-ring--far { opacity: .56; }
+.journey-depth-ring--mid { border-color: rgba(212, 216, 255, .40); opacity: .70; }
+.journey-depth-ring--near { border-color: rgba(255, 209, 237, .48); opacity: .82; }
+.journey-spatial-field::before {
+  border-color: rgba(255, 222, 246, .28);
+  box-shadow: 0 0 58px rgba(255, 172, 222, .17), inset 0 0 52px rgba(192, 190, 255, .12);
+}
+.journey-spatial-field::after {
+  background: radial-gradient(ellipse, rgba(255, 189, 226, .25), rgba(191, 181, 255, .15) 38%, transparent 72%);
+}
+.journey-floating-heart {
+  color: rgba(255, 225, 245, .96);
+  text-shadow: 0 0 10px rgba(255, 173, 222, .92), 0 0 24px rgba(211, 185, 255, .62);
+}
+.journey-cute-spark {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  color: #fff4fb;
+  font-family: Georgia, serif;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(255,255,255,.95), 0 0 19px rgba(255,165,219,.90), 0 0 32px rgba(194,177,255,.55);
+  will-change: transform, opacity;
+  animation: blossomSparkFloat var(--spark-duration, 7s) ease-in-out infinite;
+}
+.journey-cute-spark--one { left: 18%; top: 17%; color: #ffe8f5; font-size: 29px; --spark-duration: 8.2s; }
+.journey-cute-spark--two { left: 78%; top: 27%; color: #fff8df; font-size: 23px; --spark-duration: 6.8s; animation-delay: -2.2s; }
+.journey-cute-spark--three { left: 83%; top: 70%; color: #ffd8ed; font-size: 34px; --spark-duration: 9.1s; animation-delay: -4.1s; }
+.journey-cute-spark--four { left: 9%; top: 69%; color: #fff5d8; font-size: 21px; --spark-duration: 7.4s; animation-delay: -1.4s; }
+.journey-cute-spark--five { left: 66%; top: 13%; color: #ffd9ee; font-size: 18px; --spark-duration: 8.7s; animation-delay: -5.3s; }
+.journey-cute-spark--six { left: 28%; top: 82%; color: #efe5ff; font-size: 18px; --spark-duration: 7.8s; animation-delay: -3.2s; }
+@keyframes blossomSparkFloat {
+  0%,100% { opacity: .48; transform: translate3d(0, 5px, 0) rotate(-12deg) scale(.88); }
+  50% { opacity: 1; transform: translate3d(0, -15px, 22px) rotate(12deg) scale(1.14); }
+}
+@keyframes blossomNebulaBreath {
+  from { opacity: .48; transform: translate3d(-.5%, 0, 0) scale(.99); }
+  to { opacity: .78; transform: translate3d(.5%, -1%, 0) scale(1.025); }
+}
+.journey-portal {
+  border-color: rgba(255, 226, 246, .48);
+  box-shadow: 0 0 0 16px rgba(255,255,255,.035), 0 0 0 40px rgba(255,220,245,.025), 0 0 55px rgba(255,186,228,.23), inset 0 0 30px rgba(245,213,255,.12);
+}
+.journey-portal::before { border-color: rgba(255, 226, 248, .42); }
+.journey-portal::after { border-color: rgba(220, 215, 255, .42); }
+.journey-portal span { background: #fff9df; box-shadow: 0 0 12px 5px rgba(255,230,173,.72); }
+.journey-portal i { color: #fff0f8; text-shadow: 0 0 18px #ff9fd2; }
+.journey-orbit-memory {
+  border-color: rgba(255,255,255,.92);
+  background: linear-gradient(145deg, #fffaff 0%, #ffe8f5 58%, #f0eaff 100%);
+  box-shadow: 0 14px 38px rgba(44,25,69,.24), 0 0 30px rgba(255,195,232,.50), inset 0 1px 0 #fff;
+}
+.journey-orbit-memory img { background: #fff8fc; }
+.journey-orbit-memory > span {
+  color: #764b79;
+  background: rgba(255,250,255,.94);
+  border: 1px solid rgba(220,177,216,.55);
+}
+.journey-media-frame {
+  border: 2px solid rgba(255,255,255,.98);
+  border-radius: 29px;
+  background: linear-gradient(145deg, #fffaff 0%, #ffe9f5 32%, #eee8ff 72%, #fff3ed 100%);
+  box-shadow: 0 28px 72px rgba(40,25,67,.28), 0 0 0 5px rgba(255,234,249,.22), 0 0 42px rgba(255,161,216,.52), 0 0 100px rgba(185,173,255,.28), inset 0 2px 0 #fff;
+}
+.journey-media-frame::before {
+  inset: -17px;
+  border-color: rgba(255,245,253,.75);
+  background: linear-gradient(135deg, rgba(255,213,238,.24), rgba(216,209,255,.20) 55%, rgba(255,235,243,.22));
+  box-shadow: 0 0 34px rgba(255,165,218,.35), 0 0 75px rgba(182,174,255,.24), inset 0 0 30px rgba(255,255,255,.24);
+}
+.journey-media-frame::after {
+  background: linear-gradient(108deg, transparent 18%, rgba(255,255,255,0) 38%, rgba(255,255,255,.82) 49%, rgba(255,228,246,.30) 53%, rgba(255,255,255,0) 61%, transparent 78%);
+}
+.journey-media {
+  background: linear-gradient(145deg, #fffaff, #faedf8 55%, #eeeaff);
+  box-shadow: 0 6px 22px rgba(101,66,111,.12);
+}
+.journey-scene-caption {
+  padding: 15px 24px 17px;
+  border: 1px solid rgba(255,244,253,.54);
+  border-radius: 21px;
+  background: linear-gradient(135deg, rgba(62,42,89,.78), rgba(86,61,111,.68));
+  box-shadow: 0 12px 34px rgba(39,24,62,.20), inset 0 1px 0 rgba(255,255,255,.22);
+  text-shadow: 0 2px 13px rgba(28,15,48,.62);
+  backdrop-filter: blur(9px);
+}
+.journey-scene-caption .journey-caption-kicker,
+.journey-scene-caption small { color: #ffe1f1; text-shadow: 0 1px 8px rgba(45,24,65,.65); }
+.journey-scene-caption h2 { color: #fffaff; text-shadow: 0 2px 16px rgba(32,16,52,.7), 0 0 18px rgba(255,190,224,.30); }
+.journey-scene-caption p { color: #fff2fb; text-shadow: 0 1px 10px rgba(33,17,54,.75); }
+.journey-intro,
+.journey-finish {
+  border: 1px solid rgba(255,255,255,.84);
+  background: linear-gradient(145deg, rgba(255,250,255,.94), rgba(255,231,246,.88) 52%, rgba(236,230,255,.90));
+  box-shadow: 0 24px 70px rgba(55,35,79,.24), inset 0 1px 0 #fff;
+}
+.journey-intro-orb,
+.journey-finish-heart {
+  color: #fffaff;
+  border-color: rgba(255,255,255,.95);
+  background: radial-gradient(circle at 32% 25%, #fffaff 0%, #ffbfe1 36%, #c2a6f0 75%, #9c83ca 100%);
+  box-shadow: 0 0 0 10px rgba(255,255,255,.36), 0 0 36px rgba(255,155,214,.42);
+}
+.journey-intro > small,
+.journey-finish > small { color: #a45b91; }
+.journey-intro h2,
+.journey-finish h2 { color: #65466f; text-shadow: 0 2px 0 rgba(255,255,255,.9), 0 8px 22px rgba(197,134,184,.20); }
+.journey-intro p,
+.journey-finish p { color: #765f7e; text-shadow: none; }
+.journey-progress-meta { color: #fff5fc; text-shadow: 0 1px 8px rgba(37,22,59,.54); }
+.journey-progress { background: rgba(255,255,255,.30); box-shadow: inset 0 1px 2px rgba(43,24,65,.16); }
+.journey-progress span { background: linear-gradient(90deg, #fff8df, #ffc4e3 42%, #d7c5ff 78%, #fff); box-shadow: 0 0 14px rgba(255,211,239,.82); }
+.journey-control {
+  color: #76547c;
+  border-color: rgba(255,255,255,.88);
+  background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(255,233,247,.90) 58%, rgba(239,233,255,.92));
+  box-shadow: 0 6px 18px rgba(44,26,70,.17), inset 0 1px 0 #fff;
+}
+.journey-control:hover:not(:disabled) { color: #a44f88; background: linear-gradient(145deg,#fff,#ffe4f2 58%,#eee5ff); box-shadow: 0 9px 24px rgba(255,168,217,.30); }
+.journey-play,
+.journey-replay {
+  color: #74456f;
+  background: linear-gradient(110deg, #fff9e6 0%, #ffd9ed 48%, #e1d7ff 100%);
+  box-shadow: 0 8px 22px rgba(255,170,218,.34), 0 0 0 4px rgba(255,255,255,.16), inset 0 1px 0 #fff;
+}
+.journey-footnote { color: #fff1fa; text-shadow: 0 1px 8px rgba(36,20,58,.60); }
+.journey-close { color: #795377; border-color: rgba(255,255,255,.88); background: linear-gradient(145deg,#fff,#ffe7f4); box-shadow: 0 5px 16px rgba(47,27,72,.15); }
+.journey-close:hover { color: #a34f8b; background: #fff4fb; }
+
+/* A short, soft bloom on each new memory; it does not animate filters. */
+.journey-scene.scene-enter .journey-media-frame {
+  animation: blossomMemoryBloom 1.42s cubic-bezier(.18,.78,.18,1) both !important;
+}
+@keyframes blossomMemoryBloom {
+  0% { opacity: 0; transform: translate3d(var(--journey-entry-x,-8vw), 38px, -980px) rotateX(13deg) rotateY(var(--journey-entry-yaw,-18deg)) rotateZ(var(--journey-entry-roll,-5deg)) scale(.36); }
+  36% { opacity: 1; transform: translate3d(calc(var(--journey-entry-x-soft,-1.5vw)), 7px, -190px) rotateX(4deg) rotateY(var(--journey-entry-yaw-soft,-4deg)) rotateZ(var(--journey-entry-roll-soft,-1deg)) scale(.82); }
+  72% { opacity: 1; transform: translate3d(0,-4px,62px) rotateX(-1deg) rotateY(1.5deg) scale(1.025); }
+  100% { opacity: 1; transform: translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1); }
+}
+.journey-scene.scene-enter .journey-cute-spark--one,
+.journey-scene.scene-enter .journey-cute-spark--three,
+.journey-scene.scene-enter .journey-cute-spark--five { animation-duration: 4.8s; }
+.journey-scene.scene-enter .journey-cute-spark--two,
+.journey-scene.scene-enter .journey-cute-spark--four,
+.journey-scene.scene-enter .journey-cute-spark--six { animation-duration: 5.6s; }
+
+@media (max-width: 760px) {
+  .galaxy-journey {
+    background: linear-gradient(155deg, #594571 0%, #73517f 52%, #5d4b83 100%);
+  }
+  .journey-cosmos {
+    background:
+      radial-gradient(ellipse at 50% 38%, rgba(255,196,231,.34), transparent 30%),
+      radial-gradient(ellipse at 16% 20%, rgba(191,192,255,.24), transparent 38%),
+      linear-gradient(155deg, #594571 0%, #73517f 54%, #5d4b83 100%);
+  }
+  .journey-nebula { filter: none !important; opacity: .38; animation: none !important; }
+  .journey-cute-spark { text-shadow: 0 0 8px rgba(255,255,255,.95), 0 0 15px rgba(255,170,218,.7); animation-duration: 9s !important; }
+  .journey-cute-spark--five,
+  .journey-cute-spark--six { display: none; }
+  .journey-orbit-memory { opacity: .54; box-shadow: 0 8px 22px rgba(45,26,72,.18), 0 0 15px rgba(255,190,228,.27); }
+  .journey-media-frame { box-shadow: 0 16px 38px rgba(43,27,66,.24), 0 0 23px rgba(255,170,218,.32), inset 0 1px 0 #fff; }
+  .journey-scene-caption { padding: 11px 13px 12px; background: rgba(62,42,89,.86); backdrop-filter: none; }
+  .journey-control { box-shadow: 0 4px 12px rgba(48,29,70,.14), inset 0 1px 0 #fff; }
+  .journey-intro,.journey-finish { box-shadow: 0 18px 48px rgba(47,28,70,.18), inset 0 1px 0 #fff; }
+  .journey-scene.scene-enter .journey-media-frame { animation-duration: 1.12s !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-cute-spark { animation: none !important; }
+  .journey-scene.scene-enter .journey-media-frame { animation: none !important; opacity: 1; transform: none; }
+}
