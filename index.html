@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Trio Galaxy Journey 4.3 ♡</title>
+  <title>The Little Archive — Orbit Flow Journey 4.4 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -225,7 +225,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         <button class="journey-control journey-play" id="journeyPlay" type="button">✦ Bắt đầu du hành</button>
         <button class="journey-control" id="journeyNext" type="button" aria-label="Khoảnh khắc tiếp theo">→</button>
       </div>
-      <small class="journey-footnote">Ba khung hình cùng lướt qua · Có thể tạm dừng hoặc thoát bất cứ lúc nào ♡</small>
+      <small class="journey-footnote">Ba kỷ niệm cùng bay trên quỹ đạo · Có thể tạm dừng hoặc thoát bất cứ lúc nào ♡</small>
     </footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1629,7 +1629,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
       const JOURNEY_IMAGE_DURATION = 6200;
       const JOURNEY_VIDEO_DURATION = 8000;
-      const JOURNEY_EXIT_DURATION = 660;
+      const JOURNEY_EXIT_DURATION = 0; // Seamless cross-swap; no blank exit interval.
 
       function setJourneyProgress() {
         const total = journeyItems.length;
@@ -1672,15 +1672,10 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         if (!journeyActive || journeyPaused) return;
         journeyTimer = setTimeout(() => {
           if (!journeyActive || journeyPaused) return;
-          const scene = $('journeyScene');
-          scene.classList.remove('scene-enter');
-          scene.classList.add('scene-exit');
-          // Let the current memory fly past the camera before the next one
-          // emerges from deep space. The short timer is cancellable by controls.
-          journeyTimer = setTimeout(() => {
-            scene.classList.remove('scene-exit');
-            showJourneyItem(journeyIndex + 1);
-          }, JOURNEY_EXIT_DURATION);
+          // The next image is prepared while the current memory remains visible.
+          // Once it is decoded, the two frames cross in opposite directions.
+          // This removes the old blank gap between the exit and the next entry.
+          showJourneyItem(journeyIndex + 1);
         }, duration);
       }
 
@@ -1691,30 +1686,52 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         const ratio = width / height;
         frame.dataset.orientation = ratio < 0.82 ? 'portrait' : (ratio > 1.2 ? 'landscape' : 'square');
         frame.style.setProperty('--journey-media-ratio', `${width} / ${height}`);
+        // Keep the outer stage dimensions constant across portrait/landscape photos.
+        // This avoids a layout reflow on every memory change; the photo itself
+        // remains uncropped via object-fit: contain.
+      }
 
-        // Size the floating frame to the real photo ratio instead of forcing
-        // every photo into one landscape rectangle. The image itself always
-        // uses contain, so no edge or subject is cropped away.
-        const compact = window.matchMedia('(max-width: 760px)').matches;
-        // Reserve horizontal space for two visible satellite memories.
-        // A slightly smaller hero frame makes the 3-card composition readable
-        // without forcing any source photo to crop or distort.
-        const maxWidth = compact ? Math.min(window.innerWidth * 0.66, 310) : Math.min(window.innerWidth * 0.48, 720);
-        const maxHeight = compact ? Math.min(window.innerHeight * 0.43, 390) : Math.min(window.innerHeight * 0.49, 540);
-        const fittedWidth = Math.max(150, Math.round(Math.min(maxWidth, maxHeight * ratio)));
-        const fittedHeight = Math.max(150, Math.round(fittedWidth / ratio));
-        frame.style.width = `${fittedWidth}px`;
-        frame.style.height = `${fittedHeight}px`;
+      const journeySatelliteUrlCache = new Map();
+      function resolveJourneySatelliteUrl(item) {
+        if (!item || item.kind !== 'image') return Promise.resolve(null);
+        if (journeySatelliteUrlCache.has(item.id)) return journeySatelliteUrlCache.get(item.id);
+        const candidates = [...new Set([item.previewUrl, item.url].filter(Boolean))];
+        const task = new Promise((resolve) => {
+          const tryCandidate = (index) => {
+            if (index >= candidates.length) { resolve(null); return; }
+            const url = candidates[index];
+            const probe = new Image();
+            probe.decoding = 'async';
+            if ('fetchPriority' in probe) probe.fetchPriority = 'low';
+            probe.onload = () => {
+              const finish = () => resolve(url);
+              if (typeof probe.decode === 'function') probe.decode().then(finish, finish);
+              else finish();
+            };
+            probe.onerror = () => tryCandidate(index + 1);
+            probe.src = url;
+          };
+          tryCandidate(0);
+        });
+        journeySatelliteUrlCache.set(item.id, task);
+        // Bound retained promises; the browser itself may keep successful image
+        // responses in its HTTP cache for the next scene.
+        while (journeySatelliteUrlCache.size > 12) {
+          const oldestKey = journeySatelliteUrlCache.keys().next().value;
+          journeySatelliteUrlCache.delete(oldestKey);
+        }
+        return task;
       }
 
       function renderJourneyOrbitPhotos() {
         const field = $('journeySpatialField');
         if (!field) return;
-        field.querySelectorAll('.journey-orbit-memory').forEach((node) => node.remove());
+        // Fade out the previous pair instead of abruptly removing them.
+        field.querySelectorAll('.journey-orbit-memory:not(.is-retiring)').forEach((node) => {
+          node.classList.add('is-retiring');
+          setTimeout(() => node.remove(), 520);
+        });
 
-        // Keep three consecutive memories visible at once:
-        // the current full-size memory in the center, followed by two small
-        // Cloud previews floating left and right like 3D satellites.
         const previews = [
           { item: journeyItems[journeyIndex + 1], side: 'previous', label: 'TIẾP THEO' },
           { item: journeyItems[journeyIndex + 2], side: 'next', label: 'SAU ĐÓ' }
@@ -1723,30 +1740,53 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         previews.forEach(({ item, side, label }) => {
           if (!item) return;
           const card = document.createElement('div');
-          card.className = `journey-orbit-memory journey-orbit-memory--${side}`;
+          card.className = `journey-orbit-memory journey-orbit-memory--${side} is-loading`;
           card.setAttribute('aria-hidden', 'true');
           card.dataset.kind = item.kind;
 
-          if (item.kind === 'image' && item.previewUrl) {
+          const placeholder = document.createElement('b');
+          placeholder.className = 'journey-orbit-placeholder';
+          placeholder.textContent = item.kind === 'video' ? '▶' : '♡';
+          card.append(placeholder);
+
+          if (item.kind === 'image') {
             const image = document.createElement('img');
+            image.className = 'journey-orbit-photo';
             image.alt = '';
             image.loading = 'eager';
             image.decoding = 'async';
-            image.fetchPriority = 'low';
-            image.src = item.previewUrl;
+            if ('fetchPriority' in image) image.fetchPriority = 'low';
+            image.draggable = false;
             image.onerror = () => {
-              image.remove();
+              // If a preview is missing for an older upload, use the optimized
+              // main image as a fallback. If that also fails, keep a cute tile.
+              if (image.dataset.fallback !== '1' && item.url && image.src !== item.url) {
+                image.dataset.fallback = '1';
+                image.src = item.url;
+                return;
+              }
+              card.classList.remove('has-image', 'is-loading');
               card.classList.add('is-placeholder');
+              image.remove();
+            };
+            image.onload = () => {
+              if (typeof image.decode === 'function') {
+                image.decode().then(() => card.classList.add('has-image'), () => card.classList.add('has-image'));
+              } else card.classList.add('has-image');
+              card.classList.remove('is-loading');
             };
             card.append(image);
+            resolveJourneySatelliteUrl(item).then((url) => {
+              if (!card.isConnected) return;
+              if (url) image.src = url;
+              else {
+                card.classList.remove('is-loading');
+                card.classList.add('is-placeholder');
+              }
+            });
           } else {
-            // Do not fetch a full-size original or an entire video just to make
-            // a decorative side card. A light pastel tile keeps the trio layout.
-            card.classList.add('is-placeholder');
-            const symbol = document.createElement('b');
-            symbol.className = 'journey-orbit-placeholder';
-            symbol.textContent = item.kind === 'video' ? '▶' : '♡';
-            card.append(symbol);
+            card.classList.remove('is-loading');
+            card.classList.add('is-placeholder', 'is-video-memory');
           }
 
           const labelNode = document.createElement('span');
@@ -1779,6 +1819,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         journeyActive = false;
         journeyPaused = false;
         if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
+        $('journeyMediaFrame').querySelectorAll('video.journey-media').forEach((video) => { video.pause(); video.removeAttribute('src'); video.load(); video.remove(); });
         $('journeyScene').hidden = true;
         $('journeyIntro').hidden = true;
         $('journeyFinish').hidden = false;
@@ -1792,7 +1833,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
       function showJourneyItem(index) {
         clearJourneyTimers();
-        if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
+        // Pause the outgoing video but keep its last decoded frame visible until
+        // the next memory has loaded and can cross-fade over it.
+        if (journeyVideo) { journeyVideo.pause(); journeyVideo = null; }
         if (index >= journeyItems.length) { showJourneyFinish(); return; }
         journeyIndex = Math.max(0, index);
         journeyActive = true;
@@ -1806,7 +1849,12 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyPlay').textContent = 'Ⅱ Tạm dừng';
         $('journeyScene').classList.remove('scene-enter', 'scene-exit');
         const frame = $('journeyMediaFrame');
-        frame.replaceChildren();
+        // Discard only an image that never finished loading; the last good frame
+        // stays on screen as the outgoing layer until its successor is decoded.
+        frame.querySelectorAll('.journey-media--pending').forEach((node) => {
+          if (node.tagName === 'VIDEO') { node.pause(); node.removeAttribute('src'); node.load(); }
+          node.remove();
+        });
         const item = journeyItems[journeyIndex];
         const entryDirections = [-1, 1, -0.65, 0.7, 0, -0.35, 0.45];
         const entryYaws = [-28, 25, -19, 22, -12, 16, -8];
@@ -1823,7 +1871,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         frame.dataset.orientation = 'landscape';
         renderJourneyOrbitPhotos();
         const media = item.kind === 'video' ? document.createElement('video') : document.createElement('img');
-        media.className = 'journey-media';
+        media.className = 'journey-media journey-media--pending';
         if (item.kind === 'video') {
           media.muted = true;
           media.defaultMuted = true;
@@ -1840,21 +1888,52 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           media.fetchPriority = 'high';
           media.setAttribute('draggable', 'false');
         }
+        let sceneStartedForItem = false;
         const beginScene = () => {
-          if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+          if (sceneStartedForItem || !journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+          sceneStartedForItem = true;
           clearTimeout(journeyLoadFallbackTimer);
           journeyLoadFallbackTimer = null;
           const scene = $('journeyScene');
+
+          // Keep the outgoing decoded photo in place while the new one arrives.
+          // Animate both layers in opposite directions; remove the old node only
+          // after its own exit animation has finished.
+          frame.querySelectorAll('.journey-media.is-current, .journey-media.is-arriving').forEach((oldMedia) => {
+            oldMedia.classList.remove('is-current', 'is-arriving', 'journey-media--pending');
+            oldMedia.classList.add('is-leaving');
+            const releaseOld = () => {
+              if (oldMedia.tagName === 'VIDEO') {
+                oldMedia.pause();
+                oldMedia.removeAttribute('src');
+                oldMedia.load();
+              }
+              oldMedia.remove();
+            };
+            oldMedia.addEventListener('animationend', (event) => {
+              if (event.target === oldMedia && event.animationName === 'orbitMemoryLeave44') releaseOld();
+            });
+            setTimeout(releaseOld, 1100);
+          });
+
+          media.classList.remove('journey-media--pending');
+          media.classList.add('is-arriving');
           scene.classList.remove('scene-enter', 'scene-exit');
-          // Restart the scene animation over two frames instead of forcing a
-          // synchronous layout read (offsetWidth), which can hitch on phones.
           requestAnimationFrame(() => {
             if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
-            requestAnimationFrame(() => {
-              if (!journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
-              scene.classList.add('scene-enter');
-            });
+            scene.classList.add('scene-enter');
           });
+
+          const settleIncoming = () => {
+            if (!media.isConnected || !journeyActive || journeyItems[journeyIndex]?.id !== item.id) return;
+            media.classList.remove('is-arriving');
+            media.classList.add('is-current');
+          };
+          media.addEventListener('animationend', (event) => {
+            if (event.target === media && event.animationName === 'orbitMemoryArrive44') settleIncoming();
+          });
+          setTimeout(settleIncoming, 1450);
+
           const visibleFrames = Math.min(3, journeyItems.length - journeyIndex);
           $('journeyCounter').textContent = `MEMORY ${String(journeyIndex + 1).padStart(2, '0')} / ${String(journeyItems.length).padStart(2, '0')} · ${visibleFrames} KHUNG HÌNH`;
           $('journeyTitle').textContent = item.kind === 'video' ? 'Một thước phim giữa những vì sao' : 'Kỷ niệm của anh và em';
@@ -1865,11 +1944,17 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         };
         if (item.kind === 'video') {
           media.addEventListener('loadedmetadata', () => setJourneyMediaOrientation(media, frame, 'video'), { once: true });
+          media.addEventListener('loadeddata', beginScene, { once: true });
+          media.addEventListener('error', () => {
+            $('journeyCaption').textContent = 'Video này chưa tải được, mình sẽ tiếp tục nhé ♡';
+            media.classList.add('is-broken');
+            beginScene();
+          }, { once: true });
           media.src = item.url;
           frame.append(media);
           const playAttempt = media.play();
           if (playAttempt?.catch) playAttempt.catch(() => {});
-          beginScene();
+          if (media.readyState >= 2) beginScene();
         } else {
           media.onerror = () => {
             // Keep the full-quality cloud image as the main memory. If it cannot
@@ -1878,6 +1963,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
               media.src = item.previewUrl;
             } else {
               $('journeyCaption').textContent = 'Khoảnh khắc này tạm thời chưa tải được. Mình sẽ tiếp tục nhé ♡';
+              media.classList.add('is-broken');
               beginScene();
             }
           };
