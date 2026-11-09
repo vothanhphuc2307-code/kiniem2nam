@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Smooth Heaven Gate 3.7 ♡</title>
+  <title>The Little Archive — Romance Motion 3.8 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
 <body class="intro-locked">
   <div class="ambient" aria-hidden="true"><div class="glow one"></div><div class="glow two"></div><span class="sparkle">✦</span><span class="sparkle">♡</span><span class="sparkle">✧</span></div>
   <div class="intro-gate" id="introGate">
+    <div class="welcome-sparkles" aria-hidden="true"><i>♡</i><i>✦</i><i>✧</i><i>♡</i><i>·</i><i>✦</i><i>♡</i><i>✧</i><i>·</i><i>♡</i></div>
     <div class="gate-content">
       <div class="gate-kicker">a little archive of us</div>
       <div class="book-scene"><div class="story-book" id="storyBook"><div class="book-pages"></div><div class="book-cover"><small>the story of two</small><em>♡</em><strong>OUR<br>STORY</strong><span>25 · 11 · 2024</span></div></div></div>
@@ -143,6 +144,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
     </div>
     <div class="heaven-gate" id="journeyGateSequence" aria-label="Cánh cổng thiên hà đang mở">
       <div class="heaven-gate-sky"></div>
+      <div class="heaven-gate-comets" aria-hidden="true"><i>✧</i><i>♡</i><i>✦</i><i>✧</i><i>♡</i></div>
       <div class="heaven-gate-stars" aria-hidden="true"><i>✦</i><i>✧</i><i>♡</i><i>✦</i><i>·</i><i>✧</i><i>♡</i></div>
       <div class="heaven-gate-halo heaven-gate-halo--outer"></div>
       <div class="heaven-gate-halo heaven-gate-halo--inner"></div>
@@ -1783,16 +1785,25 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyScene').dataset.kind = item.kind;
       }
 
-      const HEAVEN_GATE_DURATION = 2700;
+      const HEAVEN_GATE_DURATION = 3120;
+      const HEAVEN_GATE_CROSSING_DURATION = 460;
 
       function beginJourneyFilm() {
         const overlay = $('galaxyJourney');
         if (!overlay || !overlay.classList.contains('is-open')) return;
         clearJourneyTimers();
-        overlay.classList.remove('is-opening');
-        $('journeyIntro').hidden = true;
-        $('journeyProgressLabel').textContent = 'CHUYẾN ĐI CỦA ANH VÀ EM BẮT ĐẦU…';
-        showJourneyItem(0);
+        if (overlay.classList.contains('is-crossing')) return;
+        overlay.classList.add('is-crossing');
+        $('journeyGateSkip').disabled = true;
+        $('journeyProgressLabel').textContent = 'ANH ĐANG ĐƯA EM QUA CÁNH CỔNG…';
+        journeyTimer = setTimeout(() => {
+          if (!overlay.classList.contains('is-open')) return;
+          overlay.classList.remove('is-opening', 'is-crossing');
+          $('journeyGateSkip').disabled = false;
+          $('journeyIntro').hidden = true;
+          $('journeyProgressLabel').textContent = 'CHUYẾN ĐI CỦA ANH VÀ EM BẮT ĐẦU…';
+          showJourneyItem(0);
+        }, HEAVEN_GATE_CROSSING_DURATION);
       }
 
       function startGalaxyJourney() {
@@ -1830,7 +1841,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         if (journeyVideo) { journeyVideo.pause(); journeyVideo.removeAttribute('src'); journeyVideo.load(); journeyVideo = null; }
         const overlay = $('galaxyJourney');
         if (!overlay) return;
-        overlay.classList.remove('is-open', 'is-paused', 'is-opening');
+        overlay.classList.remove('is-open', 'is-paused', 'is-opening', 'is-crossing');
+        $('journeyGateSkip').disabled = false;
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('journey-lock');
         $('journeyMediaFrame').replaceChildren();
@@ -2153,7 +2165,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           book.classList.add('opened');
           gate.classList.add('leaving');
           document.body.classList.remove('intro-locked');
-          setTimeout(() => gate.remove(), 950);
+          window.setTimeout(() => { if (gate.isConnected) gate.remove(); }, 1220);
         });
         document.querySelectorAll('[data-filter]').forEach((button) => {
           button.addEventListener('click', () => {
