@@ -8,8 +8,9 @@
   <title>The Little Archive — Orbit Flow Journey 4.4 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-effects.css">
 </head>
 <body class="intro-locked">
   <div class="ambient" aria-hidden="true"><div class="glow one"></div><div class="glow two"></div><span class="sparkle">✦</span><span class="sparkle">♡</span><span class="sparkle">✧</span></div>
@@ -159,6 +160,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
     </div>
   </div>
   <div class="galaxy-journey" id="galaxyJourney" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Du hành qua những kỷ niệm của anh và em">
+    <canvas id="journeyCanvas" class="journey-dynamic-canvas" aria-hidden="true"></canvas>
+    <div class="journey-aurora-glow" aria-hidden="true"></div>
     <div class="journey-cosmos" aria-hidden="true">
       <span class="journey-nebula journey-nebula-a"></span>
       <span class="journey-nebula journey-nebula-b"></span>
@@ -170,9 +173,18 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       <span class="journey-orbit journey-orbit-b"></span>
       <span class="journey-heart journey-heart-a">♡</span>
       <span class="journey-heart journey-heart-b">✧</span>
+      <span class="journey-cute-constellation" style="top:18%; left:12%;">✧ 💖 ✦</span>
+      <span class="journey-cute-constellation" style="top:75%; right:14%;">✦ 🪐 ✧</span>
     </div>
     <div class="heaven-gate" id="journeyGateSequence" aria-label="Cánh cổng thiên hà đang mở">
       <div class="heaven-gate-sky"></div>
+      <div class="heaven-gate-light-beams" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="heaven-gate-sacred-rings" aria-hidden="true">
+        <div class="heaven-gate-ring-spin"></div>
+        <div class="heaven-gate-ring-spin reverse"></div>
+      </div>
       <div class="heaven-gate-comets" aria-hidden="true"><i>✧</i><i>♡</i><i>✦</i><i>✧</i><i>♡</i></div>
       <div class="heaven-gate-stars" aria-hidden="true"><i>✦</i><i>✧</i><i>♡</i><i>✦</i><i>·</i><i>✧</i><i>♡</i></div>
       <div class="heaven-gate-halo heaven-gate-halo--outer"></div>
@@ -233,6 +245,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="journey-effects.js"></script>
   <script>
     (() => {
       'use strict';
@@ -604,7 +617,12 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function getFilteredMemories() {
-        return mediaItems.filter((item) => activeFilter === 'all' || item.kind === activeFilter);
+        const filtered = mediaItems.filter((item) => activeFilter === 'all' || item.kind === activeFilter);
+        if (filtered.length > 0) return filtered;
+        if (window.OurLoveFX && typeof window.OurLoveFX.getStarterMemories === 'function') {
+          return window.OurLoveFX.getStarterMemories();
+        }
+        return [];
       }
 
       function applyGalleryFilter() {
@@ -1807,6 +1825,14 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
           const labelNode = document.createElement('figcaption');
           labelNode.textContent = label;
           card.append(labelNode);
+          card.style.cursor = 'pointer';
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          card.title = side === 'previous' ? 'Xem lại kỷ niệm trước ♡' : 'Xem kỷ niệm tiếp theo ✧';
+          card.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showJourneyItem(journeyIndex + (side === 'previous' ? -1 : 1));
+          });
           rail.append(card);
           // Stop the one-shot entrance animation after it finishes; no permanent
           // compositor work is needed for stationary satellite cards.
@@ -1947,6 +1973,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
           media.classList.remove('journey-media--pending');
           media.classList.add('is-arriving');
+          window.OurLoveFX?.triggerCosmicWarp?.();
           scene.classList.remove('scene-exit', 'journey-transition-active', 'journey-initial-reveal');
           frame.classList.add('is-love-focus');
           let loveEffects = frame.querySelector('.journey-photo-love-effects');
@@ -2092,6 +2119,8 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('journeyProgressLabel').textContent = 'CÁNH CỔNG THIÊN ĐƯỜNG ĐANG MỞ…';
         $('journeyProgressCount').textContent = `00 / ${String(journeyItems.length).padStart(2, '0')}`;
         $('journeyProgressBar').style.width = '0%';
+        window.OurLoveFX?.startCosmicCanvas?.();
+        window.OurLoveFX?.playGateAscendSound?.();
         // The two gates open first. Once the reveal completes, the 3D film begins by itself.
         journeyTimer = setTimeout(() => {
           if ($('galaxyJourney').classList.contains('is-open') && $('galaxyJourney').classList.contains('is-opening')) beginJourneyFilm();
@@ -2099,6 +2128,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       }
 
       function stopGalaxyJourney() {
+        window.OurLoveFX?.stopCosmicCanvas?.();
         clearJourneyTimers();
         journeyActive = false;
         journeyPaused = false;
