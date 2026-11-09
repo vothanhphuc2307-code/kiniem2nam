@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff4fa">
   <meta name="description" content="Một cuốn lưu bút nhỏ cho hành trình từ 25.11.2024 — một câu chuyện vẫn đang được viết tiếp.">
-  <title>The Little Archive — Dream Motion 3.9 ♡</title>
+  <title>The Little Archive — Mobile Love Dock 4.0 ♡</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
         <span class="gate-device-tag" id="deviceAdviceTag">✦ BEST VIEW ON LAPTOP</span>
         <strong id="deviceAdviceTitle">Em bé ơi, anh dành cả một vũ trụ cho em.</strong>
         <p id="deviceAdviceText">Mở trang này trên laptop để thấy đầy đủ các hành tinh, quỹ đạo và những tấm ảnh bung nở. Trên điện thoại em vẫn có một tiểu thiên hà riêng, cùng những hành tinh và trái tim lấp lánh, được tối ưu để chạy mượt hơn.</p>
+        <button class="guide-open-btn" id="desktopGuideOpen" type="button">💻 Xem cách mở bản máy tính trên điện thoại</button>
       </aside>
       <div class="gate-audio-hint" id="gateAudioHint" aria-live="polite">♫ Nhạc sẽ tự bật khi em mở câu chuyện, nếu trình duyệt cho phép.</div>
       <button class="gate-open" id="openStory" type="button">Mở vũ trụ & bật nhạc ♡</button>
@@ -125,10 +126,38 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
     </main>
     <footer>made with a little bit of <span>♡</span> and a lot of memories<span class="footer-date">25 · 11 · 2024 — 25 · 11 · 2026</span></footer>
   </div>
-  <nav class="mobile-dock" aria-label="Điều hướng nhanh"><a href="#memories"><span>▧</span><span>Ký ức</span></a><a href="#chapters"><span>✧</span><span>Câu chuyện</span></a><a href="#letter"><span>♡</span><span>Lá thư</span></a><a href="#musicTitle"><span>♫</span><span>Nhạc</span></a></nav>
+  <nav class="mobile-dock" aria-label="Điều hướng nhanh">
+    <a class="dock-item is-active" href="#memories" data-dock-target="memories"><span class="dock-icon" aria-hidden="true">✿</span><span class="dock-label">Ký ức</span></a>
+    <a class="dock-item" href="#chapters" data-dock-target="chapters"><span class="dock-icon" aria-hidden="true">✧</span><span class="dock-label">Chuyện mình</span></a>
+    <a class="dock-item" href="#letter" data-dock-target="letter"><span class="dock-icon" aria-hidden="true">💌</span><span class="dock-label">Lá thư</span></a>
+    <a class="dock-item" href="#musicTitle" data-dock-target="musicTitle"><span class="dock-icon" aria-hidden="true">♫</span><span class="dock-label">Nhạc</span></a>
+    <button class="dock-item dock-guide-btn" id="desktopGuideDock" type="button" aria-label="Xem cách mở bản máy tính"><span class="dock-icon" aria-hidden="true">💻</span><span class="dock-label">Bản PC</span></button>
+  </nav>
   <div class="modal-backdrop" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><button class="close-modal" data-close="letterModal" aria-label="Đóng">×</button><h3 id="editModalTitle">Viết lời nhắn của anh và em 💌</h3><p class="modal-intro">Sửa tên, tiêu đề và lời chúc theo cách hai người hay nói với nhau. Nội dung sẽ được lưu lên đám mây để người mở cùng đường link đều thấy.</p><label class="field"><span>Dòng mở đầu</span><input id="editSalute" maxlength="90" placeholder="Gửi em, người anh thương,"></label><label class="field"><span>Tiêu đề lời nhắn</span><input id="editHeading" maxlength="130"></label><label class="field"><span>Lời chúc</span><textarea id="editBody" maxlength="2500"></textarea></label><label class="field"><span>Ký tên</span><input id="editSignature" maxlength="80" placeholder="Anh thương em nhiều ♡"></label><button class="primary-btn" id="saveLetter">Lưu lời nhắn ♡</button></div></div>
   <div class="modal-backdrop" id="viewer" role="dialog" aria-modal="true"><button class="close-modal viewer-close" data-close="viewer" aria-label="Đóng">×</button><div class="viewer-content" id="viewerContent"></div></div>
   <div class="modal-backdrop" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle"><div class="modal"><button class="close-modal" data-close="adminModal" aria-label="Đóng">×</button><h3 id="adminModalTitle">Khu vực quản trị ♡</h3><p class="modal-intro" id="adminState">Đăng nhập tài khoản quản trị để tải ảnh/video, đổi nhạc và chỉnh lời chúc. Người xem link không cần đăng nhập.</p><label class="field"><span>Email quản trị</span><input id="adminEmail" type="email" autocomplete="username" placeholder="email của ông"></label><label class="field"><span>Mật khẩu</span><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu Supabase"></label><button class="primary-btn" id="loginSubmit">Đăng nhập ♡</button><button class="soft-btn" id="logoutSubmit" hidden>Đăng xuất</button><p class="modal-intro" style="margin-top:14px">Tài khoản được tạo trước trong Supabase Dashboard. Không gửi mật khẩu này cho người xem album.</p></div></div>
+  <div class="modal-backdrop desktop-guide-backdrop" id="desktopGuideModal" role="dialog" aria-modal="true" aria-labelledby="desktopGuideTitle">
+    <div class="modal desktop-guide-modal">
+      <button class="close-modal" data-close="desktopGuideModal" aria-label="Đóng">×</button>
+      <div class="desktop-guide-kicker">A LITTLE TIP FROM ANH ♡</div>
+      <h3 id="desktopGuideTitle">Mở phiên bản máy tính ngay trên điện thoại</h3>
+      <p class="modal-intro" id="desktopGuideDeviceHint">Em có thể yêu cầu trình duyệt tải giao diện máy tính. Sau khi bật, nhớ tải lại trang nhé.</p>
+      <div class="desktop-guide-steps" id="androidGuide">
+        <div class="desktop-guide-step-title"><span>ANDROID</span><strong>Chrome trên Android</strong></div>
+        <ol><li>Mở trang web bằng Chrome.</li><li>Nhấn dấu <kbd>⋮</kbd> ở góc trên bên phải.</li><li>Chọn <strong>Trang web cho máy tính</strong> hoặc <strong>Desktop site</strong>.</li><li>Đợi trang tải lại. Nếu chưa đổi giao diện, tải lại trang thêm một lần.</li></ol>
+      </div>
+      <div class="desktop-guide-steps" id="iphoneGuide">
+        <div class="desktop-guide-step-title"><span>IPHONE / IPAD</span><strong>Safari</strong></div>
+        <ol><li>Mở trang web bằng Safari.</li><li>Nhấn nút menu trang ở thanh địa chỉ (một số phiên bản hiển thị <strong>aA</strong>).</li><li>Chọn <strong>Yêu cầu trang web cho máy tính</strong> / <strong>Request Desktop Website</strong>.</li><li>Đợi trang tải lại để xem bản máy tính.</li></ol>
+      </div>
+      <div class="desktop-guide-steps" id="otherGuide">
+        <div class="desktop-guide-step-title"><span>TRÌNH DUYỆT KHÁC</span><strong>Tìm chế độ Desktop site</strong></div>
+        <ol><li>Mở menu của trình duyệt.</li><li>Tìm mục <strong>Desktop site</strong>, <strong>Trang web cho máy tính</strong> hoặc <strong>Request Desktop Website</strong>.</li><li>Bật chế độ đó và tải lại trang.</li></ol>
+      </div>
+      <div class="desktop-guide-note"><span>♡</span><p>Chế độ này yêu cầu trình duyệt hiển thị bố cục máy tính; màn hình điện thoại vẫn nhỏ nên một số hiệu ứng có thể nặng hơn. Laptop thật vẫn là cách xem trọn vẹn và thoải mái nhất nha em.</p></div>
+      <button class="primary-btn desktop-guide-reload" id="desktopGuideReload" type="button">Em đã bật rồi — tải lại trang ♡</button>
+    </div>
+  </div>
   <div class="galaxy-journey" id="galaxyJourney" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Du hành qua những kỷ niệm của anh và em">
     <div class="journey-cosmos" aria-hidden="true">
       <span class="journey-nebula journey-nebula-a"></span>
@@ -344,16 +373,62 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
       function setDeviceAdvice() {
         if (!$('deviceAdviceTag') || !$('deviceAdviceTitle') || !$('deviceAdviceText') || !$('openStory')) return;
         const mobile = window.matchMedia('(max-width: 900px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const guideButton = $('desktopGuideOpen');
         if (mobile) {
-          $('deviceAdviceTag').textContent = '✦ LAPTOP RECOMMENDED';
+          $('deviceAdviceTag').textContent = '✦ LAPTOP MAGIC AVAILABLE';
           $('deviceAdviceTitle').textContent = 'Em bé đang xem bằng điện thoại nè ♡';
-          $('deviceAdviceText').textContent = 'Bản điện thoại vẫn xem được đầy đủ kỷ niệm theo cách gọn nhẹ. Nhưng khi rảnh, anh muốn em mở lại đường link trên laptop để khám phá trọn vẹn các hành tinh, quỹ đạo và những tấm ảnh bung nở nhé.';
+          $('deviceAdviceText').textContent = 'Bản điện thoại đã được làm gọn để em xem thật mượt. Nếu muốn khám phá phiên bản máy tính với thiên hà rộng hơn, anh để sẵn hướng dẫn mở Desktop site ngay bên dưới nhé.';
           $('openStory').textContent = 'Vẫn mở câu chuyện trên điện thoại ♡';
+          if (guideButton) guideButton.hidden = false;
         } else {
           $('deviceAdviceTag').textContent = '✦ DESKTOP EXPERIENCE';
           $('deviceAdviceTitle').textContent = 'Em đang ở đúng nơi để khám phá vũ trụ rồi.';
           $('deviceAdviceText').textContent = 'Anh dành phiên bản laptop với những hành tinh ký ức, quỹ đạo ánh sáng và hiệu ứng ảnh bung nở cho em. Hãy mở trang đầu và khám phá từng thế giới nhỏ nhé.';
           $('openStory').textContent = 'Mở vũ trụ của anh và em ♡';
+          if (guideButton) guideButton.hidden = true;
+        }
+      }
+
+      function openDesktopGuide() {
+        const modal = $('desktopGuideModal');
+        if (!modal) return;
+        const ua = navigator.userAgent || '';
+        const isAndroid = /Android/i.test(ua);
+        const isIOS = /iPhone|iPad|iPod/i.test(ua);
+        const isSafariIOS = isIOS && /Safari/i.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS)/i.test(ua);
+        const hint = $('desktopGuideDeviceHint');
+        if (hint) {
+          hint.textContent = isAndroid
+            ? 'Anh chỉ em cách bật bản máy tính trong Chrome trên Android nhé. Chỉ cần vài lần chạm là xong. ♡'
+            : isSafariIOS
+              ? 'Anh chỉ em cách yêu cầu Safari mở phiên bản máy tính nha. ♡'
+              : isIOS
+                ? 'Em mở menu trình duyệt trên iPhone/iPad và tìm mục Request Desktop Website hoặc Trang web cho máy tính nhé. ♡'
+                : 'Em mở menu trình duyệt và tìm mục Desktop site hoặc Request Desktop Website nhé. ♡';
+        }
+        $('androidGuide').classList.toggle('is-recommended', isAndroid);
+        $('iphoneGuide').classList.toggle('is-recommended', isSafariIOS);
+        $('otherGuide').classList.toggle('is-recommended', !isAndroid && !isSafariIOS);
+        modal.classList.add('open');
+      }
+
+      function initMobileDock() {
+        const dock = document.querySelector('.mobile-dock');
+        if (!dock) return;
+        const links = Array.from(dock.querySelectorAll('[data-dock-target]'));
+        const setActive = (id) => links.forEach((link) => {
+          const active = link.dataset.dockTarget === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+        links.forEach((link) => link.addEventListener('click', () => setActive(link.dataset.dockTarget)));
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) setActive(visible.target.id);
+          }, { rootMargin: '-18% 0px -62% 0px', threshold: [0, .15, .35, .6] });
+          ['memories', 'chapters', 'letter', 'musicTitle'].forEach((id) => { const section = $(id); if (section) observer.observe(section); });
         }
       }
 
@@ -2165,6 +2240,9 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         $('jumpMemories').addEventListener('click', () => $('memories').scrollIntoView({ behavior: 'smooth' }));
         $('heroJourney').addEventListener('click', startGalaxyJourney);
         $('openLetter').addEventListener('click', () => $('letter').scrollIntoView({ behavior: 'smooth' }));
+        $('desktopGuideOpen')?.addEventListener('click', openDesktopGuide);
+        $('desktopGuideDock')?.addEventListener('click', openDesktopGuide);
+        $('desktopGuideReload')?.addEventListener('click', () => window.location.reload());
         $('openStory').addEventListener('click', () => {
           // This tap is the browser-approved gesture used to start the shared soundtrack.
           startMusicFromWelcomeTap();
@@ -2250,7 +2328,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
         document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => closeModal(button.dataset.close)));
         document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(backdrop.id); }));
         document.addEventListener('keydown', (event) => {
-          if (event.key === 'Escape') { stopGalaxyJourney(); closePlanetReveal(); closeModal('letterModal'); closeModal('viewer'); closeModal('adminModal'); }
+          if (event.key === 'Escape') { stopGalaxyJourney(); closePlanetReveal(); closeModal('letterModal'); closeModal('viewer'); closeModal('adminModal'); closeModal('desktopGuideModal'); }
           if (!$('galaxyJourney').classList.contains('is-open')) return;
           if (journeyActive && event.key === 'ArrowRight') showJourneyItem(journeyIndex + 1);
           if (journeyActive && event.key === 'ArrowLeft' && journeyIndex > 0) showJourneyItem(journeyIndex - 1);
@@ -2263,6 +2341,7 @@ Chúc mừng kỷ niệm 2 năm của anh và em. Anh mong câu chuyện này s�
 
       async function init() {
         setDeviceAdvice();
+        initMobileDock();
         updateSoundToggle();
         wireEvents();
         const galleryBreakpoint = window.matchMedia('(min-width: 901px)');

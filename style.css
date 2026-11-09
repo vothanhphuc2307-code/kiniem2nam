@@ -4537,3 +4537,81 @@ footer { color: #937a9a; }
   .journey-scene.scene-enter .journey-media-frame,
   .journey-scene.scene-exit .journey-media-frame { animation: none !important; opacity: 1; transform: none; }
 }
+
+
+/* MOBILE LOVE DOCK + DESKTOP VIEW GUIDE — 4.0 */
+.guide-open-btn {
+  display:none; align-items:center; justify-content:center; gap:8px; min-height:42px;
+  margin-top:12px; padding:10px 15px; border:1px solid rgba(211,151,190,.46); border-radius:999px;
+  color:#8b557d; background:linear-gradient(135deg,#fff9fd,#fceafa 52%,#f0eaff);
+  box-shadow:0 7px 18px rgba(198,137,184,.13),inset 0 1px 0 #fff;
+  font:800 11px/1.35 'Nunito',system-ui,sans-serif; cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.guide-open-btn:hover { transform:translateY(-2px); box-shadow:0 10px 22px rgba(198,137,184,.2),inset 0 1px 0 #fff; }
+.guide-open-btn:active { transform:scale(.97); }
+.desktop-guide-backdrop { z-index:110; background:rgba(43,25,48,.58); backdrop-filter:blur(7px); }
+.desktop-guide-modal {
+  width:min(560px,100%); max-height:min(86vh,760px); overflow:auto; color:#4b3454;
+  background:linear-gradient(155deg,#fffaff 0%,#fff1f8 48%,#f4efff 100%);
+  border:1px solid rgba(255,255,255,.95); box-shadow:0 28px 85px rgba(67,37,78,.25),inset 0 1px 0 #fff;
+}
+.desktop-guide-kicker { margin-bottom:8px; color:#bd79a7; font:900 9px 'Nunito',sans-serif; letter-spacing:.22em; }
+.desktop-guide-modal h3 { color:#694a75; font-family:'Playfair Display',Georgia,serif; font-size:clamp(25px,5vw,34px); line-height:1.08; }
+.desktop-guide-modal .modal-intro { color:#806b88; font-size:13px; line-height:1.65; }
+.desktop-guide-steps { margin:12px 0; padding:14px 15px 12px; border:1px solid #edd9eb; border-radius:17px; background:rgba(255,255,255,.78); transition:border-color .2s ease,background .2s ease; }
+.desktop-guide-steps.is-recommended { border-color:#d899c5; background:linear-gradient(135deg,#fff,#fff0fa 65%,#f4efff); box-shadow:0 7px 18px rgba(202,137,190,.12); }
+.desktop-guide-step-title { display:flex; align-items:center; gap:9px; margin-bottom:8px; color:#684a78; }
+.desktop-guide-step-title span { padding:5px 8px; border-radius:999px; color:#a45d91; background:#f8e5f3; font:900 8px 'Nunito',sans-serif; letter-spacing:.1em; }
+.desktop-guide-step-title strong { font:900 13px 'Nunito',sans-serif; }
+.desktop-guide-steps ol { margin:0; padding-left:21px; color:#715e79; font:600 12px/1.72 'Nunito',sans-serif; }
+.desktop-guide-steps li { padding:2px 0 2px 2px; }
+.desktop-guide-steps strong { color:#a65089; font-weight:900; }
+.desktop-guide-steps kbd { display:inline-grid; min-width:26px; min-height:25px; place-items:center; border:1px solid #e9d6e9; border-radius:7px; color:#765383; background:#fff; box-shadow:0 2px 0 #e7d7e7; font:900 14px 'Nunito',sans-serif; }
+.desktop-guide-note { display:flex; align-items:flex-start; gap:9px; margin:14px 0; padding:12px 13px; border-radius:14px; color:#806b85; background:#f8eefa; }
+.desktop-guide-note span { color:#d47eae; font-size:19px; }
+.desktop-guide-note p { margin:0; font:600 11px/1.6 'Nunito',sans-serif; }
+.desktop-guide-reload { width:100%; min-height:47px; color:#fff !important; background:linear-gradient(110deg,#d982b7,#a88be0) !important; box-shadow:0 9px 22px rgba(183,124,187,.24) !important; font:900 12px 'Nunito',sans-serif; }
+@media (max-width:700px) {
+  body { padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+  .guide-open-btn { display:inline-flex; width:100%; min-height:44px; }
+  .mobile-dock {
+    position:fixed; left:50%; bottom:max(8px,env(safe-area-inset-bottom)); z-index:40;
+    display:flex; align-items:stretch; justify-content:space-between; gap:3px;
+    width:min(440px,calc(100% - 16px)); padding:7px 7px calc(7px + env(safe-area-inset-bottom)*.12);
+    border:1px solid rgba(227,174,211,.9); border-radius:25px;
+    background:linear-gradient(115deg,rgba(255,251,254,.98),rgba(255,241,249,.98) 55%,rgba(246,241,255,.98));
+    box-shadow:0 8px 24px rgba(93,54,94,.17),0 2px 0 rgba(255,255,255,.95) inset;
+    transform:translate3d(-50%,0,0); -webkit-transform:translate3d(-50%,0,0);
+    backdrop-filter:none; -webkit-backdrop-filter:none; contain:layout paint;
+  }
+  .mobile-dock .dock-item {
+    position:relative; display:flex; flex:1 1 0; min-width:0; min-height:57px;
+    flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:3px 1px 2px;
+    border:0; border-radius:17px; color:#856d89; background:transparent; text-decoration:none;
+    font:800 9px/1.1 'Nunito',system-ui,sans-serif; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation; transition:background-color .16s ease,color .16s ease,transform .16s ease;
+  }
+  .mobile-dock .dock-icon {
+    display:grid; width:32px; height:32px; place-items:center; border:1px solid rgba(224,188,220,.76);
+    border-radius:12px; color:#a76c9f; background:linear-gradient(145deg,#fff,#fbe9f5);
+    box-shadow:0 2px 5px rgba(159,106,157,.08); font-size:17px; line-height:1;
+    transition:transform .16s ease,background-color .16s ease;
+  }
+  .mobile-dock .dock-label { max-width:100%; overflow:hidden; color:inherit; text-overflow:ellipsis; white-space:nowrap; }
+  .mobile-dock .dock-item.is-active { color:#a64f91; background:linear-gradient(145deg,#ffedf7,#f1eaff); }
+  .mobile-dock .dock-item.is-active .dock-icon { color:#fff; border-color:transparent; background:linear-gradient(145deg,#e99fc9,#b8a2e9); box-shadow:0 4px 10px rgba(191,126,186,.22); transform:translateY(-2px); }
+  .mobile-dock .dock-item:active { color:#a64f91; background:#f9e9f6; transform:scale(.96); }
+  .mobile-dock .dock-guide-btn .dock-icon { color:#a45c9c; background:linear-gradient(145deg,#fff2d9,#f8e4f8); }
+  .desktop-guide-modal { max-height:84dvh; padding:25px 17px 17px; border-radius:24px; }
+  .desktop-guide-steps { padding:12px 12px 10px; }
+  .desktop-guide-steps ol { font-size:11px; }
+}
+@media (max-width:390px) {
+  .mobile-dock { gap:1px; padding-inline:5px; }
+  .mobile-dock .dock-item { min-height:55px; font-size:8px; }
+  .mobile-dock .dock-icon { width:29px; height:29px; border-radius:11px; font-size:16px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .mobile-dock .dock-item,.mobile-dock .dock-icon,.guide-open-btn { transition:none !important; }
+}
